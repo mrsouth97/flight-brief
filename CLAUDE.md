@@ -38,13 +38,14 @@ Bối cảnh project cho Claude Code (chuyển từ ChatGPT/Codex ngày 23/09/20
 - `4a328f7` (V5.90) Chuyển trang chủ từ Swift sang HTML.
 - `7f4660e` (V5.91) Danh sách nằm trong **khung cố định cao đúng 10 dòng**, cuộn bên trong khung (infinite scroll), trang ngoài không dài ra. Thêm icon app.
 
-## Đang dở: V5.92 — Charts (chưa commit)
-- Yêu cầu: lấy chart sân bay **miễn phí** cho dùng cá nhân. Đã loại: Jeppesen/Lido API (trả phí, cần hợp đồng), Navigraph (chỉ cho mô phỏng).
-- Hướng đã chọn: nguồn **eAIP chính thức từng nước** + lưu PDF offline.
-  - Nhập ICAO → app gợi ý nguồn AIP theo tiền tố (VV → VATM/AIP Việt Nam; FAA d-TPP cho Mỹ; EAD Basic/AIP quốc gia cho châu Âu).
-  - Người dùng tải PDF → Import vào app (ICAO, loại Airport/SID/STAR/Approach/Other, nguồn, hiệu lực, AIRAC; tối đa 30 MB) → lưu trên thiết bị, xem offline.
-  - Hiệu lực không nhập thì hiện "Not verified"; luôn nhắc kiểm tra bản hiện hành + NOTAM.
-- Codex đã viết xong phần lớn trong `index.html` (+189 dòng) và đang test (UBBB chưa có nguồn) thì hết usage. Chưa kiểm tra xong, chưa commit/push.
+## Minima (V5.93, thay cho Charts V5.92 đã gỡ)
+- Chart là Lido trong app mLido (không có PDF) → minima **nhập tay** (nút "Approach minima"), lưu IndexedDB `flight-brief-minima`. Mỗi chart nhập cột minima thấp nhất, hàng **CAT C**. Loại: CAT III / CAT II / CAT I / NPA / Circling.
+- Tab WEATHER hiện MINIMA OK / BELOW MINIMA / Not Found cho DEST, DEST ALT, ENR ALT, FUEL ERA, EDTO ALT (không cho DEP).
+- TAF VIS so trực tiếp với R (không có R thì V); ceiling chỉ BKN/OVC, so với số dòng trên (DH/MDH/ceiling). Sự kiện TAF lọc bằng `fomEventApplicable` (FOM 8.1.2-6).
+- DEST: approach thấp nhất trên runway OFP (Cat II/III nếu có). Precision chỉ so RVR; NPA/circling thêm ceiling.
+- ALTN/ERA: dùng approach **cao nhất** đã nhập (circling chỉ khi không có straight-in). Bảng FOM 8.1.2-7: CAT II/III → RVR CAT I; CAT I → VIS NPA + CIG ≥ MDH; NPA → +1000 m / +200 ft; Circling → circling.
+- EDTO ERA (FOM 8.5.1) và sân Mỹ (8.1.2-8): +400 ft / +1600 m trên approach cao nhất. EDTO: TEMPO/PROB chỉ so với landing minima.
+- Tài liệu hãng (FOM, SOP) người dùng sẽ để ngoài repo — không commit lên GitHub.
 
 ## Cách làm việc người dùng muốn
 - Nói tiếng Việt, yêu cầu tự nhiên, không cần prompt kỹ thuật.
