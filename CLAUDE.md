@@ -1,0 +1,52 @@
+# CLAUDE.md — Flight Brief
+
+Bối cảnh project cho Claude Code (chuyển từ ChatGPT/Codex ngày 23/09/2026). Đọc hết trước khi làm việc.
+
+## Quy trình làm việc
+- Trả lời bằng tiếng Việt, ngắn gọn. Người dùng nói yêu cầu tự nhiên, không cần prompt kỹ thuật.
+- Thay đổi tối thiểu; không refactor/sửa phần không liên quan.
+- Mỗi lần phát hành HTML: tăng version ở `<meta name="flight-brief-version">` và `<title>`, commit, push `main`. Báo người dùng bấm **Update Flight Brief** trên iPad.
+- Thay đổi native (Swift) → build & cài lại lên iPad (iPad cắm vào Mac).
+- Logic WIND / NOTAM / WEATHER / OFP / MEL: hỏi và chốt với người dùng trước khi code.
+
+## App là gì
+- App trên iPad giúp phi công (A350) tổng hợp tài liệu và chuẩn bị chuyến bay: OFP, WIND/Temp, Weather, NOTAM, (Loadsheet, MEL/CDL…).
+- Khởi đầu từ MVP "Preflight Document Check" (checklist + thư viện PDF offline bằng IndexedDB), sau phát triển thành Flight Brief.
+- Mục đích cá nhân, không thương mại.
+
+## Kiến trúc: 2 phần
+1. **Web — `index.html`** (repo `github.com/mrsouth97/flight-brief`, máy Mac: `~/Documents/GitHub/flight-brief`). Toàn bộ app một file: parser + màn hình OFP, WIND, WX, NOTAM…, và từ V5.91 cả **trang chủ** (danh sách Briefings).
+   - Cập nhật: sửa → commit → push `main` (remote SSH) → trên iPad bấm **Update Flight Brief** là nhận bản mới, không cần Mac.
+   - Version ghi ở `<meta name="flight-brief-version">` và `<title>Flight Brief V5.xx</title>`; tăng mỗi lần phát hành.
+2. **Native iOS — Swift wrapper** (máy Mac: `~/Downloads/FlightBriefNativeRemote`, file chính `ContentView.swift`, WebView).
+   - Lo quyền truy cập thư mục chuyến bay trong Files của iPad, đọc PDF, chuyển nội dung cho HTML. HTML gửi lựa chọn chuyến bay → Swift đọc PDF → trả về HTML. File không lên GitHub.
+   - Sửa phần native thì phải build & cài lại lên iPad (Codex làm bằng dòng lệnh, iPad cắm vào Mac, không cần mở Xcode).
+   - App tự chọn bản HTML mới hơn giữa bản cài sẵn và bản đã tải.
+   - Icon app: pixel art máy bay + tài liệu, nền xanh, 1024×1024 (`Assets.xcassets/AppIcon.appiconset/AppIcon.png`).
+
+## Quy tắc nghiệp vụ đã chốt (không tự đổi khi chưa được yêu cầu)
+- **WIND:** in đậm gió lệch ≥ 30° hoặc 30 kt so với CFP; gió không đổi để chữ thường. Nhiệt độ lệch quá 5°C cũng in đậm (vd NINOP −51 / DOMET −55).
+- **Step climb:** nếu F-PLN có step, phải kiểm tra gió đặt đúng ở waypoint đầu tiên sau step, ở cả FL ban đầu và FL step.
+- Giao diện WIND: không khung viền; tên điểm, dòng dưới là FL in nghiêng (vd `T-O-C` / *FL380*).
+- Bỏ tiêu đề lặp như "CFP Wind / Temp", "Weather Review", "NOTAM Review" ở từng trang; bỏ đánh số 1. 2. 3. trong OFP detail/WX nhưng giữ tiêu đề.
+- **NOTAM:** UIR và FIR coi như nhau; phải có NOTAM cho các sân ở Đức và Baku (từng có lỗi bị thiếu).
+- Thay đổi logic WIND / NOTAM / WEATHER / OFP / MEL phải chốt logic với người dùng trước khi code. Thay đổi UI thì làm thẳng.
+
+## Lịch sử gần đây
+- `ee3170f` Ignore macOS .DS_Store.
+- Trang chủ: 10 chuyến mới nhất, cuộn tải thêm từng 10; giữ pull-to-refresh; refresh/quay lại app thì về 10 chuyến đầu.
+- `4a328f7` (V5.90) Chuyển trang chủ từ Swift sang HTML.
+- `7f4660e` (V5.91) Danh sách nằm trong **khung cố định cao đúng 10 dòng**, cuộn bên trong khung (infinite scroll), trang ngoài không dài ra. Thêm icon app.
+
+## Đang dở: V5.92 — Charts (chưa commit)
+- Yêu cầu: lấy chart sân bay **miễn phí** cho dùng cá nhân. Đã loại: Jeppesen/Lido API (trả phí, cần hợp đồng), Navigraph (chỉ cho mô phỏng).
+- Hướng đã chọn: nguồn **eAIP chính thức từng nước** + lưu PDF offline.
+  - Nhập ICAO → app gợi ý nguồn AIP theo tiền tố (VV → VATM/AIP Việt Nam; FAA d-TPP cho Mỹ; EAD Basic/AIP quốc gia cho châu Âu).
+  - Người dùng tải PDF → Import vào app (ICAO, loại Airport/SID/STAR/Approach/Other, nguồn, hiệu lực, AIRAC; tối đa 30 MB) → lưu trên thiết bị, xem offline.
+  - Hiệu lực không nhập thì hiện "Not verified"; luôn nhắc kiểm tra bản hiện hành + NOTAM.
+- Codex đã viết xong phần lớn trong `index.html` (+189 dòng) và đang test (UBBB chưa có nguồn) thì hết usage. Chưa kiểm tra xong, chưa commit/push.
+
+## Cách làm việc người dùng muốn
+- Nói tiếng Việt, yêu cầu tự nhiên, không cần prompt kỹ thuật.
+- Thay đổi tối thiểu, không sửa phần không liên quan.
+- Push lên `main` qua SSH (remote `git@github.com:mrsouth97/flight-brief.git`).
