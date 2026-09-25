@@ -53,7 +53,7 @@ Bối cảnh project cho Claude Code (chuyển từ ChatGPT/Codex ngày 23/09/20
 - Khung **Loadsheet** (dưới Position Check từ V6.17): đọc loadsheet mới nhất (R cao nhất) của chuyến → NOTOC YES/NO + bảng Position → mã IMP (bảng `IMP_CODES` theo DGM 3.2.2.1 b / DGR App. B 2.2.4); cảnh báo đỏ nếu 2 mã cùng vị trí phải cách ly (9.3.A), ICE ngoài BULK (5), MAG ngoài compartment 3/4.
 - Bản web (Safari iPhone, V6.14): nút **Import DGR data** → chọn `dgr.json` trong iCloud Drive › Flight Brief hoặc Google Drive › Tài Liệu › DGR (bản sao do Claude chép vào; iPhone chưa có app Google Drive) → lưu IndexedDB `flight-brief-dgr` trên máy đó. Khi cập nhật dgr.json nhớ chép lại lên Drive.
 - Dữ liệu IATA DGR có bản quyền → **chỉ nằm trong app iPad**: `FlightBrief/Resources/dgr.json` (bridge `dgrData`, `window.FLIGHT_BRIEF_DGR_VERSION`). Tuyệt đối không đưa dữ liệu DGR vào `index.html`/GitHub (repo công khai).
-- Nguồn: `~/Downloads/DANGEROUS GOODS REGULATIONS.pdf` (67th ed. 2026, OCR scan). Script tách: `~/Downloads/FlightBriefNativeRemote/tools/dgr/`. ~11% mục có cờ ⚠ (đọc OCR chưa chắc) → app nhắc kiểm tra trang DGR. Mỗi năm có DGR mới: chạy lại script, build & cài app.
+- Nguồn: `~/Downloads/DANGEROUS GOODS REGULATIONS.pdf` (67th ed. 2026, OCR scan). Script tách: `~/Downloads/FlightBriefNativeRemote/tools/dgr/`. Parser V6.18 sửa lỗi dòng scan nghiêng (ghép nhầm số liệu sang mục kế bên); 229 mục cờ ⚠ đã được đối chiếu từng ô với ảnh trang scan (26/09/2026) → hiện 0 mục cờ ⚠, 2654 mục. Cờ ⚠ vẫn hiện nếu sau này dữ liệu đọc chưa chắc. Mỗi năm có DGR mới: chạy lại script, build & cài app.
 
 ## Cách làm việc người dùng muốn
 - Nói tiếng Việt, yêu cầu tự nhiên, không cần prompt kỹ thuật.
