@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
-<meta name="flight-brief-version" content="6.03">
-<title>Flight Brief V6.03</title>
+<meta name="flight-brief-version" content="6.04">
+<title>Flight Brief V6.04</title>
 <style>
 :root{--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#6f7b90;--line:#dde5ef;--blue:#0b5cff;--blue2:#eaf1ff;--green:#137a46;--green2:#e8f6ee;--amber:#9a6700;--amber2:#fff5d8;--red:#b8322a;--red2:#fdeceb;--purple:#6541c1;--purple2:#f1ecff}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top)) 14px 10px}.shell{max-width:1180px;margin:auto}.brand{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand h1{font-size:19px;margin:0}.sub,.muted{font-size:12px;color:var(--muted)}main{max-width:1180px;margin:auto;padding:16px 14px calc(88px + env(safe-area-inset-bottom))}.hero{padding:22px;border-radius:18px;background:linear-gradient(145deg,#0b5cff,#3d74ff);color:#fff;margin-bottom:14px;box-shadow:0 8px 28px rgba(11,92,255,.18)}.hero h2{font-size:24px;margin:0 0 8px}.hero p{margin:0;color:#ebf1ff;line-height:1.45;font-size:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 5px 20px rgba(25,45,75,.05)}h2{font-size:18px;margin:0 0 5px}h3{font-size:15px;margin:0}.row{display:flex;align-items:center;gap:10px}.between{justify-content:space-between}.wrap{flex-wrap:wrap}button,label.upload{border:0;border-radius:12px;padding:11px 14px;font-size:14px;font-weight:700;cursor:pointer;background:var(--blue2);color:#184aa4}.primary{background:var(--blue)!important;color:#fff!important}.ghost{background:#eef2f6!important;color:#4f5a6c!important}.danger{background:var(--red2)!important;color:var(--red)!important}.drop{border:2px dashed #b8c7da;border-radius:16px;background:#fafcff;padding:30px 14px;text-align:center;margin-top:14px}.progress{height:9px;background:#e8edf4;border-radius:99px;overflow:hidden;margin-top:8px}.bar{height:100%;background:var(--blue);width:0;transition:.2s}.hidden{display:none!important}.tabs{display:flex;gap:8px;overflow:auto;margin:14px 0}.tab{white-space:nowrap}.tab.active{background:var(--blue)!important;color:#fff!important}.overview{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:14px}@media(min-width:800px){.overview{grid-template-columns:repeat(6,1fr)}}.kv{border:1px solid var(--line);border-radius:13px;padding:10px;background:#fbfcfe}.kv label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:5px}.kv strong{font-size:14px;word-break:break-word}.section{display:grid;gap:10px}.item{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}.item.pass{border-left:5px solid var(--green)}.item.warn{border-left:5px solid var(--amber)}.item.fail{border-left:5px solid var(--red)}.item.info{border-left:5px solid var(--blue)}.item.review{border-left:5px solid var(--purple)}.itemhead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.badge{display:inline-block;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:800;white-space:nowrap}.badge.pass{background:var(--green2);color:var(--green)}.badge.warn{background:var(--amber2);color:var(--amber)}.badge.fail{background:var(--red2);color:var(--red)}.badge.info{background:var(--blue2);color:var(--blue)}.badge.review{background:var(--purple2);color:var(--purple)}.body{font-size:13px;line-height:1.45;color:#445064;margin-top:8px}.source{font-size:11px;color:var(--muted);margin-top:8px}.raw{white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;background:#f7f9fc;border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px;max-height:260px;overflow:auto}.docs{display:grid;gap:8px;margin-top:12px}.doc{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:11px}.docname{font-weight:700;word-break:break-word}.pill{display:inline-block;padding:4px 7px;border-radius:999px;background:#eef2f7;color:#566174;font-size:10px;font-weight:700;margin-top:5px}.timeline{display:flex;overflow:auto;gap:9px;padding-bottom:4px;margin-top:12px}.timebox{min-width:190px;border:1px solid var(--line);border-radius:13px;padding:10px;background:#fbfcfe}.timebox strong{display:block;font-size:13px}.timebox span{font-size:11px;color:var(--muted)}.note{font-size:12px;background:#fff9e9;border:1px solid #efdda6;color:#77560e;border-radius:12px;padding:10px;line-height:1.4;margin-top:12px}.grid2{display:grid;grid-template-columns:1fr;gap:12px}@media(min-width:900px){.grid2{grid-template-columns:.9fr 1.1fr}}.filter{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:11px;font-size:14px;background:#fff}.groupTitle{margin:18px 2px 7px;font-size:14px;font-weight:850;color:#25344b;border-bottom:1px solid var(--line);padding-bottom:7px}.groupSub{font-size:11px;color:var(--muted);font-weight:500;margin-left:6px}.ofpCard{border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px 16px}.ofpGrid{display:grid;grid-template-columns:150px 1fr;gap:9px 14px;align-items:start}.ofpLabel{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}.ofpValue{font-size:14px;font-weight:700;color:#172033;min-width:0;word-break:break-word}.ofpRwy.pass{color:var(--green)}.ofpRwy.warn{color:#9a6500}.ofpRwy.review{color:var(--purple)}.wxCard{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}.wxRow{display:grid;grid-template-columns:180px 1fr;gap:14px;padding:12px 16px;border-bottom:1px solid var(--line);align-items:start}.wxRow:last-child{border-bottom:0}.wxAirport{font-size:13px;font-weight:850;color:#25344b}.wxValue{font-size:14px;font-weight:700;color:#172033;word-break:break-word}.wxUseTime{font-size:10px;font-weight:650;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}.wxValue.warn{color:#9a6500}.wxValue.review{color:var(--purple)}.wxVisGood{color:var(--green);font-weight:850}.wxVisLow{color:var(--amber);font-weight:850}.wxVisBad{color:var(--red);font-weight:850}.wxGroup{padding:12px 16px;border-bottom:1px solid var(--line)}.wxGroup:last-child{border-bottom:0}.wxGroupTitle{font-size:13px;font-weight:900;color:#25344b;margin-bottom:6px}.wxGroupItem{display:grid;grid-template-columns:180px minmax(0,1fr);gap:14px;padding:5px 0;align-items:start}.wxGroupCode{font-size:13px;font-weight:850;color:#25344b;white-space:normal;overflow-wrap:anywhere}.wxGroupItem .wxValue{min-width:0}@media(max-width:640px){.wxGroupItem{grid-template-columns:1fr;gap:2px;padding:7px 0}}@media(max-width:640px){.wxRow{grid-template-columns:1fr;gap:4px}}@media(max-width:640px){.ofpGrid{grid-template-columns:1fr}.ofpLabel{margin-top:4px}.ofpValue{margin-bottom:4px}}footer{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:9px 14px calc(9px + env(safe-area-inset-bottom))}footer .shell{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -206,7 +206,7 @@
 
 .wxWindInline{font-weight:850;color:#25344b;white-space:nowrap}.wxWindSep{color:#98a2b3;font-weight:500;margin:0 5px}
 
-.minimaDialog{width:min(820px,96vw);max-height:90dvh;overflow:auto;border:1px solid var(--line);border-radius:18px;padding:22px;color:var(--text);background:var(--bg)}.minimaDialog::backdrop{background:#17203399}.minimaForm{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.minimaForm label{font-size:12px;font-weight:650;display:grid;gap:6px}.minimaWide{grid-column:1/-1}.minimaAirports button.active{background:var(--blue);color:#fff}body:has(#minimaDialog[open]){overflow:hidden}.wxMinima{font-size:12px;font-weight:650;color:var(--muted);margin-top:4px}.wxMinOk{color:var(--green);font-weight:850}.wxMinFail{color:var(--red);font-weight:850}@media(max-width:540px){.minimaForm{grid-template-columns:1fr}.minimaDialog{padding:16px}}
+.minimaDialog{width:min(820px,96vw);max-height:90dvh;overflow:auto;border:1px solid var(--line);border-radius:18px;padding:22px;color:var(--text);background:var(--bg)}.minimaDialog::backdrop{background:#17203399}.minimaForm{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.minimaForm label{font-size:12px;font-weight:650;display:grid;gap:6px}.minimaWide{grid-column:1/-1}.minimaAirports button.active{background:var(--blue);color:#fff}body:has(#minimaDialog[open]){overflow:hidden}.dgrTable{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}.dgrTable th,.dgrTable td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left;vertical-align:top}.dgrTable th{font-size:10px;color:var(--muted);text-transform:uppercase}.dgrBad{color:var(--red);font-weight:800}.dgrOk{color:var(--green);font-weight:800}.dgrWarn{color:var(--amber);font-weight:700}.wxMinima{font-size:12px;font-weight:650;color:var(--muted);margin-top:4px}.wxMinOk{color:var(--green);font-weight:850}.wxMinFail{color:var(--red);font-weight:850}@media(max-width:540px){.minimaForm{grid-template-columns:1fr}.minimaDialog{padding:16px}}
 </style>
 </head>
 <body>
@@ -255,13 +255,14 @@
 </section>
 <section id="resultView" class="hidden">
 <div class="resultTopbar"><button id="homeLogoButton" class="resultHomeLogo" type="button">Flight Brief</button><div class="resultMeta hidden"><h2 id="flightTitle">Flight review</h2><div id="flightSub" class="muted"></div><div id="overview" class="overview"></div></div><div class="row wrap resultActions"><button id="minimaReview" type="button">Minima</button><label class="upload">+ Add Docs<input id="moreUpload" type="file" accept=".pdf,application/pdf" multiple hidden></label></div></div>
-<div class="tabs"><button class="tab active" data-tab="ofp">OFP DETAIL</button><button class="tab" data-tab="wx">WEATHER</button><button class="tab" data-tab="notam">NOTAM</button><button class="tab" data-tab="wind">WIND</button></div>
+<div class="tabs"><button class="tab active" data-tab="ofp">OFP DETAIL</button><button class="tab" data-tab="wx">WEATHER</button><button class="tab" data-tab="notam">NOTAM</button><button class="tab" data-tab="wind">WIND</button><button class="tab" data-tab="dgr">DGR</button></div>
 <section id="tab-ofp" class="card"><div id="ofpResults" class="section"></div><div class="ofpMelMerged"><h3 id="melHeading">MEL / CDL</h3><div id="melResults" class="section" style="margin-top:8px"></div></div></section>
 <section id="tab-wx" class="card hidden"><div id="wxResults" class="section"></div></section>
 
 <section id="tab-notam" class="card hidden"><div class="notamPaper notamPaperFlush"><div id="notamResults" class="notamResults"></div></div></section>
 
 <section id="tab-wind" class="card hidden"><div id="windResults" class="section"></div></section>
+<section id="tab-dgr" class="card hidden"><form id="dgrForm" class="row" autocomplete="off"><input id="dgrUN" class="filter" inputmode="numeric" maxlength="7" placeholder="UN / ID number, e.g. 1845" aria-label="UN or ID number"><button type="submit" class="primary">Check</button></form><div id="dgrResults" class="section" style="margin-top:12px"></div></section>
 </section>
 </main>
 <dialog id="minimaDialog" class="minimaDialog">
@@ -4590,7 +4591,7 @@ function goHome(){
   $('#scanText').textContent='Reading…';
   $('#footer').textContent='No package loaded';
   document.querySelectorAll('.tab').forEach((x,i)=>x.classList.toggle('active',i===0));
-  ['ofp','wx','notam','wind'].forEach((t,i)=>$('#tab-'+t).classList.toggle('hidden',i!==0));
+  ['ofp','wx','notam','wind','dgr'].forEach((t,i)=>$('#tab-'+t).classList.toggle('hidden',i!==0));
   window.scrollTo(0,0);
   nativeHomeAction('home');
 }
@@ -4600,12 +4601,75 @@ document.querySelectorAll('.tab').forEach(b=>{
     const target=b.dataset.tab;
     document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
-    ['ofp','wx','notam','wind'].forEach(t=>{
+    ['ofp','wx','notam','wind','dgr'].forEach(t=>{
       const panel=$('#tab-'+t);
       if(panel)panel.classList.toggle('hidden',t!==target);
     });
   };
 });
+// DGR lookup: IATA DGR Blue Pages data lives only inside the iPad app (licensed
+// material, never in this public repo). The page asks the app for it once.
+let dgrData=null,dgrLoading=null;
+const dgrPending=new Map();
+window.flightBriefDgrReply=(id,result,error)=>{const p=dgrPending.get(id);if(!p)return;dgrPending.delete(id);error?p.reject(new Error(error)):p.resolve(result);};
+function dgrLoad(){
+  if(dgrData)return Promise.resolve(dgrData);
+  if(window.FLIGHT_BRIEF_DGR_VERSION!==1||!window.webkit?.messageHandlers?.nativeHome)return Promise.reject(new Error('DGR data is available only in the Flight Brief iPad app.'));
+  if(!dgrLoading)dgrLoading=new Promise((resolve,reject)=>{
+    const id=crypto.randomUUID();dgrPending.set(id,{resolve,reject});
+    window.webkit.messageHandlers.nativeHome.postMessage({action:'dgrData',id});
+  }).then(d=>dgrData=d).finally(()=>{dgrLoading=null;});
+  return dgrLoading;
+}
+// VNA operator variations (IATA DGR 2.8, VN-01…VN-12) that can be checked from the Blue Pages row.
+function dgrVnChecks(e,row){
+  const c=e.cls,out=[];
+  if(/^1(\.|[A-Z]|$)/.test(c))out.push(['bad','VN-05','Class 1 explosives not accepted']);
+  if(/^2\.1/.test(c))out.push(['bad','VN-06','Division 2.1 flammable gas not accepted (COMAT permitted)']);
+  if(/^2\.3/.test(c))out.push(['bad','VN-06','Division 2.3 toxic gas not accepted (COMAT permitted)']);
+  if(/^4\.3/.test(c))out.push(['bad','VN-07','Division 4.3 not accepted']);
+  if(/^7/.test(c))out.push(['bad','VN-09','Radioactive material not accepted']);
+  if(e.un==='2794')out.push(['bad','VN-08','Batteries, wet, filled with acid not accepted (COMAT permitted)']);
+  if(e.un==='2211'||/yeast/i.test(e.name))out.push(['bad','VN-10','Yeast active / polymeric beads expandable not accepted']);
+  if(row?.pg==='I')out.push(['bad','VN-04','Packing Group I not accepted']);
+  if(/^1(\.|[A-Z]|$)/.test(c)||e.un==='2807'||e.un==='1845')out.push(['warn','VN-11','Prior arrangement with the carrier required']);
+  return out;
+}
+function dgrErgText(code){
+  const m=String(code||'').match(/^(\d{1,2})([A-Za-z]*)$/);if(!m||!dgrData?.erg)return '';
+  const drill=dgrData.erg.drills[m[1]]||'',letters=[...m[2]].map(l=>`${l}: ${dgrData.erg.letters[l]||'?'}`).join(' · ');
+  return `Drill ${m[1]}: ${drill}${letters?' '+letters+'.':''}`;
+}
+function dgrCell(pi,max){return esc([pi,max].filter(Boolean).join(' / ')||'—');}
+function renderDgr(un){
+  const host=$('#dgrResults'),hits=dgrData.entries.filter(e=>e.un===un);
+  if(!hits.length){host.innerHTML=`<div class="item warn"><strong>UN ${esc(un)}</strong><div class="body">Not found in the Blue Pages data. Check DGR 4.3 (numerical list).</div></div>`;return;}
+  host.innerHTML=hits.map(e=>{
+    const rows=e.rows.length?e.rows:[{}];
+    const checks=[...new Map(rows.flatMap(r=>dgrVnChecks(e,r)).map(x=>[x[1]+x[2],x])).values()];
+    const forbidden=rows.every(r=>r.pax_pi==='Forbidden'&&r.cao_pi==='Forbidden');
+    const ergs=[...new Set(rows.map(r=>r.erg).filter(Boolean))];
+    const paxForbidden=rows.every(r=>r.pax_pi==='Forbidden');
+    const status=forbidden?'<span class="dgrBad">FORBIDDEN (PAX &amp; CAO)</span>':checks.some(x=>x[0]==='bad')?'<span class="dgrBad">NOT ACCEPTED ON VNA</span>':paxForbidden?'<span class="dgrWarn">CAO ONLY — forbidden on passenger aircraft</span>':'<span class="dgrOk">NO VNA RESTRICTION FOUND</span>';
+    return `<div class="item ${forbidden||checks.some(x=>x[0]==='bad')?'fail':'info'}">`+
+      `<div class="itemhead"><div><strong>UN ${esc(e.un)} · ${esc(e.name||'(name not read)')}</strong><div class="muted">Class ${esc(e.cls||'?')}${e.labels?' · '+esc(e.labels):''} · DGR p.${e.page}</div></div><div>${status}</div></div>`+
+      (e.warn?`<div class="dgrWarn" style="margin-top:6px">⚠ Some fields could not be read reliably — check DGR p.${e.page}.</div>`:'')+
+      `<table class="dgrTable"><tr><th>PG</th><th>EQ</th><th>Ltd Qty (G/H)</th><th>PAX (I/J)</th><th>CAO (K/L)</th><th>ERG</th></tr>`+
+      rows.map(r=>`<tr><td>${esc(r.pg||'—')}</td><td>${esc(r.eq||'—')}</td><td>${dgrCell(r.lq_pi,r.lq_max)}</td><td>${dgrCell(r.pax_pi,r.pax_max)}</td><td>${dgrCell(r.cao_pi,r.cao_max)}</td><td>${esc(r.erg||'—')}</td></tr>`).join('')+
+      `</table>`+
+      `<div class="body"><b>Special provisions (M):</b> ${esc(e.sp.join(', ')||'None')} — see DGR 4.4</div>`+
+      ergs.map(g=>`<div class="body"><b>ERG ${esc(g)}:</b> ${esc(dgrErgText(g))}</div>`).join('')+
+      `<div class="body"><b>VNA operator variations:</b> ${checks.length?checks.map(x=>`<span class="${x[0]==='bad'?'dgrBad':'dgrWarn'}">${esc(x[1])}</span> ${esc(x[2])}`).join('<br>'):'None of VN-04…VN-11 applies to this entry'}<br><span class="muted">Also: VN-02 excepted quantities not accepted · VN-12 consolidations restricted.</span></div>`+
+    `</div>`;
+  }).join('')+`<p class="muted">Source: ${esc(dgrData.source)}; ERG: ${esc(dgrData.ergSource)}. Always verify against the DGR and the NOTOC.</p>`;
+}
+$('#dgrForm').onsubmit=async e=>{
+  e.preventDefault();
+  const un=$('#dgrUN').value.replace(/\D/g,'').padStart(4,'0').slice(-4);
+  if(!/^\d{4}$/.test(un)||un==='0000'){$('#dgrResults').innerHTML='<div class="muted">Enter a 4-digit UN or ID number.</div>';return;}
+  try{await dgrLoad();renderDgr(un);}
+  catch(error){$('#dgrResults').innerHTML=`<div class="item warn"><div class="body">${esc(error.message)}</div></div>`;}
+};
 // Approach minima are entered manually from Lido (CAT C) and checked against
 // the FOM-applicable TAF groups in each airport's WEATHER window.
 const MINIMA_RANK={'CAT III':1,'CAT II':2,'CAT I':3,'NPA':4,'Circling':5};
