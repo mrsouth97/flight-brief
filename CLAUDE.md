@@ -48,6 +48,11 @@ Bối cảnh project cho Claude Code (chuyển từ ChatGPT/Codex ngày 23/09/20
 - FOM Rev 19 (18/06/2026) đã đối chiếu: 8.1.2/P10, P22 sửa không ảnh hưởng minima.
 - Tài liệu hãng (FOM, SOP, EDTO manual, FCOM/MEL A350, LIDO GENPART, ICAO…) nằm trên **Google Drive** của người dùng, thư mục "Tài Liệu" (connector Google Drive). Lấy logic từ đó, ghi rõ mục tham chiếu; không chép tài liệu vào repo.
 
+## DGR (V6.04)
+- Tab **DGR** trong màn hình chuyến bay: gõ UN/ID number → hiện dòng Blue Pages (class, labels, PG, EQ, Ltd Qty, PAX, CAO, SP, ERG + nghĩa theo ICAO Doc 9481), trạng thái FORBIDDEN / NOT ACCEPTED ON VNA / CAO ONLY / NO VNA RESTRICTION, và kiểm tra Operator Variations VN-04…VN-11 (DGR 2.8). Người dùng chọn phạm vi "chỉ tra UN", không làm checklist NOTOC đầy đủ.
+- Dữ liệu IATA DGR có bản quyền → **chỉ nằm trong app iPad**: `FlightBrief/Resources/dgr.json` (bridge `dgrData`, `window.FLIGHT_BRIEF_DGR_VERSION`). Tuyệt đối không đưa dữ liệu DGR vào `index.html`/GitHub (repo công khai).
+- Nguồn: `~/Downloads/DANGEROUS GOODS REGULATIONS.pdf` (67th ed. 2026, OCR scan). Script tách: `~/Downloads/FlightBriefNativeRemote/tools/dgr/`. ~11% mục có cờ ⚠ (đọc OCR chưa chắc) → app nhắc kiểm tra trang DGR. Mỗi năm có DGR mới: chạy lại script, build & cài app.
+
 ## Cách làm việc người dùng muốn
 - Nói tiếng Việt, yêu cầu tự nhiên, không cần prompt kỹ thuật.
 - Thay đổi tối thiểu, không sửa phần không liên quan.
