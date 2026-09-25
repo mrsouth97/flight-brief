@@ -45,7 +45,7 @@ Bối cảnh project cho Claude Code (chuyển từ ChatGPT/Codex ngày 23/09/20
 - DEST: approach thấp nhất trên runway OFP (Cat II/III nếu có). Precision chỉ so RVR; NPA/circling thêm ceiling.
 - ALTN/ERA: dùng approach **cao nhất** đã nhập (circling chỉ khi không có straight-in). Bảng FOM 8.1.2-7: CAT II/III → RVR CAT I; CAT I → VIS NPA + CIG ≥ MDH; NPA → +1000 m / +200 ft; Circling → circling.
 - EDTO ERA (FOM 8.5.1) và sân Mỹ (8.1.2-8): +400 ft / +1600 m trên approach cao nhất. EDTO: TEMPO/PROB chỉ so với landing minima.
-- Tài liệu hãng (FOM, SOP) người dùng sẽ để ngoài repo — không commit lên GitHub.
+- Tài liệu hãng (FOM, SOP, EDTO manual, FCOM/MEL A350, LIDO GENPART, ICAO…) nằm trên **Google Drive** của người dùng, thư mục "Tài Liệu" (connector Google Drive). Lấy logic từ đó, ghi rõ mục tham chiếu; không chép tài liệu vào repo.
 
 ## Cách làm việc người dùng muốn
 - Nói tiếng Việt, yêu cầu tự nhiên, không cần prompt kỹ thuật.
