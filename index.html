@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
-<meta name="flight-brief-version" content="6.05">
-<title>Flight Brief V6.05</title>
+<meta name="flight-brief-version" content="6.06">
+<title>Flight Brief V6.06</title>
 <style>
 :root{--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#6f7b90;--line:#dde5ef;--blue:#0b5cff;--blue2:#eaf1ff;--green:#137a46;--green2:#e8f6ee;--amber:#9a6700;--amber2:#fff5d8;--red:#b8322a;--red2:#fdeceb;--purple:#6541c1;--purple2:#f1ecff}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top)) 14px 10px}.shell{max-width:1180px;margin:auto}.brand{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand h1{font-size:19px;margin:0}.sub,.muted{font-size:12px;color:var(--muted)}main{max-width:1180px;margin:auto;padding:16px 14px calc(88px + env(safe-area-inset-bottom))}.hero{padding:22px;border-radius:18px;background:linear-gradient(145deg,#0b5cff,#3d74ff);color:#fff;margin-bottom:14px;box-shadow:0 8px 28px rgba(11,92,255,.18)}.hero h2{font-size:24px;margin:0 0 8px}.hero p{margin:0;color:#ebf1ff;line-height:1.45;font-size:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 5px 20px rgba(25,45,75,.05)}h2{font-size:18px;margin:0 0 5px}h3{font-size:15px;margin:0}.row{display:flex;align-items:center;gap:10px}.between{justify-content:space-between}.wrap{flex-wrap:wrap}button,label.upload{border:0;border-radius:12px;padding:11px 14px;font-size:14px;font-weight:700;cursor:pointer;background:var(--blue2);color:#184aa4}.primary{background:var(--blue)!important;color:#fff!important}.ghost{background:#eef2f6!important;color:#4f5a6c!important}.danger{background:var(--red2)!important;color:var(--red)!important}.drop{border:2px dashed #b8c7da;border-radius:16px;background:#fafcff;padding:30px 14px;text-align:center;margin-top:14px}.progress{height:9px;background:#e8edf4;border-radius:99px;overflow:hidden;margin-top:8px}.bar{height:100%;background:var(--blue);width:0;transition:.2s}.hidden{display:none!important}.tabs{display:flex;gap:8px;overflow:auto;margin:14px 0}.tab{white-space:nowrap}.tab.active{background:var(--blue)!important;color:#fff!important}.overview{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:14px}@media(min-width:800px){.overview{grid-template-columns:repeat(6,1fr)}}.kv{border:1px solid var(--line);border-radius:13px;padding:10px;background:#fbfcfe}.kv label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:5px}.kv strong{font-size:14px;word-break:break-word}.section{display:grid;gap:10px}.item{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}.item.pass{border-left:5px solid var(--green)}.item.warn{border-left:5px solid var(--amber)}.item.fail{border-left:5px solid var(--red)}.item.info{border-left:5px solid var(--blue)}.item.review{border-left:5px solid var(--purple)}.itemhead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.badge{display:inline-block;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:800;white-space:nowrap}.badge.pass{background:var(--green2);color:var(--green)}.badge.warn{background:var(--amber2);color:var(--amber)}.badge.fail{background:var(--red2);color:var(--red)}.badge.info{background:var(--blue2);color:var(--blue)}.badge.review{background:var(--purple2);color:var(--purple)}.body{font-size:13px;line-height:1.45;color:#445064;margin-top:8px}.source{font-size:11px;color:var(--muted);margin-top:8px}.raw{white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;background:#f7f9fc;border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px;max-height:260px;overflow:auto}.docs{display:grid;gap:8px;margin-top:12px}.doc{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:11px}.docname{font-weight:700;word-break:break-word}.pill{display:inline-block;padding:4px 7px;border-radius:999px;background:#eef2f7;color:#566174;font-size:10px;font-weight:700;margin-top:5px}.timeline{display:flex;overflow:auto;gap:9px;padding-bottom:4px;margin-top:12px}.timebox{min-width:190px;border:1px solid var(--line);border-radius:13px;padding:10px;background:#fbfcfe}.timebox strong{display:block;font-size:13px}.timebox span{font-size:11px;color:var(--muted)}.note{font-size:12px;background:#fff9e9;border:1px solid #efdda6;color:#77560e;border-radius:12px;padding:10px;line-height:1.4;margin-top:12px}.grid2{display:grid;grid-template-columns:1fr;gap:12px}@media(min-width:900px){.grid2{grid-template-columns:.9fr 1.1fr}}.filter{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:11px;font-size:14px;background:#fff}.groupTitle{margin:18px 2px 7px;font-size:14px;font-weight:850;color:#25344b;border-bottom:1px solid var(--line);padding-bottom:7px}.groupSub{font-size:11px;color:var(--muted);font-weight:500;margin-left:6px}.ofpCard{border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px 16px}.ofpGrid{display:grid;grid-template-columns:150px 1fr;gap:9px 14px;align-items:start}.ofpLabel{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}.ofpValue{font-size:14px;font-weight:700;color:#172033;min-width:0;word-break:break-word}.ofpRwy.pass{color:var(--green)}.ofpRwy.warn{color:#9a6500}.ofpRwy.review{color:var(--purple)}.wxCard{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}.wxRow{display:grid;grid-template-columns:180px 1fr;gap:14px;padding:12px 16px;border-bottom:1px solid var(--line);align-items:start}.wxRow:last-child{border-bottom:0}.wxAirport{font-size:13px;font-weight:850;color:#25344b}.wxValue{font-size:14px;font-weight:700;color:#172033;word-break:break-word}.wxUseTime{font-size:10px;font-weight:650;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}.wxValue.warn{color:#9a6500}.wxValue.review{color:var(--purple)}.wxVisGood{color:var(--green);font-weight:850}.wxVisLow{color:var(--amber);font-weight:850}.wxVisBad{color:var(--red);font-weight:850}.wxGroup{padding:12px 16px;border-bottom:1px solid var(--line)}.wxGroup:last-child{border-bottom:0}.wxGroupTitle{font-size:13px;font-weight:900;color:#25344b;margin-bottom:6px}.wxGroupItem{display:grid;grid-template-columns:180px minmax(0,1fr);gap:14px;padding:5px 0;align-items:start}.wxGroupCode{font-size:13px;font-weight:850;color:#25344b;white-space:normal;overflow-wrap:anywhere}.wxGroupItem .wxValue{min-width:0}@media(max-width:640px){.wxGroupItem{grid-template-columns:1fr;gap:2px;padding:7px 0}}@media(max-width:640px){.wxRow{grid-template-columns:1fr;gap:4px}}@media(max-width:640px){.ofpGrid{grid-template-columns:1fr}.ofpLabel{margin-top:4px}.ofpValue{margin-bottom:4px}}footer{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:9px 14px calc(9px + env(safe-area-inset-bottom))}footer .shell{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -206,7 +206,7 @@
 
 .wxWindInline{font-weight:850;color:#25344b;white-space:nowrap}.wxWindSep{color:#98a2b3;font-weight:500;margin:0 5px}
 
-.minimaDialog{width:min(820px,96vw);max-height:90dvh;overflow:auto;border:1px solid var(--line);border-radius:18px;padding:22px;color:var(--text);background:var(--bg)}.minimaDialog::backdrop{background:#17203399}.minimaForm{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.minimaForm label{font-size:12px;font-weight:650;display:grid;gap:6px}.minimaWide{grid-column:1/-1}.minimaAirports button.active{background:var(--blue);color:#fff}body:has(#minimaDialog[open]){overflow:hidden}.dgrTable{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}.dgrTable th,.dgrTable td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left;vertical-align:top}.dgrTable th{font-size:10px;color:var(--muted);text-transform:uppercase}.dgrBad{color:var(--red);font-weight:800}.dgrOk{color:var(--green);font-weight:800}.dgrWarn{color:var(--amber);font-weight:700}.wxMinima{font-size:12px;font-weight:650;color:var(--muted);margin-top:4px}.wxMinOk{color:var(--green);font-weight:850}.wxMinFail{color:var(--red);font-weight:850}@media(max-width:540px){.minimaForm{grid-template-columns:1fr}.minimaDialog{padding:16px}}
+.minimaDialog{width:min(820px,96vw);max-height:90dvh;overflow:auto;border:1px solid var(--line);border-radius:18px;padding:22px;color:var(--text);background:var(--bg)}.minimaDialog::backdrop{background:#17203399}.minimaForm{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.minimaForm label{font-size:12px;font-weight:650;display:grid;gap:6px}.minimaWide{grid-column:1/-1}.minimaAirports button.active{background:var(--blue);color:#fff}body:has(#minimaDialog[open]){overflow:hidden}.dgrGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:8px}.dgrGrid label{font-size:11px;font-weight:650;color:var(--muted);display:grid;gap:4px}.dgrGrid input{padding:8px}@media(max-width:700px){.dgrGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}.dgrItem summary{cursor:pointer;color:var(--blue);font-weight:700;margin-top:8px}.dgrTable{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}.dgrTable th,.dgrTable td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left;vertical-align:top}.dgrTable th{font-size:10px;color:var(--muted);text-transform:uppercase}.dgrBad{color:var(--red);font-weight:800}.dgrOk{color:var(--green);font-weight:800}.dgrWarn{color:var(--amber);font-weight:700}.wxMinima{font-size:12px;font-weight:650;color:var(--muted);margin-top:4px}.wxMinOk{color:var(--green);font-weight:850}.wxMinFail{color:var(--red);font-weight:850}@media(max-width:540px){.minimaForm{grid-template-columns:1fr}.minimaDialog{padding:16px}}
 </style>
 </head>
 <body>
@@ -262,7 +262,7 @@
 <section id="tab-notam" class="card hidden"><div class="notamPaper notamPaperFlush"><div id="notamResults" class="notamResults"></div></div></section>
 
 <section id="tab-wind" class="card hidden"><div id="windResults" class="section"></div></section>
-<section id="tab-dgr" class="card hidden"><form id="dgrForm" class="row" autocomplete="off"><input id="dgrUN" class="filter" inputmode="numeric" maxlength="7" placeholder="UN / ID number, e.g. 1845" aria-label="UN or ID number"><button type="submit" class="primary">Check</button></form><div id="dgrResults" class="section" style="margin-top:12px"></div></section>
+<section id="tab-dgr" class="card hidden"><div id="dgrHeader" class="item info"></div><div id="dgrItems" class="section" style="margin-top:10px"></div><button id="dgrAdd" type="button" style="margin-top:10px">+ Add DG</button><div id="dgrResults" class="section" style="margin-top:12px"></div></section>
 </section>
 </main>
 <dialog id="minimaDialog" class="minimaDialog">
@@ -4592,6 +4592,7 @@ function goHome(){
   $('#footer').textContent='No package loaded';
   document.querySelectorAll('.tab').forEach((x,i)=>x.classList.toggle('active',i===0));
   ['ofp','wx','notam','wind','dgr'].forEach((t,i)=>$('#tab-'+t).classList.toggle('hidden',i!==0));
+  dgrItems=[];dgrHeaderOk=false;dgrSegOk={};
   window.scrollTo(0,0);
   nativeHomeAction('home');
 }
@@ -4643,35 +4644,173 @@ function dgrErgText(code){
   return `Drill ${m[1]}: ${drill}${letters?' '+letters+'.':''}`;
 }
 function dgrCell(pi,max){return esc([pi,max].filter(Boolean).join(' / ')||'—');}
-function renderDgr(un){
-  const host=$('#dgrResults'),hits=dgrData.entries.filter(e=>e.un===un);
-  if(!hits.length){host.innerHTML=`<div class="item warn"><strong>UN ${esc(un)}</strong><div class="body">Not found in the Blue Pages data. Check DGR 4.3 (numerical list).</div></div>`;return;}
-  host.innerHTML=hits.map(e=>{
-    const rows=e.rows.length?e.rows:[{}];
-    const checks=[...new Map(rows.flatMap(r=>dgrVnChecks(e,r)).map(x=>[x[1]+x[2],x])).values()];
-    const forbidden=rows.every(r=>r.pax_pi==='Forbidden'&&r.cao_pi==='Forbidden');
-    const ergs=[...new Set(rows.map(r=>r.erg).filter(Boolean))];
-    const paxForbidden=rows.every(r=>r.pax_pi==='Forbidden');
-    const status=forbidden?'<span class="dgrBad">FORBIDDEN (PAX &amp; CAO)</span>':checks.some(x=>x[0]==='bad')?'<span class="dgrBad">NOT ACCEPTED ON VNA</span>':paxForbidden?'<span class="dgrWarn">CAO ONLY — forbidden on passenger aircraft</span>':'<span class="dgrOk">NO VNA RESTRICTION FOUND</span>';
-    return `<div class="item ${forbidden||checks.some(x=>x[0]==='bad')?'fail':'info'}">`+
-      `<div class="itemhead"><div><strong>UN ${esc(e.un)} · ${esc(e.name||'(name not read)')}</strong><div class="muted">Class ${esc(e.cls||'?')}${e.labels?' · '+esc(e.labels):''} · DGR p.${e.page}</div></div><div>${status}</div></div>`+
-      (e.warn?`<div class="dgrWarn" style="margin-top:6px">⚠ Some fields could not be read reliably — check DGR p.${e.page}.</div>`:'')+
-      `<table class="dgrTable"><tr><th>PG</th><th>EQ</th><th>Ltd Qty (G/H)</th><th>PAX (I/J)</th><th>CAO (K/L)</th><th>ERG</th></tr>`+
-      rows.map(r=>`<tr><td>${esc(r.pg||'—')}</td><td>${esc(r.eq||'—')}</td><td>${dgrCell(r.lq_pi,r.lq_max)}</td><td>${dgrCell(r.pax_pi,r.pax_max)}</td><td>${dgrCell(r.cao_pi,r.cao_max)}</td><td>${esc(r.erg||'—')}</td></tr>`).join('')+
-      `</table>`+
-      `<div class="body"><b>Special provisions (M):</b> ${esc(e.sp.join(', ')||'None')} — see DGR 4.4</div>`+
-      ergs.map(g=>`<div class="body"><b>ERG ${esc(g)}:</b> ${esc(dgrErgText(g))}</div>`).join('')+
-      `<div class="body"><b>VNA limitations (DGM 2.5.8 / DGR 2.8 VN):</b> ${checks.length?checks.map(x=>`<span class="${x[0]==='bad'?'dgrBad':'dgrWarn'}">${esc(x[1])}</span> ${esc(x[2])}`).join('<br>'):'None applies to this entry'}<br><span class="muted">Also: VN-02 excepted quantities not accepted · VN-12 consolidations restricted.</span></div>`+
-    `</div>`;
-  }).join('')+`<p class="muted">Source: ${esc(dgrData.source)}; ERG: ${esc(dgrData.ergSource)}. Always verify against the DGR and the NOTOC.</p>`;
+// NOTOC check following FCD 919 DG Transportation Guide (R02): one row per DG on the NOTOC.
+let dgrItems=[],dgrHeaderOk=false,dgrSegOk={};
+const DGR_FIELDS=[['un','UN / ID','1845'],['cls','Class (sub)','3(8)'],['pg','PG','II'],['pi','Packing Inst.','Y341'],['qty','Net qty','25 kg'],['pkgs','No. of pkgs','1'],['erg','ERG','9L'],['uld','ULD ID','AKE12345VN'],['pos','Position','41L']];
+// DGR Table 9.3.A: pairs that must be segregated ('LI' = UN3480/3090/3551, 9.3.2.1.3).
+const DGR_SEG=new Set(['2.1|LI','3|5.1','3|LI','4.1|LI','4.2|5.1','4.3|8','5.1|LI']);
+function dgrParseClass(t){
+  const u=String(t||'').toUpperCase().replace(/\s+/g,'').replace(/[\/;]/g,',').replace(/-(\d)/g,'.$1');
+  const m=u.match(/^([0-9.]+[A-Z]?)(?:\(([0-9.,]+)\)|,([0-9.,]+))?/);
+  if(!m)return null;
+  return {primary:m[1],subs:(m[2]||m[3]||'').split(',').filter(Boolean).sort()};
 }
-$('#dgrForm').onsubmit=async e=>{
-  e.preventDefault();
-  const un=$('#dgrUN').value.replace(/\D/g,'').padStart(4,'0').slice(-4);
-  if(!/^\d{4}$/.test(un)||un==='0000'){$('#dgrResults').innerHTML='<div class="muted">Enter a 4-digit UN or ID number.</div>';return;}
-  try{await dgrLoad();renderDgr(un);}
-  catch(error){$('#dgrResults').innerHTML=`<div class="item warn"><div class="body">${esc(error.message)}</div></div>`;}
-};
+function dgrSegGroups(cls,un){
+  const c=dgrParseClass(cls),out=new Set();if(!c)return out;
+  for(const x of [c.primary,...c.subs]){
+    if(/^1/.test(x)){if(!/^1\.4S$/.test(x))out.add('1');}
+    else if(/^2\.1/.test(x))out.add('2.1');
+    else if(/^2\.[23]/.test(x))out.add('2.2');
+    else if(/^(3|4\.1|4\.2|4\.3|5\.1|5\.2|8)$/.test(x))out.add(x);
+  }
+  if(['3480','3090','3551'].includes(un))out.add('LI');
+  return out;
+}
+function dgrIncompatible(a,b){
+  if(a.un&&a.un===b.un)return false; // 9.3.2.1.2 same UN number
+  for(const x of a.groups)for(const y of b.groups){
+    if(x==='1'||y==='1')return true;
+    if(DGR_SEG.has(x+'|'+y)||DGR_SEG.has(y+'|'+x))return true;
+  }
+  return false;
+}
+function dgrQty(t){
+  const m=String(t||'').replace(',','.').match(/([\d.]+)\s*(kg|g|l|ml)\b/i);if(!m)return null;
+  const u=m[2].toLowerCase(),v=Number(m[1]);
+  return u==='kg'?{v,d:'mass'}:u==='g'?{v:v/1000,d:'mass'}:u==='l'?{v,d:'vol'}:{v:v/1000,d:'vol'};
+}
+function dgrFindEntry(it){
+  const hits=(dgrData?.entries||[]).filter(e=>e.un===it.un);
+  if(!hits.length)return null;
+  const nc=dgrParseClass(it.cls);
+  const byCls=nc?hits.filter(e=>{const c=dgrParseClass(e.cls);return c&&c.primary===nc.primary&&c.subs.join()===nc.subs.join();}):[];
+  const pool=byCls.length?byCls:hits;
+  const pg=String(it.pg||'').toUpperCase();
+  return pool.find(e=>e.rows.some(r=>r.pg===pg))||pool.find(e=>e.rows.some(r=>!r.pg))||pool[0];
+}
+// Steps 2–6 for one DG row.
+function dgrEvaluate(it){
+  const res={issues:[],notes:[],entry:null,row:null,step:''};
+  const un=String(it.un||'').replace(/\D/g,'').padStart(4,'0').slice(-4);it.un=un;
+  const e=dgrFindEntry(it);res.entry=e;
+  if(!e){res.issues.push(['2','UN '+un+' not found in Blue Pages data — check DGR 4.3 manually']);res.review=true;return res;}
+  const pg=String(it.pg||'').toUpperCase().replace(/[^I]/g,'');
+  const row=e.rows.find(r=>r.pg===pg)||(e.rows.length===1?e.rows[0]:null);res.row=row;
+  if(e.warn){res.notes.push(`Some Blue Pages fields could not be read reliably — check DGR p.${e.page}`);res.review=true;}
+  // Step 2 — Class / sub risk (C), PG (E), net qty (H or J), ERG (N).
+  const d=[],nc=dgrParseClass(it.cls),ec=dgrParseClass(e.cls);
+  // Blue Pages fields that could not be read are a CHECK, never a reason to reject.
+  const unread=x=>{res.notes.push(`${x} — check DGR p.${e.page}`);res.review=true;};
+  if(!ec)unread('Class not read from Blue Pages');
+  if(!nc)d.push('Class not entered');
+  else if(ec&&(nc.primary!==ec.primary||nc.subs.join()!==ec.subs.join()))d.push(`Class ${it.cls} ≠ Blue Pages ${e.cls} (C)`);
+  if(!row)d.push(`PG ${it.pg||'—'} not listed for UN ${un} (E)`);
+  else if((row.pg||'')!==pg)d.push(`PG ${it.pg||'—'} ≠ Blue Pages ${row.pg||'—'} (E)`);
+  if(row&&!row.lq_pi&&!row.pax_pi&&!row.cao_pi){unread('Quantity limits not read from Blue Pages');}
+  else if(row){
+    const lq=/^Y/i.test(String(it.pi||'').trim()),col=lq?'H':'J',lim=lq?row.lq_max:row.pax_max,pi=lq?row.lq_pi:row.pax_pi;
+    const q=dgrQty(it.qty),pk=Math.max(1,Number(it.pkgs)||1);
+    if(pi==='Forbidden'||lim==='Forbidden')d.push(`${lq?'Limited quantity':'Passenger aircraft'} Forbidden (${lq?'G/H':'I/J'})`);
+    else if(!q)d.push('Net qty not entered (e.g. 25 kg)');
+    else if(/No limit/i.test(lim)){}
+    else{
+      const L=dgrQty(lim);
+      if(!L)unread(`Limit in column ${col} not read ("${lim||'—'}")`);
+      else if(L.d!==q.d)d.push(`Net qty unit (${it.qty}) differs from limit ${lim} (${col})`);
+      else if(q.v/pk>L.v+1e-9)d.push(`Net qty per package ${(q.v/pk).toFixed(2).replace(/\.?0+$/,'')} ${q.d==='mass'?'kg':'L'} > max ${lim} (${col})`);
+    }
+    if(!row.erg)unread('ERG code not read from Blue Pages');
+    else if(String(it.erg||'').toUpperCase()!==String(row.erg||'').toUpperCase())d.push(`ERG ${it.erg||'—'} ≠ Blue Pages ${row.erg||'—'} (N)`);
+  }
+  // Steps 3–4 — a Special Provision may allow the discrepancy.
+  if(d.length){
+    if(!it.spOk)for(const x of d)res.issues.push(['2–4',x+(e.sp.length?` · SP ${e.sp.join(', ')} (DGR 4.4)`:' · no SP listed')]);
+    else res.notes.push('Discrepancy accepted under SP (step 4): '+d.join('; '));
+  }
+  res.discrepancy=d;
+  // Step 5 — VNA limitations (DGM 2.5.8).
+  for(const x of dgrVnChecks(e,row)){if(x[0]==='bad')res.issues.push(['5',`${x[1]}: ${x[2]}`]);else res.notes.push(`${x[1]}: ${x[2]}`);}
+  // Step 6 — DG must be contained in a ULD (DGM 2.5.10.1).
+  if(!String(it.uld||'').trim())res.issues.push(['6','Not contained in a ULD (DGM 2.5.10.1)']);
+  return res;
+}
+function dgrRenderHeader(){
+  const o=analysis?.o||{};
+  const rows=[['Station of loading',o.dep],['Flight N°',o.flight],['Date',o.dof],['Aircraft reg',o.reg],['Station of unloading',o.dest]];
+  $('#dgrHeader').innerHTML=`<strong>Step 1 · NOTOC header</strong><div class="body">${rows.map(([k,v])=>`${esc(k)}: <b>${esc(v||'—')}</b>`).join(' · ')}</div>`+
+    `<label class="body" style="display:flex;gap:8px;align-items:center"><input id="dgrHdrOk" type="checkbox"${dgrHeaderOk?' checked':''}> NOTOC header matches this flight (DGM Appendix 01 &amp; 02)</label>`;
+  $('#dgrHdrOk').onchange=e=>{dgrHeaderOk=e.target.checked;dgrRenderResult();};
+}
+function dgrRenderItems(){
+  const host=$('#dgrItems');host.innerHTML='';
+  dgrItems.forEach((it,i)=>{
+    const card=document.createElement('div');card.className='item dgrItem';
+    card.innerHTML=`<div class="itemhead"><strong>DG ${i+1}</strong><button type="button" class="danger" data-rm>Remove</button></div>`+
+      `<div class="dgrGrid">${DGR_FIELDS.map(([k,l,ph])=>`<label>${esc(l)}<input class="filter" data-k="${k}" value="${esc(it[k]||'')}" placeholder="${esc(ph)}" autocomplete="off" autocapitalize="characters"></label>`).join('')}</div>`+
+      `<label class="body dgrSp" style="display:none;gap:8px;align-items:center"><input type="checkbox" data-sp${it.spOk?' checked':''}> Special Provision allows the discrepancy (step 4, DGR 4.4)</label>`+
+      `<div class="dgrOut"></div><details><summary>Blue Pages</summary><div class="dgrBlue"></div></details>`;
+    card.querySelectorAll('input[data-k]').forEach(inp=>inp.oninput=()=>{it[inp.dataset.k]=inp.value.trim();dgrRenderResult();});
+    card.querySelector('[data-sp]').onchange=e=>{it.spOk=e.target.checked;dgrRenderResult();};
+    card.querySelector('[data-rm]').onclick=()=>{dgrItems.splice(i,1);dgrRenderItems();dgrRenderResult();};
+    host.append(card);
+  });
+}
+function dgrBlueHtml(e){
+  if(!e)return '<div class="muted">Not found.</div>';
+  return `<div class="muted">UN ${esc(e.un)} · ${esc(e.name)} · Class ${esc(e.cls)}${e.labels?' · '+esc(e.labels):''} · DGR p.${e.page}</div>`+
+    `<table class="dgrTable"><tr><th>PG</th><th>EQ</th><th>Ltd Qty (G/H)</th><th>PAX (I/J)</th><th>CAO (K/L)</th><th>ERG</th></tr>`+
+    (e.rows.length?e.rows:[{}]).map(r=>`<tr><td>${esc(r.pg||'—')}</td><td>${esc(r.eq||'—')}</td><td>${dgrCell(r.lq_pi,r.lq_max)}</td><td>${dgrCell(r.pax_pi,r.pax_max)}</td><td>${dgrCell(r.cao_pi,r.cao_max)}</td><td>${esc(r.erg||'—')}</td></tr>`).join('')+
+    `</table><div class="body">SP (M): ${esc(e.sp.join(', ')||'None')}</div>`;
+}
+function dgrRenderResult(){
+  if(!dgrData)return;
+  const cards=[...$('#dgrItems').children],evals=[],reject=[],review=[];
+  if(!dgrHeaderOk)reject.push('Step 1: NOTOC header not confirmed');
+  dgrItems.forEach((it,i)=>{
+    const r=dgrEvaluate(it);evals.push(r);const card=cards[i];if(!card)return;
+    card.querySelector('.dgrSp').style.display=r.discrepancy?.length?'flex':'none';
+    card.querySelector('.dgrBlue').innerHTML=dgrBlueHtml(r.entry);
+    const head=r.entry?`<b>${esc(r.entry.name)}</b> · ${esc(r.entry.cls)}${r.row?.pax_pi==='Forbidden'&&r.row?.cao_pi&&r.row.cao_pi!=='Forbidden'?' · <span class="dgrWarn">CAO only</span>':''}`:'';
+    card.className='item dgrItem '+(r.issues.length?'fail':r.review?'warn':'pass');
+    card.querySelector('.dgrOut').innerHTML=`<div class="body">${head}</div>`+
+      r.issues.map(x=>`<div class="body dgrBad">Step ${esc(x[0])}: ${esc(x[1])}</div>`).join('')+
+      r.notes.map(x=>`<div class="body dgrWarn">${esc(x)}</div>`).join('')+
+      (!r.issues.length&&!r.review?'<div class="body dgrOk">Steps 2–6 OK</div>':'');
+    r.issues.forEach(x=>reject.push(`DG ${i+1} (UN ${it.un}) step ${x[0]}: ${x[1]}`));
+    if(r.review&&!r.issues.length)review.push(`DG ${i+1} (UN ${it.un}): verify in DGR`);
+  });
+  // Steps 7–8 — DGs in the same position, DGR Table 9.3.A.
+  const byPos={},segHtml=[];
+  dgrItems.forEach((it,i)=>{const p=String(it.pos||'').toUpperCase().trim();if(p)(byPos[p]=byPos[p]||[]).push({i,un:it.un,groups:dgrSegGroups(evals[i].entry?.cls||it.cls,it.un)});});
+  for(const [pos,list] of Object.entries(byPos)){
+    if(list.length<2)continue;
+    const pairs=[];
+    for(let a=0;a<list.length;a++)for(let b=a+1;b<list.length;b++)if(dgrIncompatible(list[a],list[b]))pairs.push(`DG ${list[a].i+1} & DG ${list[b].i+1}`);
+    if(!pairs.length){segHtml.push(`<div class="body">Position ${esc(pos)}: ${list.length} DGs, compatible (Table 9.3.A)</div>`);continue;}
+    segHtml.push(`<div class="body dgrWarn">Position ${esc(pos)}: incompatible ${esc(pairs.join(', '))} (Table 9.3.A)</div><label class="body" style="display:flex;gap:8px;align-items:center"><input type="checkbox" data-seg="${esc(pos)}"${dgrSegOk[pos]?' checked':''}> PIC confirmed segregation with ground staff (step 8)</label>`);
+    if(!dgrSegOk[pos])reject.push(`Step 8: incompatible DGs in position ${pos} not segregated`);
+  }
+  // Step 9.
+  const ergs=[...new Set(evals.map(r=>r.row?.erg).filter(Boolean))];
+  const verdict=!dgrItems.length?'':reject.length?'<span class="dgrBad">REJECT NOTOC</span>':review.length?'<span class="dgrWarn">CHECK — verify flagged items in DGR</span>':'<span class="dgrOk">ACCEPT NOTOC</span>';
+  $('#dgrResults').innerHTML=!dgrItems.length?'<div class="muted">Add each DG listed on the NOTOC.</div>':
+    `<div class="item ${reject.length?'fail':review.length?'warn':'pass'}"><div class="itemhead"><strong>Result</strong><div>${verdict}</div></div>`+
+    (segHtml.length?`<div class="body"><b>Steps 7–8 · Same position</b></div>${segHtml.join('')}`:'<div class="body">Steps 7–8: no position with 2 or more DGs</div>')+
+    reject.map(x=>`<div class="body dgrBad">${esc(x)}</div>`).join('')+review.map(x=>`<div class="body dgrWarn">${esc(x)}</div>`).join('')+
+    (!reject.length?ergs.map(g=>`<div class="body"><b>ERG ${esc(g)}:</b> ${esc(dgrErgText(g))}</div>`).join('')+'<div class="body">Step 9: refer to ICAO Doc 9481 for emergency response.</div>':'')+
+    `</div><p class="muted">Blue Pages: ${esc(dgrData.source)}; ERG: ${esc(dgrData.ergSource)}. Logic: FCD 919 DG Transportation Guide R02. Always verify against the DGR and the NOTOC.</p>`;
+  $('#dgrResults').querySelectorAll('[data-seg]').forEach(cb=>cb.onchange=()=>{dgrSegOk[cb.dataset.seg]=cb.checked;dgrRenderResult();});
+}
+async function dgrOpen(){
+  dgrRenderHeader();
+  try{await dgrLoad();}
+  catch(error){$('#dgrItems').innerHTML='';$('#dgrAdd').classList.add('hidden');$('#dgrResults').innerHTML=`<div class="item warn"><div class="body">${esc(error.message)}</div></div>`;return;}
+  $('#dgrAdd').classList.remove('hidden');
+  if(!dgrItems.length)dgrItems.push({});
+  dgrRenderItems();dgrRenderResult();
+}
+$('#dgrAdd').onclick=()=>{dgrItems.push({});dgrRenderItems();dgrRenderResult();$('#dgrItems').lastElementChild?.querySelector('input')?.focus();};
+document.querySelector('.tab[data-tab="dgr"]').addEventListener('click',dgrOpen);
 // Approach minima are entered manually from Lido (CAT C) and checked against
 // the FOM-applicable TAF groups in each airport's WEATHER window.
 const MINIMA_RANK={'CAT III':1,'CAT II':2,'CAT I':3,'NPA':4,'Circling':5};
