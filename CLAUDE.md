@@ -43,8 +43,9 @@ Bối cảnh project cho Claude Code (chuyển từ ChatGPT/Codex ngày 23/09/20
 - Tab WEATHER hiện MINIMA OK / BELOW MINIMA / Not Found cho DEST, DEST ALT, ENR ALT, FUEL ERA, EDTO ALT (không cho DEP).
 - TAF VIS so trực tiếp với R (không có R thì V); ceiling chỉ BKN/OVC, so với số dòng trên (DH/MDH/ceiling). Sự kiện TAF lọc bằng `fomEventApplicable` (FOM 8.1.2-6).
 - DEST: approach thấp nhất trên runway OFP (Cat II/III nếu có). Precision chỉ so RVR; NPA/circling thêm ceiling.
-- ALTN/ERA: dùng approach **cao nhất** đã nhập (circling chỉ khi không có straight-in). Bảng FOM 8.1.2-7: CAT II/III → RVR CAT I; CAT I → VIS NPA + CIG ≥ MDH; NPA → +1000 m / +200 ft; Circling → circling.
-- EDTO ERA (FOM 8.5.1) và sân Mỹ (8.1.2-8): +400 ft / +1600 m trên approach cao nhất. EDTO: TEMPO/PROB chỉ so với landing minima.
+- DEST ALTN / FUEL ERA / ENR ALTN: dùng **runway + approach trong ASC APRT của OFP** (dispatch đã hạ bậc), khớp theo loại (ILS/LOC/RNP/VOR/NDB/CAT2/CAT3), nhiều bản khớp thì lấy cao nhất; không khớp → approach cao nhất trên runway đó → cao nhất đã nhập. Sau đó áp bảng FOM 8.1.2-7: CAT II/III → RVR CAT I; CAT I → VIS NPA + CIG ≥ MDH; NPA → +1000 m / +200 ft; Circling → circling. Sân Mỹ: 8.1.2-8 +400 ft / +1600 m.
+- EDTO ALTN: bảng 5.1 EDTO Ops Manual (= FOM 8.5.1; Supplement cũ không dùng). OFP ghi CAT2 → 300 ft / 1200 m; CAT3 → 200 ft / RVR 550 m; approach khác → approach cao nhất trên runway OFP +400 ft / +1600 m. Không dùng mức 2 runway. TEMPO/PROB chỉ so với landing minima.
+- FOM Rev 19 (18/06/2026) đã đối chiếu: 8.1.2/P10, P22 sửa không ảnh hưởng minima.
 - Tài liệu hãng (FOM, SOP, EDTO manual, FCOM/MEL A350, LIDO GENPART, ICAO…) nằm trên **Google Drive** của người dùng, thư mục "Tài Liệu" (connector Google Drive). Lấy logic từ đó, ghi rõ mục tham chiếu; không chép tài liệu vào repo.
 
 ## Cách làm việc người dùng muốn
