@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
-<meta name="flight-brief-version" content="6.07">
-<title>Flight Brief V6.07</title>
+<meta name="flight-brief-version" content="6.08">
+<title>Flight Brief V6.08</title>
 <style>
 :root{--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#6f7b90;--line:#dde5ef;--blue:#0b5cff;--blue2:#eaf1ff;--green:#137a46;--green2:#e8f6ee;--amber:#9a6700;--amber2:#fff5d8;--red:#b8322a;--red2:#fdeceb;--purple:#6541c1;--purple2:#f1ecff}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top)) 14px 10px}.shell{max-width:1180px;margin:auto}.brand{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand h1{font-size:19px;margin:0}.sub,.muted{font-size:12px;color:var(--muted)}main{max-width:1180px;margin:auto;padding:16px 14px calc(88px + env(safe-area-inset-bottom))}.hero{padding:22px;border-radius:18px;background:linear-gradient(145deg,#0b5cff,#3d74ff);color:#fff;margin-bottom:14px;box-shadow:0 8px 28px rgba(11,92,255,.18)}.hero h2{font-size:24px;margin:0 0 8px}.hero p{margin:0;color:#ebf1ff;line-height:1.45;font-size:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 5px 20px rgba(25,45,75,.05)}h2{font-size:18px;margin:0 0 5px}h3{font-size:15px;margin:0}.row{display:flex;align-items:center;gap:10px}.between{justify-content:space-between}.wrap{flex-wrap:wrap}button,label.upload{border:0;border-radius:12px;padding:11px 14px;font-size:14px;font-weight:700;cursor:pointer;background:var(--blue2);color:#184aa4}.primary{background:var(--blue)!important;color:#fff!important}.ghost{background:#eef2f6!important;color:#4f5a6c!important}.danger{background:var(--red2)!important;color:var(--red)!important}.drop{border:2px dashed #b8c7da;border-radius:16px;background:#fafcff;padding:30px 14px;text-align:center;margin-top:14px}.progress{height:9px;background:#e8edf4;border-radius:99px;overflow:hidden;margin-top:8px}.bar{height:100%;background:var(--blue);width:0;transition:.2s}.hidden{display:none!important}.tabs{display:flex;gap:8px;overflow:auto;margin:14px 0}.tab{white-space:nowrap}.tab.active{background:var(--blue)!important;color:#fff!important}.overview{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:14px}@media(min-width:800px){.overview{grid-template-columns:repeat(6,1fr)}}.kv{border:1px solid var(--line);border-radius:13px;padding:10px;background:#fbfcfe}.kv label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:5px}.kv strong{font-size:14px;word-break:break-word}.section{display:grid;gap:10px}.item{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}.item.pass{border-left:5px solid var(--green)}.item.warn{border-left:5px solid var(--amber)}.item.fail{border-left:5px solid var(--red)}.item.info{border-left:5px solid var(--blue)}.item.review{border-left:5px solid var(--purple)}.itemhead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.badge{display:inline-block;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:800;white-space:nowrap}.badge.pass{background:var(--green2);color:var(--green)}.badge.warn{background:var(--amber2);color:var(--amber)}.badge.fail{background:var(--red2);color:var(--red)}.badge.info{background:var(--blue2);color:var(--blue)}.badge.review{background:var(--purple2);color:var(--purple)}.body{font-size:13px;line-height:1.45;color:#445064;margin-top:8px}.source{font-size:11px;color:var(--muted);margin-top:8px}.raw{white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;background:#f7f9fc;border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px;max-height:260px;overflow:auto}.docs{display:grid;gap:8px;margin-top:12px}.doc{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:11px}.docname{font-weight:700;word-break:break-word}.pill{display:inline-block;padding:4px 7px;border-radius:999px;background:#eef2f7;color:#566174;font-size:10px;font-weight:700;margin-top:5px}.timeline{display:flex;overflow:auto;gap:9px;padding-bottom:4px;margin-top:12px}.timebox{min-width:190px;border:1px solid var(--line);border-radius:13px;padding:10px;background:#fbfcfe}.timebox strong{display:block;font-size:13px}.timebox span{font-size:11px;color:var(--muted)}.note{font-size:12px;background:#fff9e9;border:1px solid #efdda6;color:#77560e;border-radius:12px;padding:10px;line-height:1.4;margin-top:12px}.grid2{display:grid;grid-template-columns:1fr;gap:12px}@media(min-width:900px){.grid2{grid-template-columns:.9fr 1.1fr}}.filter{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:11px;font-size:14px;background:#fff}.groupTitle{margin:18px 2px 7px;font-size:14px;font-weight:850;color:#25344b;border-bottom:1px solid var(--line);padding-bottom:7px}.groupSub{font-size:11px;color:var(--muted);font-weight:500;margin-left:6px}.ofpCard{border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px 16px}.ofpGrid{display:grid;grid-template-columns:150px 1fr;gap:9px 14px;align-items:start}.ofpLabel{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}.ofpValue{font-size:14px;font-weight:700;color:#172033;min-width:0;word-break:break-word}.ofpRwy.pass{color:var(--green)}.ofpRwy.warn{color:#9a6500}.ofpRwy.review{color:var(--purple)}.wxCard{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}.wxRow{display:grid;grid-template-columns:180px 1fr;gap:14px;padding:12px 16px;border-bottom:1px solid var(--line);align-items:start}.wxRow:last-child{border-bottom:0}.wxAirport{font-size:13px;font-weight:850;color:#25344b}.wxValue{font-size:14px;font-weight:700;color:#172033;word-break:break-word}.wxUseTime{font-size:10px;font-weight:650;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}.wxValue.warn{color:#9a6500}.wxValue.review{color:var(--purple)}.wxVisGood{color:var(--green);font-weight:850}.wxVisLow{color:var(--amber);font-weight:850}.wxVisBad{color:var(--red);font-weight:850}.wxGroup{padding:12px 16px;border-bottom:1px solid var(--line)}.wxGroup:last-child{border-bottom:0}.wxGroupTitle{font-size:13px;font-weight:900;color:#25344b;margin-bottom:6px}.wxGroupItem{display:grid;grid-template-columns:180px minmax(0,1fr);gap:14px;padding:5px 0;align-items:start}.wxGroupCode{font-size:13px;font-weight:850;color:#25344b;white-space:normal;overflow-wrap:anywhere}.wxGroupItem .wxValue{min-width:0}@media(max-width:640px){.wxGroupItem{grid-template-columns:1fr;gap:2px;padding:7px 0}}@media(max-width:640px){.wxRow{grid-template-columns:1fr;gap:4px}}@media(max-width:640px){.ofpGrid{grid-template-columns:1fr}.ofpLabel{margin-top:4px}.ofpValue{margin-bottom:4px}}footer{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:9px 14px calc(9px + env(safe-area-inset-bottom))}footer .shell{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -4675,15 +4675,15 @@ function dgrIncompatible(a,b){
   return false;
 }
 function dgrNormUN(v){const d=String(v||'').replace(/\D/g,'');return d.length?d.padStart(4,'0').slice(-4):'';}
-function dgrEntryHtml(e){
-  const rows=e.rows.length?e.rows:[{}];
+function dgrEntryHtml(e,key,pg){
+  const all=e.rows.length?e.rows:[{}],rows=pg?all.filter(r=>r.pg===pg):all;
   const checks=[...new Map(rows.flatMap(r=>dgrVnChecks(e,r)).map(x=>[x[1]+x[2],x])).values()];
   const bad=checks.filter(x=>x[0]==='bad'),forbidden=rows.every(r=>r.pax_pi==='Forbidden'&&r.cao_pi==='Forbidden');
   const paxForbidden=rows.every(r=>r.pax_pi==='Forbidden');
   const status=forbidden?'<span class="dgrBad">FORBIDDEN</span>':bad.length?'<span class="dgrBad">NOT ACCEPTED ON VNA</span>':paxForbidden?'<span class="dgrBad">NOT ACCEPTED ON VNA — CAO only</span>':'<span class="dgrOk">No DGM 2.5.8 restriction</span>';
   const sps=e.sp.map(c=>`<button type="button" class="ghost dgrSpBtn" data-sp="${esc(c)}" style="padding:4px 9px;margin:2px">${esc(c)}</button>`).join('')||'None';
   return `<div class="dgrEntry"><div class="itemhead"><div><strong>UN ${esc(e.un)} · ${esc(e.name||'(name not read)')}</strong>`+
-    `<div class="body">Class/Div (sub risk): <b>${esc(e.cls||'—')}</b>${e.labels?' · '+esc(e.labels):''} · DGR p.${e.page}</div></div><div>${status}</div></div>`+
+    `<div class="body">Class/Div (sub risk): <b>${esc(e.cls||'—')}</b>${e.labels?' · '+esc(e.labels):''} · DGR p.${e.page}</div></div><div style="display:flex;gap:8px;align-items:flex-start">${status}<button type="button" class="ghost" data-hide="${esc(key)}" title="Not relevant" style="padding:4px 10px">✕</button></div></div>`+
     (e.warn?`<div class="dgrWarn">⚠ Some fields could not be read reliably — check DGR p.${e.page}.</div>`:'')+
     `<table class="dgrTable"><tr><th>PG (E)</th><th>EQ (F)</th><th>Ltd Qty (G/H)</th><th>PAX max net/pkg (I/J)</th><th>CAO (K/L)</th><th>ERG (N)</th></tr>`+
     rows.map(r=>`<tr><td>${esc(r.pg||'—')}</td><td>${esc(r.eq||'—')}</td><td>${dgrCell(r.lq_pi,r.lq_max)}</td><td>${dgrCell(r.pax_pi,r.pax_max)}</td><td>${dgrCell(r.cao_pi,r.cao_max)}</td><td>${esc(r.erg||'—')}</td></tr>`).join('')+
@@ -4691,11 +4691,23 @@ function dgrEntryHtml(e){
     (checks.length?`<div class="body">${checks.map(x=>`<span class="${x[0]==='bad'?'dgrBad':'dgrWarn'}">${esc(x[1])}</span> ${esc(x[2])}`).join('<br>')}</div>`:'')+
     `</div>`;
 }
-function dgrItemHtml(un){
-  if(!un)return '';
-  const hits=dgrData.entries.filter(e=>e.un===un);
-  if(!hits.length)return `<div class="body dgrWarn">UN ${esc(un)} not found in Blue Pages data — check DGR 4.3.</div>`;
-  return hits.map(dgrEntryHtml).join('<hr style="border:0;border-top:1px solid var(--line);margin:10px 0">');
+// Blue Pages entries for an item: all names of the UN number, optionally only the
+// chosen PG; entries the pilot marked "not relevant" are listed as chips to restore.
+function dgrEntryKey(e){return e.name+'|'+e.page;}
+function dgrVisibleEntries(it){
+  const hits=(dgrData?.entries||[]).filter(e=>e.un===it.un);
+  const byPg=it.pg?hits.filter(e=>e.rows.some(r=>r.pg===it.pg)):hits;
+  return {hits,byPg,shown:byPg.filter(e=>!(it.hidden||[]).includes(dgrEntryKey(e)))};
+}
+function dgrItemHtml(it){
+  if(!it.un)return '';
+  const {hits,byPg,shown}=dgrVisibleEntries(it);
+  if(!hits.length)return `<div class="body dgrWarn">UN ${esc(it.un)} not found in Blue Pages data — check DGR 4.3.</div>`;
+  if(!byPg.length)return `<div class="body dgrWarn">UN ${esc(it.un)} has no PG ${esc(it.pg)} entry. Listed PG: ${esc([...new Set(hits.flatMap(e=>e.rows.map(r=>r.pg||'none')))].join(', '))}.</div>`;
+  const hidden=byPg.filter(e=>(it.hidden||[]).includes(dgrEntryKey(e)));
+  return shown.map(e=>dgrEntryHtml(e,dgrEntryKey(e),it.pg)).join('<hr style="border:0;border-top:1px solid var(--line);margin:10px 0">')+
+    (hidden.length?`<div class="body muted">Hidden: ${hidden.map(e=>`<button type="button" class="ghost" data-show="${esc(dgrEntryKey(e))}" style="padding:4px 9px;margin:2px">↺ ${esc(e.name)}</button>`).join('')}</div>`:'')+
+    (it.pg&&byPg.length<hits.length?`<div class="body muted">${hits.length-byPg.length} other entr${hits.length-byPg.length>1?'ies':'y'} without PG ${esc(it.pg)} not shown.</div>`:'');
 }
 function dgrRenderHeader(){
   const o=analysis?.o||{};
@@ -4705,7 +4717,9 @@ function dgrRenderHeader(){
   $('#dgrHdrOk').onchange=e=>{dgrHeaderOk=e.target.checked;};
 }
 function dgrRenderItem(card,it){
-  const out=card.querySelector('.dgrOut');out.innerHTML=dgrItemHtml(it.un);
+  const out=card.querySelector('.dgrOut');out.innerHTML=dgrItemHtml(it);
+  out.querySelectorAll('[data-hide]').forEach(b=>b.onclick=()=>{it.hidden=[...(it.hidden||[]),b.dataset.hide];dgrRenderItem(card,it);dgrRenderResult();});
+  out.querySelectorAll('[data-show]').forEach(b=>b.onclick=()=>{it.hidden=(it.hidden||[]).filter(k=>k!==b.dataset.show);dgrRenderItem(card,it);dgrRenderResult();});
   out.querySelectorAll('[data-sp]').forEach(btn=>btn.onclick=()=>{
     const box=btn.closest('.dgrEntry').querySelector('.dgrSpText'),code=btn.dataset.sp;
     if(!box.hidden&&box.dataset.code===code){box.hidden=true;return;}
@@ -4719,25 +4733,27 @@ function dgrRenderItems(){
     const card=document.createElement('div');card.className='item info dgrItem';
     card.innerHTML=`<div class="row" style="gap:10px"><strong style="white-space:nowrap">Item ${i+1}</strong>`+
       `<input class="filter" data-un inputmode="numeric" maxlength="7" placeholder="UN / ID" value="${esc(it.un||'')}" style="max-width:160px" autocomplete="off">`+
+      `<select class="filter" data-pg aria-label="Packing group (optional)" style="width:auto">${['','I','II','III'].map(v=>`<option value="${v}"${(it.pg||'')===v?' selected':''}>${v?'PG '+v:'PG (any)'}</option>`).join('')}</select>`+
       `<button type="button" class="danger" data-rm style="margin-left:auto">Remove</button></div><div class="dgrOut" style="margin-top:8px"></div>`;
     const inp=card.querySelector('[data-un]');
-    inp.oninput=()=>{const un=dgrNormUN(inp.value);it.un=inp.value.replace(/\D/g,'').length>=4?un:'';dgrRenderItem(card,it);dgrRenderResult();};
+    inp.oninput=()=>{const un=dgrNormUN(inp.value);const next=inp.value.replace(/\D/g,'').length>=4?un:'';if(next!==it.un)it.hidden=[];it.un=next;dgrRenderItem(card,it);dgrRenderResult();};
+    card.querySelector('[data-pg]').onchange=e=>{it.pg=e.target.value;dgrRenderItem(card,it);dgrRenderResult();};
     card.querySelector('[data-rm]').onclick=()=>{dgrItems.splice(i,1);if(!dgrItems.length)dgrItems.push({});dgrRenderItems();dgrRenderResult();};
     host.append(card);dgrRenderItem(card,it);
   });
 }
 function dgrRenderResult(){
   if(!dgrData)return;
-  const items=dgrItems.map((it,i)=>({i,un:it.un,hits:it.un?dgrData.entries.filter(e=>e.un===it.un):[]})).filter(x=>x.un);
+  const items=dgrItems.map((it,i)=>({i,un:it.un,pg:it.pg,hits:it.un?dgrVisibleEntries(it).shown:[]})).filter(x=>x.un);
   if(!items.length){$('#dgrResults').innerHTML='<div class="muted">Enter each UN/ID number listed on the NOTOC.</div>';return;}
-  const notAcc=items.filter(x=>x.hits.length&&x.hits.every(e=>{const rows=e.rows.length?e.rows:[{}];return rows.every(r=>r.pax_pi==='Forbidden')||rows.some(r=>dgrVnChecks(e,r).some(c=>c[0]==='bad'));}));
+  const notAcc=items.filter(x=>x.hits.length&&x.hits.every(e=>{const all=e.rows.length?e.rows:[{}],rows=x.pg?all.filter(r=>r.pg===x.pg):all;return rows.every(r=>r.pax_pi==='Forbidden')||rows.some(r=>dgrVnChecks(e,r).some(c=>c[0]==='bad'));}));
   // Steps 7–8 — Table 9.3.A pairs that must be segregated if loaded in the same position.
   const seg=[];
   for(let a=0;a<items.length;a++)for(let b=a+1;b<items.length;b++){
     const A=items[a],B=items[b];if(!A.hits[0]||!B.hits[0])continue;
     if(dgrIncompatible({un:A.un,groups:dgrSegGroups(A.hits[0].cls,A.un)},{un:B.un,groups:dgrSegGroups(B.hits[0].cls,B.un)}))seg.push(`Item ${A.i+1} (UN ${A.un}) & Item ${B.i+1} (UN ${B.un})`);
   }
-  const ergs=[...new Set(items.flatMap(x=>x.hits.flatMap(e=>e.rows.map(r=>r.erg))).filter(Boolean))];
+  const ergs=[...new Set(items.flatMap(x=>x.hits.flatMap(e=>e.rows.filter(r=>!x.pg||r.pg===x.pg).map(r=>r.erg))).filter(Boolean))];
   $('#dgrResults').innerHTML=`<div class="item ${notAcc.length?'fail':'info'}"><strong>Summary</strong>`+
     (notAcc.length?notAcc.map(x=>`<div class="body dgrBad">NOT ACCEPTED ON VNA — Item ${x.i+1} (UN ${esc(x.un)})</div>`).join(''):'<div class="body dgrOk">No item restricted by DGM 2.5.8</div>')+
     `<div class="body"><b>Steps 7–8 · Table 9.3.A:</b> ${seg.length?`<span class="dgrWarn">must be segregated if in the same position: ${esc(seg.join('; '))}</span>`:'no incompatible pair among entered items'}</div>`+
