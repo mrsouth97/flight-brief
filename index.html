@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
-<meta name="flight-brief-version" content="6.25">
-<title>Flight Brief V6.25</title>
+<meta name="flight-brief-version" content="6.26">
+<title>Flight Brief V6.26</title>
 <style>
 :root{--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#6f7b90;--line:#dde5ef;--blue:#0b5cff;--blue2:#eaf1ff;--green:#137a46;--green2:#e8f6ee;--amber:#9a6700;--amber2:#fff5d8;--red:#b8322a;--red2:#fdeceb;--purple:#6541c1;--purple2:#f1ecff}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top)) 14px 10px}.shell{max-width:1180px;margin:auto}.brand{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand h1{font-size:19px;margin:0}.sub,.muted{font-size:12px;color:var(--muted)}main{max-width:1180px;margin:auto;padding:16px 14px calc(88px + env(safe-area-inset-bottom))}.hero{padding:22px;border-radius:18px;background:linear-gradient(145deg,#0b5cff,#3d74ff);color:#fff;margin-bottom:14px;box-shadow:0 8px 28px rgba(11,92,255,.18)}.hero h2{font-size:24px;margin:0 0 8px}.hero p{margin:0;color:#ebf1ff;line-height:1.45;font-size:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 5px 20px rgba(25,45,75,.05)}h2{font-size:18px;margin:0 0 5px}h3{font-size:15px;margin:0}.row{display:flex;align-items:center;gap:10px}.between{justify-content:space-between}.wrap{flex-wrap:wrap}button,label.upload{border:0;border-radius:12px;padding:11px 14px;font-size:14px;font-weight:700;cursor:pointer;background:var(--blue2);color:#184aa4}.primary{background:var(--blue)!important;color:#fff!important}.ghost{background:#eef2f6!important;color:#4f5a6c!important}.danger{background:var(--red2)!important;color:var(--red)!important}.drop{border:2px dashed #b8c7da;border-radius:16px;background:#fafcff;padding:30px 14px;text-align:center;margin-top:14px}.progress{height:9px;background:#e8edf4;border-radius:99px;overflow:hidden;margin-top:8px}.bar{height:100%;background:var(--blue);width:0;transition:.2s}.hidden{display:none!important}.tabs{display:flex;gap:8px;overflow:auto;margin:14px 0}.tab{white-space:nowrap}.tab.active{background:var(--blue)!important;color:#fff!important}.overview{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:14px}@media(min-width:800px){.overview{grid-template-columns:repeat(6,1fr)}}.kv{border:1px solid var(--line);border-radius:13px;padding:10px;background:#fbfcfe}.kv label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:5px}.kv strong{font-size:14px;word-break:break-word}.section{display:grid;gap:10px}.item{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}.item.pass{border-left:5px solid var(--green)}.item.warn{border-left:5px solid var(--amber)}.item.fail{border-left:5px solid var(--red)}.item.info{border-left:5px solid var(--blue)}.item.review{border-left:5px solid var(--purple)}.itemhead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.badge{display:inline-block;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:800;white-space:nowrap}.badge.pass{background:var(--green2);color:var(--green)}.badge.warn{background:var(--amber2);color:var(--amber)}.badge.fail{background:var(--red2);color:var(--red)}.badge.info{background:var(--blue2);color:var(--blue)}.badge.review{background:var(--purple2);color:var(--purple)}.body{font-size:13px;line-height:1.45;color:#445064;margin-top:8px}.source{font-size:11px;color:var(--muted);margin-top:8px}.raw{white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;background:#f7f9fc;border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px;max-height:260px;overflow:auto}.docs{display:grid;gap:8px;margin-top:12px}.doc{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:11px}.docname{font-weight:700;word-break:break-word}.pill{display:inline-block;padding:4px 7px;border-radius:999px;background:#eef2f7;color:#566174;font-size:10px;font-weight:700;margin-top:5px}.timeline{display:flex;overflow:auto;gap:9px;padding-bottom:4px;margin-top:12px}.timebox{min-width:190px;border:1px solid var(--line);border-radius:13px;padding:10px;background:#fbfcfe}.timebox strong{display:block;font-size:13px}.timebox span{font-size:11px;color:var(--muted)}.note{font-size:12px;background:#fff9e9;border:1px solid #efdda6;color:#77560e;border-radius:12px;padding:10px;line-height:1.4;margin-top:12px}.grid2{display:grid;grid-template-columns:1fr;gap:12px}@media(min-width:900px){.grid2{grid-template-columns:.9fr 1.1fr}}.filter{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:11px;font-size:14px;background:#fff}.groupTitle{margin:18px 2px 7px;font-size:14px;font-weight:850;color:#25344b;border-bottom:1px solid var(--line);padding-bottom:7px}.groupSub{font-size:11px;color:var(--muted);font-weight:500;margin-left:6px}.ofpCard{border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px 16px}.ofpGrid{display:grid;grid-template-columns:150px 1fr;gap:9px 14px;align-items:start}.ofpLabel{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}.ofpValue{font-size:14px;font-weight:700;color:#172033;min-width:0;word-break:break-word}.ofpRwy.pass{color:var(--green)}.ofpRwy.warn{color:#9a6500}.ofpRwy.review{color:var(--purple)}.wxCard{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}.wxRow{display:grid;grid-template-columns:180px 1fr;gap:14px;padding:12px 16px;border-bottom:1px solid var(--line);align-items:start}.wxRow:last-child{border-bottom:0}.wxAirport{font-size:13px;font-weight:850;color:#25344b}.wxValue{font-size:14px;font-weight:700;color:#172033;word-break:break-word}.wxUseTime{font-size:10px;font-weight:650;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}.wxValue.warn{color:#9a6500}.wxValue.review{color:var(--purple)}.wxVisGood{color:var(--green);font-weight:850}.wxVisLow{color:var(--amber);font-weight:850}.wxVisBad{color:var(--red);font-weight:850}.wxGroup{padding:12px 16px;border-bottom:1px solid var(--line)}.wxGroup:last-child{border-bottom:0}.wxGroupTitle{font-size:13px;font-weight:900;color:#25344b;margin-bottom:6px}.wxGroupItem{display:grid;grid-template-columns:180px minmax(0,1fr);gap:14px;padding:5px 0;align-items:start}.wxGroupCode{font-size:13px;font-weight:850;color:#25344b;white-space:normal;overflow-wrap:anywhere}.wxGroupItem .wxValue{min-width:0}@media(max-width:640px){.wxGroupItem{grid-template-columns:1fr;gap:2px;padding:7px 0}}@media(max-width:640px){.wxRow{grid-template-columns:1fr;gap:4px}}@media(max-width:640px){.ofpGrid{grid-template-columns:1fr}.ofpLabel{margin-top:4px}.ofpValue{margin-bottom:4px}}footer{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:9px 14px calc(9px + env(safe-area-inset-bottom))}footer .shell{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -271,7 +271,7 @@
   <form id="minimaForm" class="minimaForm">
     <p id="minimaFor" class="minimaWide" style="margin:0;font-weight:700"></p>
     <label class="minimaWide">Approach (with runway)<input id="minimaName" class="filter" maxlength="40" placeholder="e.g. ILS CAT2 11L · VOR 11L · RNP 27L · CIRCLING" required autocapitalize="characters" autocomplete="off"><span id="minimaDetected" class="muted"></span></label>
-    <label>DH / MDH (ft)<input id="minimaHeight" class="filter" type="number" min="0" max="9999" inputmode="numeric" required></label>
+    <label>DH / MDH (ft, optional for ILS)<input id="minimaHeight" class="filter" type="number" min="0" max="9999" inputmode="numeric" required></label>
     <label>Minima (m, or km e.g. 2.4)<input id="minimaMin" class="filter" maxlength="8" inputmode="decimal" placeholder="e.g. 550 · 2.4" required autocomplete="off"></label>
     <p class="muted minimaWide">CAT C row. ILS: lowest column (CAT2/CAT3 if written in the name, else CAT I). RNP/RNAV: LNAV column (non-precision). Minima = RVR, or VIS when no RVR is published.</p>
     <div class="row minimaWide"><button id="minimaSave" type="submit" class="primary">Save</button><button id="minimaCancel" type="button" class="ghost hidden">Cancel edit</button></div>
@@ -1039,6 +1039,8 @@ function parseOFP(t,layoutText=t,layoutRows=[]){
   const maxShrEto=extractNavLogWaypointEto(t,maxShrWpt,etd,eta);
 
   const ascEntries=parseAscRoleEntries(layoutBrief);
+  // OFP header line "TAKEOFF ALTN: NOT REQD" or ICAO code(s).
+  const takeoffAltn=((brief.match(/TAKEOFF\s+ALTN?\s*:\s*([A-Z0-9\/ ]+?)\s*(?:\n|$)/i)||[])[1]||'').trim();
   const ascDep=ascEntries.find(x=>x.role==='DEP'&&x.icao===dep)||parseAscEntry(brief,dep,depIata);
   const ascDest=ascEntries.find(x=>x.role==='DEST'&&x.icao===dest)||parseAscEntry(brief,dest,destIata);
 
@@ -1116,7 +1118,7 @@ function parseOFP(t,layoutText=t,layoutRows=[]){
     expectedDestRunway,expectedDestRunwaySource,ascDest,
     sid:routeInfo.sid,star:routeInfo.star,
     sidStar:[routeInfo.sid,routeInfo.star].filter(Boolean),
-    alts:allAlt,enrouteAltIcaos,destAlts:destAltIcaos,ascEntries,fpl
+    alts:allAlt,enrouteAltIcaos,destAlts:destAltIcaos,ascEntries,fpl,takeoffAltn
   };
 }
 function parseDestAltTripMinutes(t,icao){
@@ -3369,8 +3371,8 @@ function fomEventApplicable(w,ev,baseline){
   const persistent=tafPersistentPhenomenon(ev.state);
   const probTempo=/^PROB\d{2}\s+TEMPO/.test(token);
 
-  if(role==='DEST'||role==='DEST_ALT'||role==='FUEL_ERA'||role==='ENR_ALT'){
-    // FOM 8.1.2-6 (DEST / DEST ALTN / FUEL ERA, also used for ENR ALTN):
+  if(role==='DEST'||role==='DEST_ALT'||role==='FUEL_ERA'||role==='ENR_ALT'||role==='DEP'){
+    // FOM 8.1.2-6 (DEST / DEST ALTN / FUEL ERA, also used for ENR ALTN and DEP):
     // transient/shower deterioration (e.g. TS/SH) may be disregarded;
     // persistent deterioration is applicable. PROB TEMPO deterioration
     // may be disregarded.
@@ -3540,7 +3542,7 @@ function weatherAirportTitle(w,o){
   return `${w.role} — ${w.icao}${iata?'/'+iata:''}`;
 }
 
-function formatWxVisibility(text){
+function formatWxVisibility(text,minima){
   let src=String(text||'');
 
   // Escape first, then selectively wrap only good visibility tokens.
@@ -3576,6 +3578,9 @@ function formatWxVisibility(text){
     return `${pfx}<span class="wxVisLow">${token}</span>`;
   });
 
+  // With a minima result, VIS colour follows the check: OK -> green, BELOW -> red.
+  if(minima==='ok')out=out.replace(/wxVisLow|wxVisBad/g,'wxVisGood');
+  else if(minima==='below')out=out.replace(/wxVisGood|wxVisLow/g,'wxVisBad');
   return out;
 }
 
@@ -3712,7 +3717,8 @@ function renderWX(){
       return {cls:'review',html:esc('No applicable weather extracted')};
     }
 
-    return {cls:'',html:formatWxVisibility(selected.text)+minimaLine(w)};
+    const mc=minimaCheck(w);
+    return {cls:'',html:formatWxVisibility(selected.text,mc.status)+mc.html};
   }
 
   function depDestTitle(w){
@@ -3734,7 +3740,7 @@ function renderWX(){
       const useTime=wxUseTime(w);
       out+=
         `<div class="wxGroupItem">`+
-          `<div class="wxGroupCode">- ${esc(wxAirportDisplay(w.icao))}${useTime?`<div class="wxUseTime">${esc(useTime)}</div>`:''}</div>`+
+          `<div class="wxGroupCode">- ${esc(wxAirportDisplay(w.icao))}${useTime?`<div class="wxUseTime">${esc(useTime)}</div>`:''}${minimaUsed(w)?`<div class="wxUseTime">${esc(minimaUsed(w))}</div>`:''}</div>`+
           `<div class="wxValue ${v.cls}">${v.html}</div>`+
         `</div>`;
     }
@@ -3753,7 +3759,7 @@ function renderWX(){
       const useTime=wxUseTime(w);
       h+=
         `<div class="wxRow">`+
-          `<div class="wxAirport">${esc(depDestTitle(w))}${useTime?`<div class="wxUseTime">${esc(useTime)}</div>`:''}</div>`+
+          `<div class="wxAirport">${esc(depDestTitle(w))}${useTime?`<div class="wxUseTime">${esc(useTime)}</div>`:''}${minimaUsed(w)?`<div class="wxUseTime">${esc(minimaUsed(w))}</div>`:''}</div>`+
           `<div class="wxValue ${v.cls}">${v.html}</div>`+
         `</div>`;
     }
@@ -5006,7 +5012,7 @@ function minimaVis(a){return a.rvr||a.vis||0;}
 function minimaCompare(a,b){return (MINIMA_RANK[a.type]-MINIMA_RANK[b.type])||(a.height-b.height)||(minimaVis(a)-minimaVis(b));}
 function minimaLowest(list){return [...list].sort(minimaCompare)[0];}
 function minimaHighest(list){return [...list].sort(minimaCompare).pop();}
-function minimaValues(a){return `${a.height} ft - ${minimaVis(a)} m`;}
+function minimaValues(a){return `${a.height?a.height+' ft - ':''}${minimaVis(a)} m`;}
 // Runway and approach category are read from the typed approach name.
 function minimaParseName(name){
   const u=String(name||'').toUpperCase();
@@ -5043,6 +5049,12 @@ function minimaMatchesKind(r,kind){
 }
 function minimaRequirement(w){
   const role=fomRoleClass(w);
+  if(role==='DEP'){
+    // All VNA departure airports have a CAT I landing: OFP take-off runway, ILS CAT I, RVR 550 m, no ceiling; nothing to enter.
+    const rwy=String(analysis?.o?.expectedDepRunway||'').toUpperCase();
+    const a={name:`ILS CAT I ${rwy||'?'}`,type:'CAT I',rwy,height:0,rvr:550,vis:0};
+    return {approach:a,basis:`DEP · CAT I landing on OFP T/O RWY ${rwy||'?'}`,vis:550,ceil:0,landing:{vis:550,ceil:0}};
+  }
   if(!['DEST','DEST_ALT','ENR_ALT','FUEL_ERA','EDTO_ERA'].includes(role))return null;
   const icao=String(w.icao||'').toUpperCase(),list=minimaRows.filter(r=>r.icao===icao);
   const straight=list.filter(r=>r.type!=='Circling'),pool=straight.length?straight:list;
@@ -5095,12 +5107,13 @@ function minimaRequirement(w){
   return {approach:a,basis:`Planning 8.1.2-7 · Circling · ${src}`,...land,landing:land};
 }
 function minimaNeedText(n){return `VIS ≥ ${n.vis} m${n.ceil?` · CIG ≥ ${n.ceil} ft`:''}`;}
-function minimaLine(w){
+// Minima check for one weather airport: {status:'none'|'missing'|'ok'|'below', html}.
+function minimaCheck(w){
   const req=minimaRequirement(w);
-  if(!req)return '';
-  if(req.missing)return `<div class="wxMinima">Minima: ${esc(req.missing)}</div>`;
+  if(!req)return {status:'none',html:''};
+  if(req.missing)return {status:'missing',html:'',req};
   const events=w.tafWindow?.events||[];
-  if(!events.length)return '';
+  if(!events.length)return {status:'none',html:'',req};
   const baseline=events.find(x=>x.label==='PREVAILING')||events[0];
   const role=fomRoleClass(w);
   for(const ev of events.filter(ev=>fomEventApplicable(w,ev,baseline))){
@@ -5109,10 +5122,19 @@ function minimaLine(w){
     const vis=visMetersFromState(ev.state),ceil=ceilingFtFromState(ev.state);
     if(vis<need.vis||(need.ceil&&ceil<need.ceil)){
       const got=`VIS ${vis>=10000?'≥ 10 km':Math.round(vis)+' m'}${need.ceil?` · CIG ${ceil>=10000?'none':ceil+' ft'}`:''}`;
-      return `<div class="wxMinima"><span class="wxMinFail">BELOW MINIMA</span> · ${esc(tafEventToken(ev)||'PREVAILING')}: ${esc(got)} · need ${esc(minimaNeedText(need))}<br>${esc(req.approach.name)} (${esc(minimaValues(req.approach))}) · ${esc(req.basis)}</div>`;
+      let extra='';
+      if(role==='DEP'){const toa=String(analysis?.o?.takeoffAltn||'');extra=` · <span class="wxMinFail">T/O ALTN required</span> (${esc(toa&&!/NOT\s*REQ/i.test(toa)?'OFP T/O ALTN: '+toa:toa?'OFP: '+toa:'not in OFP')})`;}
+      return {status:'below',req,html:`<div class="wxMinima"><span class="wxMinFail">BELOW MINIMA</span> · ${esc(tafEventToken(ev)||'PREVAILING')}: ${esc(got)} · need ${esc(minimaNeedText(need))}${extra}<br>${esc(req.approach.name)} (${esc(minimaValues(req.approach))}) · ${esc(req.basis)}</div>`};
     }
   }
-  return `<div class="wxMinima"><span class="wxMinOk">MINIMA OK</span> · ${esc(minimaNeedText(req))}<br>${esc(req.approach.name)} (${esc(minimaValues(req.approach))}) · ${esc(req.basis)}</div>`;
+  return {status:'ok',req,html:''};
+}
+// Text under the airport name: the approach the check is based on, or Not Found.
+function minimaUsed(w){
+  const req=minimaRequirement(w);
+  if(!req)return '';
+  if(req.missing)return `Minima: ${req.missing}`;
+  return req.approach.name;
 }
 function renderMinimaList(){
   const host=$('#minimaList');host.replaceChildren();
@@ -5176,7 +5198,8 @@ $('#minimaClose').onclick=()=>$('#minimaDialog').close();
 $('#minimaCancel').onclick=resetMinimaForm;
 function showMinimaDetected(){
   const name=$('#minimaName').value.trim();if(!name){$('#minimaDetected').textContent='';return;}
-  const p=minimaParseName(name);$('#minimaDetected').textContent=`→ ${p.rwy?'RWY '+p.rwy:p.type==='Circling'?'no runway':'runway missing'} · ${p.type}`;
+  const p=minimaParseName(name),ils=/^CAT/.test(p.type);$('#minimaHeight').required=!ils;
+  $('#minimaDetected').textContent=`→ ${p.rwy?'RWY '+p.rwy:p.type==='Circling'?'no runway':'runway missing'} · ${p.type}${ils?' · DH optional':''}`;
 }
 $('#minimaName').oninput=showMinimaDetected;
 $('#minimaShowAll').onclick=()=>{if(minimaEditId)resetMinimaForm();minimaAirport='';renderMinimaAirports();renderMinimaList();};
