@@ -35,6 +35,7 @@ Bối cảnh project cho Claude Code (chuyển từ ChatGPT/Codex ngày 23/09/20
 ## Lịch sử gần đây
 - `ee3170f` Ignore macOS .DS_Store.
 - Trang chủ: 10 chuyến mới nhất, cuộn tải thêm từng 10; giữ pull-to-refresh; refresh/quay lại app thì về 10 chuyến đầu.
+- V6.31: dưới mũi tên có ô tìm **Flight or REG** + ô **Date** (ngày UTC, để trống = mọi ngày), lọc bằng `briefingShown`. V6.32: mỗi chuyến một dòng — số hiệu + REG bên trái, ngày tháng năm (UTC) bên phải (`briefingTimeText`); bỏ tiêu đề ngày và số PDF.
 - `4a328f7` (V5.90) Chuyển trang chủ từ Swift sang HTML.
 - `7f4660e` (V5.91) Danh sách nằm trong **khung cố định cao đúng 10 dòng**, cuộn bên trong khung (infinite scroll), trang ngoài không dài ra. Thêm icon app.
 
