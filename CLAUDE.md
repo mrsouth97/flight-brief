@@ -52,15 +52,18 @@ Bối cảnh project cho Claude Code (chuyển từ ChatGPT/Codex ngày 23/09/20
 - FOM Rev 19 (18/06/2026) đã đối chiếu: 8.1.2/P10, P22 sửa không ảnh hưởng minima.
 - Tài liệu hãng (FOM, SOP, EDTO manual, DGM, DGR, FCOM/MEL A350, LIDO GENPART, ICAO…) nằm trên **Google Drive** "Tài Liệu", đồng bộ về Mac: `~/Library/CloudStorage/GoogleDrive-mrsouth97@gmail.com/My Drive/Tài Liệu/` (đọc trực tiếp bằng pypdf, không giới hạn dung lượng). Lấy logic từ đó, ghi rõ mục tham chiếu; không chép tài liệu vào repo.
 
-## Weather: một giờ cho mỗi sân (V6.34)
-- Thay khoảng WX PERIOD bằng **một giờ** (`weatherAirportUses` → `time`, `window=[at,at]`): DEP = Take off (`ofpTakeoffTime`), DEST = Landing (`ofpLandingTime`), DEST ALT = Landing + thời gian bảng DESTINATION ALTERNATE ROUTE (`ofpDestAltTime`), ENR/EDTO ALT = Take off + TIME TO ETP + ALT ở ALTERNATE SUMMARY (`ofpEtpArrival`; sân nằm ở 2 ETP → trung bình hai giờ; không có cột hh:mm thì dùng bảng EDTO INFORMATION), FUEL ERA = giữa WX PERIOD. Không tính được → giữa WX PERIOD. NOTAM vẫn dùng WX PERIOD (`period`, `periodTime`).
+## Weather: một giờ cho mỗi sân (V6.34, sửa V6.36)
+- Thay khoảng WX PERIOD bằng **một giờ** (`weatherAirportUses` → `time`, `window=[at,at]`): DEP = Take off (`ofpTakeoffTime`), DEST = Landing (`ofpLandingTime`), DEST ALT = Landing + thời gian bảng DESTINATION ALTERNATE ROUTE (`ofpDestAltTime`), ENR ALT = Take off + TIME TO ETP + ALT ở ALTERNATE SUMMARY (`ofpEtpArrival`; sân nằm ở 2 ETP → trung bình hai giờ; không có cột hh:mm thì dùng bảng EDTO INFORMATION), FUEL ERA = giữa WX PERIOD. Không tính được → giữa WX PERIOD. NOTAM vẫn dùng WX PERIOD (`period`, `periodTime`).
+- **EDTO ALT (V6.36): vẫn dùng cả khoảng WX PERIOD của OFP** (người dùng chốt), không dùng một giờ.
+- DEP một mốc giờ take off: tài liệu không quy định khoảng thời gian xét landing minima ở DEP (VAR Điều 590.1.a là take-off minima; FOM 8.1.2.2.4.1, 8.1.3 và VAR Điều 595 không nêu thời gian); người dùng chốt giữ một mốc.
 - Dòng TAF hiện: TEMPO/PROB đang hiệu lực đúng giờ đó luôn được hiện (ưu tiên nhóm có TS), kể cả khi FOM 8.1.2-6 cho bỏ qua; `minimaCheck` vẫn theo FOM.
-- Nhóm TS (TSRA, +TSRA, VCTS, TSGR…) đỏ đậm (`.wxTs`) — người dùng dùng để quyết định lấy dầu.
+- Màu trong dòng TAF (`formatWxVisibility`, V6.36, theo màu sơ đồ FON25/117): đỏ đậm `.wxTs` = nhóm TS (TSRA, +TSRA, VCTS, TSGR) và BR/HZ/FG/FU/DZ/DS/SS/DU/SA; vàng đậm `.wxSh` = mưa rào (SHRA, VCSH…); RA/SN thường không tô. Khi dòng có TS/SH thì nhóm mây đối lưu tô theo trường hợp: CB SCT/BKN/OVC đỏ, CB FEW và mọi TCU vàng. `compactWxState` không in lại chữ CB/TCU tách từ nhóm mây.
 
 ## Extra fuel theo FON25/117 R04 (V6.35)
 - Nguồn: Drive `Tài Liệu/Airlines/FON GUIDELINE FOR WX ASESSMENT.pdf` (hiệu lực 31/07/2026–31/01/2027; sơ đồ quyết định trang 9).
 - `fonExtraFuel(w)` chỉ cho **DEST**: mọi nhóm TAF chạm **giờ landing ± 1 giờ**, so với **dòng TAF gốc** (VIS thấp hơn, ceiling thấp hơn hoặc hiện tượng nặng hơn = xấu đi; người dùng chốt, không dùng minima). FM/BECMG xấu đi → đỏ **SHALL TAKE EXTRA FUEL · consult OCC**; TEMPO/PROB30/40: TS hoặc +SH với CB SCT/BKN, hoặc BR/DZ/HZ/FU/FG/DS/SS/mưa liên tục, hoặc chỉ giảm VIS/ceiling không ghi hiện tượng → SHALL (persistent); TS/SH với CB FEW hoặc không CB → vàng **CONSIDER EXTRA FUEL** (transient); PROB TEMPO xấu đi → CONSIDER; tốt lên → bỏ qua. "-TSRA" coi như TSRA.
-- Dòng TAF chính vẫn chỉ hiện nhóm đúng giờ đến (V6.34); ±1 giờ chỉ dùng cho nhãn extra fuel.
+- Dòng TAF chính vẫn chỉ hiện nhóm đúng giờ đến (V6.34); ±1 giờ chỉ dùng cho nhãn extra fuel. V6.36: chỉ hiện nhãn, bỏ dòng chữ bé ghi nhóm TAF và lý do.
+- Tra tài liệu: dùng skill cá nhân `aviation-docs` (`~/.claude/skills/aviation-docs/`, ngoài repo).
 
 ## ENR WX (V6.33)
 - Tab **ENR WX** (sau WEATHER), bước 1 offline: (1) **SIGMET** trong file WX (`enrSigmets`) so với đường bay nav log OFP (`enrNavLog`, `enrRoute` nội suy 10 NM): trên đường bay → đỏ ON ROUTE, trong 50 NM → vàng; dòng dưới: đoạn waypoint + giờ qua, FL kế hoạch trong/ngoài dải FL, còn hiệu lực lúc ETO không; vùng: WI polygon, N/S/E/W OF (lat/lon/LINE), ENTIRE FIR (chỉ xét trong FIR đó; FIR không có trong OFP nhưng cùng nước → chỉ vàng CHECK); SIGMET xa gom vào "Other SIGMET". (2) **SHEAR** cột WS nav log ≥ 4. (3) **TROPOPAUSE** cột TP ≤ FL + 20 (đỏ nếu FL trên TP). (4) **Charts**: trang ảnh (ít dòng chữ) của file WX/ICING/PLOTTING hiện lưới, chạm mở toàn màn hình (+/−, pinch, chạm đúp).
