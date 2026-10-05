@@ -57,6 +57,11 @@ Bối cảnh project cho Claude Code (chuyển từ ChatGPT/Codex ngày 23/09/20
 - Dòng TAF hiện: TEMPO/PROB đang hiệu lực đúng giờ đó luôn được hiện (ưu tiên nhóm có TS), kể cả khi FOM 8.1.2-6 cho bỏ qua; `minimaCheck` vẫn theo FOM.
 - Nhóm TS (TSRA, +TSRA, VCTS, TSGR…) đỏ đậm (`.wxTs`) — người dùng dùng để quyết định lấy dầu.
 
+## Extra fuel theo FON25/117 R04 (V6.35)
+- Nguồn: Drive `Tài Liệu/Airlines/FON GUIDELINE FOR WX ASESSMENT.pdf` (hiệu lực 31/07/2026–31/01/2027; sơ đồ quyết định trang 9).
+- `fonExtraFuel(w)` chỉ cho **DEST**: mọi nhóm TAF chạm **giờ landing ± 1 giờ**, so với **dòng TAF gốc** (VIS thấp hơn, ceiling thấp hơn hoặc hiện tượng nặng hơn = xấu đi; người dùng chốt, không dùng minima). FM/BECMG xấu đi → đỏ **SHALL TAKE EXTRA FUEL · consult OCC**; TEMPO/PROB30/40: TS hoặc +SH với CB SCT/BKN, hoặc BR/DZ/HZ/FU/FG/DS/SS/mưa liên tục, hoặc chỉ giảm VIS/ceiling không ghi hiện tượng → SHALL (persistent); TS/SH với CB FEW hoặc không CB → vàng **CONSIDER EXTRA FUEL** (transient); PROB TEMPO xấu đi → CONSIDER; tốt lên → bỏ qua. "-TSRA" coi như TSRA.
+- Dòng TAF chính vẫn chỉ hiện nhóm đúng giờ đến (V6.34); ±1 giờ chỉ dùng cho nhãn extra fuel.
+
 ## ENR WX (V6.33)
 - Tab **ENR WX** (sau WEATHER), bước 1 offline: (1) **SIGMET** trong file WX (`enrSigmets`) so với đường bay nav log OFP (`enrNavLog`, `enrRoute` nội suy 10 NM): trên đường bay → đỏ ON ROUTE, trong 50 NM → vàng; dòng dưới: đoạn waypoint + giờ qua, FL kế hoạch trong/ngoài dải FL, còn hiệu lực lúc ETO không; vùng: WI polygon, N/S/E/W OF (lat/lon/LINE), ENTIRE FIR (chỉ xét trong FIR đó; FIR không có trong OFP nhưng cùng nước → chỉ vàng CHECK); SIGMET xa gom vào "Other SIGMET". (2) **SHEAR** cột WS nav log ≥ 4. (3) **TROPOPAUSE** cột TP ≤ FL + 20 (đỏ nếu FL trên TP). (4) **Charts**: trang ảnh (ít dòng chữ) của file WX/ICING/PLOTTING hiện lưới, chạm mở toàn màn hình (+/−, pinch, chạm đúp).
 - Bỏ qua AIRMET (người dùng chốt).
