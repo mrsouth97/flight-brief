@@ -59,6 +59,14 @@ Bối cảnh project cho Claude Code (chuyển từ ChatGPT/Codex ngày 23/09/20
 - Dòng TAF hiện: TEMPO/PROB đang hiệu lực đúng giờ đó luôn được hiện (ưu tiên nhóm có TS), kể cả khi FOM 8.1.2-6 cho bỏ qua; `minimaCheck` vẫn theo FOM.
 - Màu trong dòng TAF (`formatWxVisibility`, V6.36, theo màu sơ đồ FON25/117): đỏ đậm `.wxTs` = nhóm TS (TSRA, +TSRA, VCTS, TSGR) và BR/HZ/FG/FU/DZ/DS/SS/DU/SA; vàng đậm `.wxSh` = mưa rào (SHRA, VCSH…); RA/SN thường không tô. Khi dòng có TS/SH thì nhóm mây đối lưu tô theo trường hợp: CB SCT/BKN/OVC đỏ, CB FEW và mọi TCU vàng. `compactWxState` không in lại chữ CB/TCU tách từ nhóm mây.
 
+## EDTO ALT minima (V6.37)
+- Nguồn: EDTO Ops Manual 5.1–5.2, Table 5.1 (= FOM Table 8.5.1) và **EDTO Dispatch Weather Minima Supplement** (Issue 00 Rev 29, 07/08/2026 — vẫn hiệu lực; Drive `Tài Liệu/Airlines/EDTO DISPATCH WX MINIMA SUPP.pdf`).
+- Dữ liệu Supplement (257 sân) **chỉ nằm trong app iPad**: `FlightBrief/Resources/edto_minima.json` (bridge `edtoData`, `window.FLIGHT_BRIEF_EDTO_VERSION`, `edtoSupp`), tách bằng `~/Downloads/FlightBriefNativeRemote/tools/edto/parse.py`; tuyệt đối không đưa lên GitHub. 68 sân còn cờ → app ghi "verify page". Supplement đổi bản → chạy lại script, build & cài app (đã đặt nhắc 6 tháng).
+- Logic (`minimaRequirement` nhánh EDTO_ERA): sân có trong Supplement → hàng **"1 Serviceable Facility" của approach OFP ghi** trên đường băng OFP (`edtoOfpKind`: CAT1/CAT1DME/RNAV CAT1 = ILS; `edtoSuppRow`); hàng CAT II/III chỉ dùng khi OFP ghi CAT2/CAT3 (người dùng chốt: dùng CAT 1). Dưới mức đó nhưng đạt một cặp "2 Serviceable Facilities" → vàng **2 FACILITIES REQUIRED** kèm tên cặp. Sân không có trong Supplement (vd YBCS, LTAC, WSSS, ROAH) → approach OFP ghi, không có thì CAT I → RNP → thấp nhất trên RWY, +400 ft / +1600 m; ILS chưa nhập DH → "Enter DH".
+- DEP/DEST đồng thời là EDTO ALT vẫn hiện trong nhóm EDTO ALT (EDTO Manual 5.1).
+- Gió cạnh EDTO ALT (`edtoXwindHtml`): > 35 kt kể cả gust trên RWY OFP trong khoảng WX PERIOD → đỏ "XWIND" (SOP A350 1.3.1, đường băng khô/ướt).
+- Minima nhập ngày 05/10/2026 từ video Lido: YBCS, LTAC, WSSS, ROAH (cột GA thấp hơn; RNP lấy LNAV/VNAV; WSSS CAT2 02L 100 ft/R350). Bản lưu: `tools/minima/minima_2026-10-05.json`.
+
 ## Extra fuel theo FON25/117 R04 (V6.35)
 - Nguồn: Drive `Tài Liệu/Airlines/FON GUIDELINE FOR WX ASESSMENT.pdf` (hiệu lực 31/07/2026–31/01/2027; sơ đồ quyết định trang 9).
 - `fonExtraFuel(w)` chỉ cho **DEST**: mọi nhóm TAF chạm **giờ landing ± 1 giờ**, so với **dòng TAF gốc** (VIS thấp hơn, ceiling thấp hơn hoặc hiện tượng nặng hơn = xấu đi; người dùng chốt, không dùng minima). FM/BECMG xấu đi → đỏ **SHALL TAKE EXTRA FUEL · consult OCC**; TEMPO/PROB30/40: TS hoặc +SH với CB SCT/BKN, hoặc BR/DZ/HZ/FU/FG/DS/SS/mưa liên tục, hoặc chỉ giảm VIS/ceiling không ghi hiện tượng → SHALL (persistent); TS/SH với CB FEW hoặc không CB → vàng **CONSIDER EXTRA FUEL** (transient); PROB TEMPO xấu đi → CONSIDER; tốt lên → bỏ qua. "-TSRA" coi như TSRA.
