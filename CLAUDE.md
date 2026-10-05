@@ -52,6 +52,11 @@ Bối cảnh project cho Claude Code (chuyển từ ChatGPT/Codex ngày 23/09/20
 - FOM Rev 19 (18/06/2026) đã đối chiếu: 8.1.2/P10, P22 sửa không ảnh hưởng minima.
 - Tài liệu hãng (FOM, SOP, EDTO manual, DGM, DGR, FCOM/MEL A350, LIDO GENPART, ICAO…) nằm trên **Google Drive** "Tài Liệu", đồng bộ về Mac: `~/Library/CloudStorage/GoogleDrive-mrsouth97@gmail.com/My Drive/Tài Liệu/` (đọc trực tiếp bằng pypdf, không giới hạn dung lượng). Lấy logic từ đó, ghi rõ mục tham chiếu; không chép tài liệu vào repo.
 
+## Weather: một giờ cho mỗi sân (V6.34)
+- Thay khoảng WX PERIOD bằng **một giờ** (`weatherAirportUses` → `time`, `window=[at,at]`): DEP = Take off (`ofpTakeoffTime`), DEST = Landing (`ofpLandingTime`), DEST ALT = Landing + thời gian bảng DESTINATION ALTERNATE ROUTE (`ofpDestAltTime`), ENR/EDTO ALT = Take off + TIME TO ETP + ALT ở ALTERNATE SUMMARY (`ofpEtpArrival`; sân nằm ở 2 ETP → trung bình hai giờ; không có cột hh:mm thì dùng bảng EDTO INFORMATION), FUEL ERA = giữa WX PERIOD. Không tính được → giữa WX PERIOD. NOTAM vẫn dùng WX PERIOD (`period`, `periodTime`).
+- Dòng TAF hiện: TEMPO/PROB đang hiệu lực đúng giờ đó luôn được hiện (ưu tiên nhóm có TS), kể cả khi FOM 8.1.2-6 cho bỏ qua; `minimaCheck` vẫn theo FOM.
+- Nhóm TS (TSRA, +TSRA, VCTS, TSGR…) đỏ đậm (`.wxTs`) — người dùng dùng để quyết định lấy dầu.
+
 ## ENR WX (V6.33)
 - Tab **ENR WX** (sau WEATHER), bước 1 offline: (1) **SIGMET** trong file WX (`enrSigmets`) so với đường bay nav log OFP (`enrNavLog`, `enrRoute` nội suy 10 NM): trên đường bay → đỏ ON ROUTE, trong 50 NM → vàng; dòng dưới: đoạn waypoint + giờ qua, FL kế hoạch trong/ngoài dải FL, còn hiệu lực lúc ETO không; vùng: WI polygon, N/S/E/W OF (lat/lon/LINE), ENTIRE FIR (chỉ xét trong FIR đó; FIR không có trong OFP nhưng cùng nước → chỉ vàng CHECK); SIGMET xa gom vào "Other SIGMET". (2) **SHEAR** cột WS nav log ≥ 4. (3) **TROPOPAUSE** cột TP ≤ FL + 20 (đỏ nếu FL trên TP). (4) **Charts**: trang ảnh (ít dòng chữ) của file WX/ICING/PLOTTING hiện lưới, chạm mở toàn màn hình (+/−, pinch, chạm đúp).
 - Bỏ qua AIRMET (người dùng chốt).
