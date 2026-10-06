@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.64">
-<title>Flight Brief V6.64</title>
+<meta name="flight-brief-version" content="6.65">
+<title>Flight Brief V6.65</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -532,6 +532,14 @@ body.panelScroll .windTable{flex:1;min-height:0;overflow:auto!important;-webkit-
 /* WIND column header as a title bar (same grey bar as WEATHER MINIMA / F-PLN). */
 .windHead{background:var(--mfBar)!important;color:var(--mfBarTxt)!important;border-color:var(--mfBar)!important;font-size:15px!important;padding:5px 7px!important;letter-spacing:.04em}
 @media(max-width:640px){.windHead{font-size:13px!important;padding:4px 4px!important}}
+
+/* V6.65 WIND: header row outside the scroller (cannot be dragged), same type as other title bars; FL box hugs the text. */
+body.panelScroll .windHeadRow{flex:none!important;overflow:hidden!important;min-height:0}
+body.panelScroll .windBody{overscroll-behavior:none}
+.windHead{position:static;font-size:20px!important;padding:3px 7px!important;letter-spacing:.04em;font-weight:400!important}
+.windFlBtn.active::before{display:none!important}
+.windFlBtn.active span{outline:1px solid var(--mfTabTxt);outline-offset:2px}
+@media(max-width:640px){.windHead{font-size:16px!important;padding:4px 4px!important}}
 </style>
 </head>
 <body>
@@ -3354,7 +3362,7 @@ function renderWind(){
       `<div class="windPicker windPickerCompact">`+
         `<div class="windPickerButtons">`+
           available.map(fl=>
-            `<button type="button" class="windFlBtn ${chosen.includes(fl)?'active':''}" data-fl="${fl}">FL${fl}</button>`
+            `<button type="button" class="windFlBtn ${chosen.includes(fl)?'active':''}" data-fl="${fl}"><span>FL${fl}</span></button>`
           ).join('')+
         `</div>`+
       `</div>`;
@@ -3367,9 +3375,11 @@ function renderWind(){
   }
 
   h+=
-      `<div class="windTable" style="grid-template-columns:minmax(70px,.8fr) repeat(${chosen.length},minmax(82px,1fr))">`+
+      `<div class="windTable windHeadRow" style="grid-template-columns:minmax(70px,.8fr) repeat(${chosen.length},minmax(82px,1fr))">`+
         `<div class="windHead windWpt">WPT</div>`+
-        chosen.map(fl=>`<div class="windHead">FL${esc(fl)}</div>`).join('');
+        chosen.map(fl=>`<div class="windHead">FL${esc(fl)}</div>`).join('')+
+      `</div>`+
+      `<div class="windTable windBody" style="grid-template-columns:minmax(70px,.8fr) repeat(${chosen.length},minmax(82px,1fr))">`;
 
   const initialFlMatch=String(analysis?.o?.initialFltLvl||'').match(/(\d{3})/);
   const initialFl=initialFlMatch?Number(initialFlMatch[1]):(w.levelChanges?.[0]?.fl||null);
@@ -3414,6 +3424,7 @@ function renderWind(){
 }
 
 function bindWindLevelButtons(){
+  {const b=document.querySelector('.windBody'),h=document.querySelector('.windHeadRow');if(b&&h)b.onscroll=()=>{h.scrollLeft=b.scrollLeft;};}
   const w=analysis?.windProfile;
   if(!w)return;
 
@@ -3486,7 +3497,9 @@ function analyse(){
   const ofpDoc=selectLatestOfpDoc(docs);
 
   // Keep superseded OFP revisions out of every parsing fallback.
-  const activeDocs=docs.filter(d=>!String(d.kind||'').includes('OFP')||d===ofpDoc);
+  // Newest revision only, for every document type (a folder may hold …_R3.pdf and …_R4.pdf).
+  const latestDocs=enrDocs();
+  const activeDocs=[ofpDoc,...latestDocs].filter(Boolean);
   const all=activeDocs.map(d=>d.text).join('\n');
   const allLayoutText=activeDocs.map(d=>d.layoutText||d.text||'').join('\n');
   const allLayoutRows=activeDocs.flatMap(d=>d.layoutRows||[]);
@@ -3507,7 +3520,7 @@ function analyse(){
   const firs=buildFirTimeline(o),uses=airportUses(o);
   const wxUses=weatherAirportUses(o);
 
-  const wxText=docs
+  const wxText=latestDocs
     .filter(d=>d.kind==='WEATHER'||/\bTAF\b|\bMETAR\b/i.test(d.text))
     .map(d=>d.text).join('\n')||all;
 
@@ -3538,7 +3551,7 @@ function analyse(){
     return {...r,lookup,conditionDetail:cond,ops,flags:melImpactSummary(cond,ops),effects:melKeyEffects(cond,ops)};
   });
 
-  const notamSourceText=docs
+  const notamSourceText=latestDocs
     .filter(d=>d.kind==='NOTAM'||/LIDO[\s-]*NOTAM[\s-]*BULLETIN/i.test(d.text||''))
     .map(d=>d.layoutText||d.text||'')
     .join('\n') || (allLayoutText||all);
@@ -3603,7 +3616,15 @@ function analyse(){
     selectedOfp:{name:ofpDoc?.name||'',revision:ofpRevisionNumber(ofpDoc)},all,o,windProfile,firs,uses,wx,wxText,depTaf,destTaf,depRwyCheck,destRwyCheck,mel,notams,notamSourceText,relevant:dedup};
   render();
 }
-function render(){const a=analysis,o=a.o;const flightTitleEl=$('#flightTitle');if(flightTitleEl)flightTitleEl.textContent=[o.flight,o.dep&&o.dest?o.dep+'-'+o.dest:''].filter(Boolean).join(' • ')||'Flight review';const flightSubEl=$('#flightSub');if(flightSubEl)flightSubEl.textContent=[o.dof?`DOF ${o.dof}`:'',o.reg,o.edto==='YES'?`EDTO ${o.edtoRule||''} MIN`:o.edto==='NO'?'NON-EDTO':''].filter(Boolean).join(' • ');const overviewEl=$('#overview');if(overviewEl){const ovs=[['Flight',o.flight],['OFP',o.ofpDecode||o.ofpNo],['DEP',o.dep],['DEST',o.dest],['DEST ALTN',o.destAlt],['REG',o.reg]];overviewEl.innerHTML=ovs.map(([k,v])=>`<div class="kv"><label>${k}</label><strong>${esc(v||'Not found')}</strong></div>`).join('')}renderOFP();renderWX();try{renderEnr()}catch(e){$('#enrResults').innerHTML=`<div class="wxValue review">ENR WX could not be read (${esc(e.message||e)})</div>`}renderWind();renderMEL();renderNotam();$('#footer').textContent=`${docs.length} PDF • ${a.relevant.length} listed NOTAM • ${a.mel.refs.length} MEL/CDL refs`}
+function render(){const a=analysis,o=a.o;const flightTitleEl=$('#flightTitle');if(flightTitleEl)flightTitleEl.textContent=[o.flight,o.dep&&o.dest?o.dep+'-'+o.dest:''].filter(Boolean).join(' • ')||'Flight review';const flightSubEl=$('#flightSub');if(flightSubEl)flightSubEl.textContent=[o.dof?`DOF ${o.dof}`:'',o.reg,o.edto==='YES'?`EDTO ${o.edtoRule||''} MIN`:o.edto==='NO'?'NON-EDTO':''].filter(Boolean).join(' • ');const overviewEl=$('#overview');if(overviewEl){const ovs=[['Flight',o.flight],['OFP',o.ofpDecode||o.ofpNo],['DEP',o.dep],['DEST',o.dest],['DEST ALTN',o.destAlt],['REG',o.reg]];overviewEl.innerHTML=ovs.map(([k,v])=>`<div class="kv"><label>${k}</label><strong>${esc(v||'Not found')}</strong></div>`).join('')}renderOFP();renderWX();try{renderEnr()}catch(e){$('#enrResults').innerHTML=`<div class="wxValue review">ENR WX could not be read (${esc(e.message||e)})</div>`}renderWind();renderMEL();renderNotam();$('#footer').textContent=docRevText(a)}
+// Footer: revision of each document actually used (newest in the folder).
+function docRevText(a){
+  const rev=d=>{const m=String(d?.name||'').match(/_R(\d+)\.pdf$/i);return m?String(Number(m[1])):'';};
+  const top=k=>{const l=enrDocs().filter(d=>d.kind===k&&rev(d)!=='');return l.length?String(Math.max(...l.map(d=>Number(rev(d))))):'—';};
+  const ofp=docs.find(d=>d.name===a.selectedOfp?.name);
+  const ofpRev=ofp?(rev(ofp)||String(a.selectedOfp.revision??'—')):'—';
+  return `OFP REV ${ofpRev} • WX REV ${top('WEATHER')} • NOTAM REV ${top('NOTAM')}`;
+}
 function renderOFP(){
   // Layout after the MFD ACTIVE/INIT page (FCOM DSC-22-FMS-20-20-20): labelled entry fields in two
   // columns. Cyan box = value as filed (FLT NBR, FROM/TO, ALTN, CRZ FL, CI); green = read/derived.
@@ -3631,7 +3652,7 @@ function renderOFP(){
   const dn=/[A-Z0-9]/i.test(o.dispatchNotes||'')?esc(o.dispatchNotes):'NIL';
 
   let h='<div class="initPage">';
-  const ot=$('#ofpTitle');if(ot)ot.innerHTML='F-PLN<span>'+esc([hvnFlight,o.ofpDecode||o.ofpNo].filter(Boolean).join(' · '))+'</span>';
+  const ot=$('#ofpTitle');if(ot)ot.innerHTML='F-PLN<span>'+esc(o.ofpDecode||o.ofpNo||'')+'</span>';
   h+='<div class="initBody">';
   h+='<div class="initRow">'+fld('FLT NBR',box(esc(hvnFlight||na)))+fld('REG',box(esc(o.reg||na))+inl('PAX',box(esc(o.pax||na))))+'</div>';
   h+='<div class="initRow">'+fld('FROM/TO',box(esc(o.dep||na))+'<span class="initSlash">/</span>'+box(esc(o.dest||na)))+fld('ALTN',box(esc(o.destAlt||na)))+'</div>';
