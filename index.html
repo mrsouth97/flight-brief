@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.55">
-<title>Flight Brief V6.55</title>
+<meta name="flight-brief-version" content="6.56">
+<title>Flight Brief V6.56</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -353,7 +353,7 @@ header,footer{background:var(--bar)!important;backdrop-filter:none!important;bor
 #tab-wind{padding:0!important}
 #tab-ofp .initPage{border-width:10px}
 .wxCard,.notamPaper,.notamPaperFlush{border:0!important;background:transparent!important}
-.themeToggle{font-size:18px!important;line-height:1;padding:6px 12px!important;min-width:44px}
+.themeToggle,.resultActions .themeToggle{font-size:30px!important;line-height:1!important;padding:0 12px!important;min-width:56px;height:44px}
 .resultActions{flex-wrap:nowrap!important;gap:6px!important}
 .resultActions button,.resultActions label.upload{white-space:nowrap;padding:8px 10px!important;font-size:13px!important}
 .windSheet{overflow:hidden!important}
@@ -417,6 +417,12 @@ header,footer{background:var(--bar)!important;backdrop-filter:none!important;bor
 .melApp{font-size:13px;margin:2px 0 4px}.melApp.ok{color:#1FE51F}.melApp.bad{color:#FF2E2E}
 .cdlTbl{grid-template-columns:1fr 1fr;max-width:420px}
 .cdlMaint{color:#8E949B;font-size:13px;margin:4px 0}
+
+/* Sub-tabs inside a page (MINIMA / ENR WX, APRT / FIR): MFD folder tabs flush with the bezel. */
+.subTabs{display:flex;background:#9CA3AF;border-bottom:2px solid #000;margin:-12px -14px 12px}
+.subTab{border:0!important;border-right:2px solid #000!important;border-radius:0!important;background:#9CA3AF!important;color:#111!important;padding:8px 18px!important;font-size:13px!important;font-weight:500!important;text-transform:uppercase}
+.subTab.active{background:#000!important;color:#FFF!important}
+@media(max-width:640px){.subTabs{margin:-10px -8px 10px}}
 </style>
 </head>
 <body>
@@ -467,12 +473,11 @@ header,footer{background:var(--bar)!important;backdrop-filter:none!important;bor
 </section>
 <section id="resultView" class="hidden">
 <div class="resultTopbar"><button id="homeLogoButton" class="resultHomeLogo" type="button">Flight Brief</button><div class="resultMeta hidden"><h2 id="flightTitle">Flight review</h2><div id="flightSub" class="muted"></div><div id="overview" class="overview"></div></div><div class="row wrap resultActions"><button id="themeReview" type="button" class="themeToggle">Day mode</button><button id="minimaReview" type="button">Minima</button><label class="upload">+ Add Docs<input id="moreUpload" type="file" accept=".pdf,application/pdf" multiple hidden></label></div></div>
-<div class="tabs"><button class="tab active" data-tab="ofp">OFP DETAIL</button><button class="tab" data-tab="wx">WEATHER</button><button class="tab" data-tab="enr">ENR WX</button><button class="tab" data-tab="notam">NOTAM</button><button class="tab" data-tab="wind">WIND</button><button class="tab" data-tab="dgr">DGR</button></div>
+<div class="tabs"><button class="tab active" data-tab="ofp">OFP DETAIL</button><button class="tab" data-tab="wx">WEATHER</button><button class="tab" data-tab="notam">NOTAM</button><button class="tab" data-tab="wind">WIND</button><button class="tab" data-tab="dgr">DGR</button></div>
 <section id="tab-ofp" class="card"><div id="ofpResults" class="section"></div><div class="ofpMelMerged"><h3 id="melHeading">MEL / CDL</h3><div id="melResults" class="section" style="margin-top:8px"></div></div></section>
-<section id="tab-wx" class="card hidden"><div id="wxResults" class="section"></div></section>
-<section id="tab-enr" class="card hidden"><div id="enrResults" class="section"></div></section>
+<section id="tab-wx" class="card hidden"><div class="subTabs"><button type="button" class="subTab active" data-sub="minima">MINIMA</button><button type="button" class="subTab" data-sub="enr">ENR WX</button></div><div id="wxResults" class="section" data-pane="minima"></div><div id="enrResults" class="section hidden" data-pane="enr"></div></section>
 
-<section id="tab-notam" class="card hidden"><div class="notamPaper notamPaperFlush"><div id="notamResults" class="notamResults"></div></div></section>
+<section id="tab-notam" class="card hidden"><div class="subTabs"><button type="button" class="subTab active" data-sub="aprt">APRT</button><button type="button" class="subTab" data-sub="fir">FIR</button></div><div class="notamPaper notamPaperFlush"><div id="notamResults" class="notamResults"></div></div></section>
 
 <section id="tab-wind" class="card hidden"><div id="windResults" class="section"></div></section>
 <section id="tab-dgr" class="card hidden"><div id="dgrItems" class="section"></div><button id="dgrAdd" type="button" style="margin-top:10px">+ Add item</button><div id="dgrPositions" class="section" style="margin-top:10px"></div><div id="dgrLoadsheet" class="section" style="margin-top:10px"></div><div id="dgrResults" class="section" style="margin-top:12px"></div></section>
@@ -3226,21 +3231,8 @@ function renderWind(){
     return;
   }
 
-  if(!Array.isArray(w.userSelectedLevels)){
-    const defaults=(w.selectedLevels||[])
-      .map(Number)
-      .filter(fl=>available.includes(fl))
-      .slice(0,4);
-
-    // If the auto default is incomplete, fill from the available levels
-    // nearest to FL380 so the tab opens with exactly four selected FLs.
-    const fill=[...available]
-      .filter(fl=>!defaults.includes(fl))
-      .sort((a,b)=>Math.abs(a-380)-Math.abs(b-380)||a-b);
-
-    while(defaults.length<4 && fill.length)defaults.push(fill.shift());
-    w.userSelectedLevels=defaults.sort((a,b)=>a-b);
-  }
+  // Opens with no FL selected: the pilot picks 2–4 levels (prompt below the FL tabs).
+  if(!Array.isArray(w.userSelectedLevels))w.userSelectedLevels=[];
 
   const chosen=[...w.userSelectedLevels].sort((a,b)=>a-b);
   const points=(chosen.length>=2&&chosen.length<=4)
@@ -3530,7 +3522,7 @@ function renderOFP(){
   const dn=/[A-Z0-9]/i.test(o.dispatchNotes||'')?esc(o.dispatchNotes):'NIL';
 
   let h='<div class="initPage">';
-  h+='<div class="initTitle">OFP/INIT<span>'+esc([hvnFlight,o.ofpDecode||o.ofpNo].filter(Boolean).join(' · '))+'</span></div>';
+  h+='<div class="initTitle">F-PLN<span>'+esc([hvnFlight,o.ofpDecode||o.ofpNo].filter(Boolean).join(' · '))+'</span></div>';
   h+='<div class="initBody">';
   h+='<div class="initRow">'+fld('FLT NBR',box(esc(hvnFlight||na)))+fld('REG',box(esc(o.reg||na))+inl('PAX',box(esc(o.pax||na))))+'</div>';
   h+='<div class="initRow">'+fld('FROM/TO',box(esc(o.dep||na))+'<span class="initSlash">/</span>'+box(esc(o.dest||na)))+fld('ALTN',box(esc(o.destAlt||na)))+'</div>';
@@ -4419,7 +4411,7 @@ async function enrLoadCharts(){
     }
   }finally{
     enrChartBusy=false;
-    if(run!==enrChartRun&&!$('#tab-enr').classList.contains('hidden'))enrLoadCharts();
+    if(run!==enrChartRun&&!$('#enrResults').classList.contains('hidden'))enrLoadCharts();
   }
 }
 function renderEnr(){
@@ -4718,7 +4710,7 @@ function renderMEL(){
     return c?c[1].trim():(d?d[1].trim():'');
   };
   const row=(sys,title,cls,link,body)=>
-    `<details class="melRow"><summary><div class="melRowSys">${sys||'&nbsp;'}</div><div class="melRowMain"><span class="melRowTitle ${cls}">${cls==='inop'?'&gt; ':''}${title}</span><span class="melRowLink">${link||''}</span></div></summary>`+
+    `<details class="melRow"><summary>${sys?`<div class="melRowSys">${sys}</div>`:''}<div class="melRowMain"><span class="melRowTitle ${cls}">${cls==='inop'?'&gt; ':''}${title}</span><span class="melRowLink">${link||''}</span></div></summary>`+
     (body?`<div class="melRowBody">${body}</div>`:'')+`</details>`;
   let h='';
 
@@ -5085,6 +5077,7 @@ function drawNotams(list){
     const isAirportGroup=['DEP ARPT','DEST ARPT','ENR ALT','EDTO ALT','DEST ALT'].includes(g);
     const isFirGroup=['DEP FIR','ENR FIR','DEST FIR'].includes(g);
 
+    if(g==='DEP FIR')h+='<!--FIRSPLIT-->';
     h+=`<div class="notamGroup"><div class="notamGroupHead"><span>${esc(ecamLabel(g))}</span></div>`;
 
     if(isAirportGroup){
@@ -5200,7 +5193,9 @@ function drawNotams(list){
     h+='</div>';
   }
 
-  $('#notamResults').innerHTML=h;
+  const [hA,hF]=h.split('<!--FIRSPLIT-->');
+  const cur=$('#tab-notam .subTab.active')?.dataset.sub||'aprt';
+  $('#notamResults').innerHTML=`<div data-pane="aprt" class="${cur==='aprt'?'':'hidden'}">${hA||''}</div><div data-pane="fir" class="${cur==='fir'?'':'hidden'}">${hF||''}</div>`;
 }
 
 function parseBriefingFolderName(name){
@@ -5533,18 +5528,24 @@ function goHome(){
   $('#scanText').textContent='Reading…';
   $('#footer').textContent='No package loaded';
   document.querySelectorAll('.tab').forEach((x,i)=>x.classList.toggle('active',i===0));
-  ['ofp','wx','enr','notam','wind','dgr'].forEach((t,i)=>$('#tab-'+t).classList.toggle('hidden',i!==0));
+  ['ofp','wx','notam','wind','dgr'].forEach((t,i)=>$('#tab-'+t).classList.toggle('hidden',i!==0));
   dgrItems=[];dgrHeaderOk=false;dgrPositions=[{ids:[]}];
   window.scrollTo(0,0);
   nativeHomeAction('home');
 }
 $('#homeLogoButton').onclick=goHome;
+document.addEventListener('click',e=>{
+  const b=e.target.closest('.subTab');if(!b)return;
+  b.parentElement.querySelectorAll('.subTab').forEach(x=>x.classList.toggle('active',x===b));
+  const scope=b.closest('section')||document;
+  scope.querySelectorAll('[data-pane]').forEach(p=>p.classList.toggle('hidden',p.dataset.pane!==b.dataset.sub));
+});
 document.querySelectorAll('.tab').forEach(b=>{
   b.onclick=()=>{
     const target=b.dataset.tab;
     document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
-    ['ofp','wx','enr','notam','wind','dgr'].forEach(t=>{
+    ['ofp','wx','notam','wind','dgr'].forEach(t=>{
       const panel=$('#tab-'+t);
       if(panel)panel.classList.toggle('hidden',t!==target);
     });
