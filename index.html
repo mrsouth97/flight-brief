@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.60">
-<title>Flight Brief V6.60</title>
+<meta name="flight-brief-version" content="6.61">
+<title>Flight Brief V6.61</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -241,6 +241,10 @@
 .homeLogo,.resultHomeLogo{color:var(--accent)!important}
 input,select,textarea{background:var(--card);color:var(--text);border-color:var(--line)}
 
+
+/* MFD display palette: night = black ECAM display; Day mode (mockup option 2) = pale display, dark text, deep colours. */
+:root{--mfBarSub:#4B5563;--mfTab:#3B3B3B;--mfMuted:#8E949B;--mfLine2:#4B5563;--mfMuted2:#4B5563;--mfDisp:#000;--mfTxt:#FFF;--mfCyan:#19D6F0;--mfGreen:#1FE51F;--mfAmber:#FFB000;--mfRed:#FF2E2E;--mfMag:#FF4FD8;--mfBezel:#6B7280;--mfLine:#374151;--mfTabTxt:#D1D5DB;--mfBar:#C4C7CC;--mfPanel:#0E1012;--mfBarTxt:#111}
+:root:not([data-theme="night"]){--mfBarSub:#4B5563;--mfTab:#D9DCE1;--mfMuted:#5C6269;--mfLine2:#B5BAC1;--mfMuted2:#5C6269;--mfDisp:#F4F5F7;--mfTxt:#14171A;--mfCyan:#0A6F8F;--mfGreen:#0F7A2A;--mfAmber:#9A5A00;--mfRed:#C01A1A;--mfMag:#A0128F;--mfBezel:#9AA0A8;--mfLine:#C9CDD3;--mfTabTxt:#14171A;--mfBar:#C4C7CC;--mfPanel:#E3E6EA;--mfBarTxt:#111}
 /* ECAM look (V6.45): one monospaced display face, black ground, thin lines, no boxes-in-boxes,
    colours carry meaning only: white data, green normal, amber caution, red warning, cyan titles/actions. */
 body,button,input,select,textarea,label.upload{font-family:"SF Mono",ui-monospace,Menlo,monospace!important;letter-spacing:0}
@@ -290,66 +294,66 @@ header,footer{background:var(--bar)!important;backdrop-filter:none!important;bor
 
 /* WIND tab in the style of the MFD ACTIVE/WIND page (FCOM DSC-22-FMS-10-40-30): grey bezel, black panel,
    folder tabs for FL selection, small units; no colour coding — CFP deviations stay bold white. */
-.windSheet{background:#000!important;border:10px solid #6B7280!important;border-radius:2px!important;padding:0}
-.windPicker{padding:0!important;background:#9CA3AF;border-bottom:2px solid #000}
+.windSheet{background:var(--mfDisp)!important;border:10px solid var(--mfBezel)!important;border-radius:2px!important;padding:0}
+.windPicker{padding:0!important;background:var(--mfTab);border-bottom:2px solid var(--mfDisp)}
 .windPickerButtons{gap:0!important;flex-wrap:nowrap!important;overflow-x:auto}
-.windFlBtn{border:0!important;border-right:2px solid #000!important;border-radius:0!important;background:#9CA3AF!important;color:#111!important;padding:8px 16px!important;font-size:13px!important;font-weight:500!important;text-transform:uppercase}
-.windFlBtn.active{background:#000!important;color:#FFF!important}
+.windFlBtn{border:0!important;border-right:2px solid var(--mfDisp)!important;border-radius:0!important;background:var(--mfTab)!important;color:var(--mfBarTxt)!important;padding:8px 16px!important;font-size:13px!important;font-weight:500!important;text-transform:uppercase}
+.windFlBtn.active{background:var(--mfDisp)!important;color:var(--mfTxt)!important}
 .windTable{border:0!important;margin:0}
-.windHead{background:#000!important;color:#FFF!important;font-size:13px!important;font-weight:500!important;border-color:#4B5563!important;padding:10px 7px!important;text-transform:uppercase}
-.windCell{border-color:#4B5563!important;color:#FFF!important;padding:10px 7px!important}
-.windWptLabel{color:#1FE51F!important;font-weight:500!important}
-.windWptSub{color:#9CA3AF!important;font-style:normal!important}
-.windWptTemp{color:#9CA3AF!important;font-size:13px!important}
-.windWptTemp.changed{color:#FFF!important;font-weight:700!important}
-.windVector{color:#C9CCD0;font-size:15px;font-weight:400}
-.windVector.changed{color:#FFF!important;font-weight:700!important}
-.windUnit{color:#9CA3AF;font-size:10px;margin-left:1px}
-.windVector.changed .windUnit{color:#FFF}
-.windMissing{color:#9CA3AF!important}
-.windChoosePrompt{color:#19D6F0!important;border:0!important}
+.windHead{background:var(--mfDisp)!important;color:var(--mfTxt)!important;font-size:13px!important;font-weight:500!important;border-color:var(--mfLine2)!important;padding:10px 7px!important;text-transform:uppercase}
+.windCell{border-color:var(--mfLine2)!important;color:var(--mfTxt)!important;padding:10px 7px!important}
+.windWptLabel{color:var(--mfGreen)!important;font-weight:500!important}
+.windWptSub{color:var(--mfMuted)!important;font-style:normal!important}
+.windWptTemp{color:var(--mfMuted)!important;font-size:13px!important}
+.windWptTemp.changed{color:var(--mfTxt)!important;font-weight:700!important}
+.windVector{color:var(--mfTabTxt);font-size:15px;font-weight:400}
+.windVector.changed{color:var(--mfTxt)!important;font-weight:700!important}
+.windUnit{color:var(--mfMuted);font-size:10px;margin-left:1px}
+.windVector.changed .windUnit{color:var(--mfTxt)}
+.windMissing{color:var(--mfMuted)!important}
+.windChoosePrompt{color:var(--mfCyan)!important;border:0!important}
 
 /* OFP DETAIL as MFD ACTIVE/INIT page; MEL/CDL as ECAM STATUS section (V6.45). */
-.initPage{background:#000;border:10px solid #6B7280;border-radius:2px}
-.initTitle{background:#9CA3AF;color:#111;font-size:14px;padding:4px 10px;display:flex;justify-content:space-between;gap:12px}
-.initTitle span{color:#4B5563;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.initBody{padding:14px 14px 10px;color:#F2F3F4}
+.initPage{background:var(--mfDisp);border:10px solid var(--mfBezel);border-radius:2px}
+.initTitle{background:var(--mfTab);color:var(--mfBarTxt);font-size:14px;padding:4px 10px;display:flex;justify-content:space-between;gap:12px}
+.initTitle span{color:var(--mfMuted2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.initBody{padding:14px 14px 10px;color:var(--mfTxt)}
 .initRow{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin-bottom:12px}
 .initRow.one{grid-template-columns:1fr}
 .initFld{display:flex;align-items:center;gap:10px;min-height:38px;min-width:0;flex-wrap:wrap}
 .initLbl{font-size:13px;min-width:84px}
 .initLbl.initIn{min-width:0;margin-left:12px}
-.initBox{border:1px solid #8E949B;padding:6px 10px;color:#19D6F0;min-width:92px;text-align:center;border-radius:2px;font-size:15px}
-.initBox.green{color:#1FE51F;border-color:#3A3F46}
+.initBox{border:1px solid var(--mfMuted);padding:6px 10px;color:var(--mfCyan);min-width:92px;text-align:center;border-radius:2px;font-size:15px}
+.initBox.green{color:var(--mfGreen);border-color:var(--mfLine)}
 .initBox.wide{min-width:0;flex:1;text-align:left}
-.initPlain,.initWind{color:#1FE51F;font-size:15px}
-.initWind.warn{color:#FFB000}
-.initUnit{color:#F2F3F4;font-size:11px;margin-left:2px}
-.initSlash{color:#F2F3F4}
-.initSep{height:1px;background:#3A3F46;margin:6px 0 14px}
+.initPlain,.initWind{color:var(--mfGreen);font-size:15px}
+.initWind.warn{color:var(--mfAmber)}
+.initUnit{color:var(--mfTxt);font-size:11px;margin-left:2px}
+.initSlash{color:var(--mfTxt)}
+.initSep{height:1px;background:var(--mfLine);margin:6px 0 14px}
 @media(max-width:640px){.initRow{grid-template-columns:1fr}}
 .initPage{border-bottom:0!important;border-radius:2px 2px 0 0!important}
-.ofpMelMerged{margin-top:0!important;padding:0 14px 14px;background:#000;border:10px solid #6B7280;border-top:0!important;border-radius:0 0 2px 2px}
-.ofpMelMerged::before{content:"";display:block;height:2px;background:#3A3F46;margin:0 -14px 12px}
-.ofpMelMerged h3{display:inline-block;border-bottom:1px solid #F2F3F4;padding-bottom:3px;margin-bottom:10px!important;font-size:14px!important;color:#F2F3F4!important}
+.ofpMelMerged{margin-top:0!important;padding:0 14px 14px;background:var(--mfDisp);border:10px solid var(--mfBezel);border-top:0!important;border-radius:0 0 2px 2px}
+.ofpMelMerged::before{content:"";display:block;height:2px;background:var(--mfLine);margin:0 -14px 12px}
+.ofpMelMerged h3{display:inline-block;border-bottom:1px solid var(--mfTxt);padding-bottom:3px;margin-bottom:10px!important;font-size:14px!important;color:var(--mfTxt)!important}
 .melItem{margin-bottom:10px}
-.melLine{font-size:15px;color:#F2F3F4}
-.melLine.inop{color:#FFB000}.melLine.pass{color:#1FE51F}.melLine.fail{color:#FF2E2E}.melLine.review{color:#FF4FD8}
-.melMeta{color:#F2F3F4;font-size:13px;margin-left:10px}
+.melLine{font-size:15px;color:var(--mfTxt)}
+.melLine.inop{color:var(--mfAmber)}.melLine.pass{color:var(--mfGreen)}.melLine.fail{color:var(--mfRed)}.melLine.review{color:var(--mfMag)}
+.melMeta{color:var(--mfTxt);font-size:13px;margin-left:10px}
 .melCond{margin-top:6px}
-.melCond summary{list-style:none;cursor:pointer;color:#19D6F0;font-size:13px;display:flex;align-items:center;gap:6px}
+.melCond summary{list-style:none;cursor:pointer;color:var(--mfCyan);font-size:13px;display:flex;align-items:center;gap:6px}
 .melCond summary::-webkit-details-marker{display:none}
-.melLead{flex:1;border-bottom:1px dotted #3A3F46;min-width:24px;max-width:160px}
+.melLead{flex:1;border-bottom:1px dotted var(--mfLine);min-width:24px;max-width:160px}
 .melCondBody{margin:8px 0 0 14px}
-.melCondTitle{color:#F2F3F4;font-size:13px;margin-bottom:6px}
-.melInfo{color:#1FE51F;font-size:13px;line-height:1.5;margin-bottom:8px}
-.melFlags{color:#FFB000;font-size:13px;margin-bottom:8px}
-.melAct{color:#19D6F0;font-size:13px;display:flex;align-items:center;gap:6px}
-.melSimpleDetails summary{color:#8E949B;font-size:12px;cursor:pointer;margin-top:8px}
+.melCondTitle{color:var(--mfTxt);font-size:13px;margin-bottom:6px}
+.melInfo{color:var(--mfGreen);font-size:13px;line-height:1.5;margin-bottom:8px}
+.melFlags{color:var(--mfAmber);font-size:13px;margin-bottom:8px}
+.melAct{color:var(--mfCyan);font-size:13px;display:flex;align-items:center;gap:6px}
+.melSimpleDetails summary{color:var(--mfMuted);font-size:12px;cursor:pointer;margin-top:8px}
 
 /* V6.46: every tab inside the MFD bezel (as INIT / WIND); phone-width fixes; sun/moon theme button. */
 .card{padding:0!important;border:0!important;background:transparent!important}
-#tab-wx,#tab-enr,#tab-notam,#tab-dgr{background:#000!important;border:10px solid #6B7280!important;border-radius:2px!important;padding:12px 14px 14px!important}
+#tab-wx,#tab-enr,#tab-notam,#tab-dgr{background:var(--mfDisp)!important;border:10px solid var(--mfBezel)!important;border-radius:2px!important;padding:12px 14px 14px!important}
 #tab-wind{padding:0!important}
 #tab-ofp .initPage{border-width:10px}
 .wxCard,.notamPaper,.notamPaperFlush{border:0!important;background:transparent!important}
@@ -370,7 +374,8 @@ header,footer{background:var(--bar)!important;backdrop-filter:none!important;bor
   .initWind,.initPlain{font-size:14px;white-space:nowrap}
   #tab-wx,#tab-enr,#tab-notam,#tab-dgr{padding:10px 8px 10px!important;border-width:8px!important}
   .initPage,.windSheet{border-width:8px!important}
-  .windTable{grid-template-columns:64px repeat(4,minmax(88px,1fr))!important}
+  .windTable{overflow-x:auto}
+  .windPickerButtons{flex-wrap:wrap!important}
   .windCell{padding:8px 4px!important}
   .windVector{font-size:12px;white-space:nowrap}
   .windWptLabel{font-size:12px}
@@ -383,58 +388,58 @@ header,footer{background:var(--bar)!important;backdrop-filter:none!important;bor
 .melOps{margin-top:6px}
 .melOps summary{list-style:none;cursor:pointer}
 .melOps summary::-webkit-details-marker{display:none}
-.melOpsBody{margin:8px 0 0 14px;color:#F2F3F4;font-size:13px;line-height:1.5}
-.melOpsHead{color:#F2F3F4;margin:6px 0 4px;text-decoration:underline;text-underline-offset:3px}
+.melOpsBody{margin:8px 0 0 14px;color:var(--mfTxt);font-size:13px;line-height:1.5}
+.melOpsHead{color:var(--mfTxt);margin:6px 0 4px;text-decoration:underline;text-underline-offset:3px}
 .melOpsItem{padding-left:16px;text-indent:-16px;margin-bottom:4px}
 
-.melTbl{display:grid;grid-template-columns:repeat(3,1fr);margin:8px 0 6px;border:1px solid #8E949B}
-.melTblHead{background:#9CA3AF;color:#111;font-size:12px;text-align:center;padding:3px 4px;border-right:1px solid #000}
-.melTblVal{color:#F2F3F4;font-size:15px;font-weight:700;text-align:center;padding:4px;border-right:1px solid #4B5563}
+.melTbl{display:grid;grid-template-columns:repeat(3,1fr);margin:8px 0 6px;border:1px solid var(--mfMuted)}
+.melTblHead{background:var(--mfTab);color:var(--mfBarTxt);font-size:12px;text-align:center;padding:3px 4px;border-right:1px solid var(--mfDisp)}
+.melTblVal{color:var(--mfTxt);font-size:15px;font-weight:700;text-align:center;padding:4px;border-right:1px solid var(--mfLine2)}
 .melTblHead:last-child,.melTblVal:last-child{border-right:0}
-.melPlacard{display:inline-block;background:#4B5563;color:#D1D5DB;font-size:11px;padding:2px 8px;margin-bottom:6px}
+.melPlacard{display:inline-block;background:var(--mfLine2);color:var(--mfTabTxt);font-size:11px;padding:2px 8px;margin-bottom:6px}
 
 /* MEL/CDL rows like the OLB ECAM EVENTS panel (V6.49). */
-.melPanelHead{display:flex;justify-content:space-between;background:#1F2937;color:#F2F3F4;font-size:13px;padding:5px 10px;border-bottom:1px solid #4B5563;margin-top:4px}
-.melRow{border-bottom:1px solid #374151}
+.melPanelHead{display:flex;justify-content:space-between;background:var(--mfPanel);color:var(--mfTxt);font-size:13px;padding:5px 10px;border-bottom:1px solid var(--mfLine2);margin-top:4px}
+.melRow{border-bottom:1px solid var(--mfLine)}
 .melRow summary{list-style:none;cursor:pointer;padding:8px 10px}
 .melRow summary::-webkit-details-marker{display:none}
-.melRowSys{color:#9CA3AF;font-size:12px;min-height:14px}
+.melRowSys{color:var(--mfMuted);font-size:12px;min-height:14px}
 .melRowMain{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
-.melRowTitle{color:#F2F3F4;font-size:15px}
-.melRowTitle.pass{color:#1FE51F}.melRowTitle.fail{color:#FF2E2E}.melRowTitle.review{color:#FF4FD8}
-.melRow[open] .melRowTitle{color:#19D6F0}
-.melRowLink{color:#19D6F0;font-size:13px;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.melRowTitle{color:var(--mfTxt);font-size:15px}
+.melRowTitle.pass{color:var(--mfGreen)}.melRowTitle.fail{color:var(--mfRed)}.melRowTitle.review{color:var(--mfMag)}
+.melRow[open] .melRowTitle{color:var(--mfCyan)}
+.melRowLink{color:var(--mfCyan);font-size:13px;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
 .melRowBody{padding:4px 10px 12px 24px}
 
 .melRowSys{font-size:13px!important}
-.melItemHead{color:#F2F3F4;font-size:15px;margin:2px 0 6px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
-.melSq{width:11px;height:11px;background:#F2F3F4;display:inline-block;flex:none}
+.melItemHead{color:var(--mfTxt);font-size:15px;margin:2px 0 6px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.melSq{width:11px;height:11px;background:var(--mfTxt);display:inline-block;flex:none}
 .melItemName{text-transform:none}
 .melTag{display:inline-block;margin-right:8px;text-transform:lowercase;text-indent:0}
-.melInfo{color:#F2F3F4!important}
+.melInfo{color:var(--mfTxt)!important}
 .melProvItem{padding-left:44px!important;text-indent:-22px!important}
 .melProvRef{padding-left:22px}
-.melApp{font-size:13px;margin:2px 0 4px}.melApp.ok{color:#1FE51F}.melApp.bad{color:#FF2E2E}
+.melApp{font-size:13px;margin:2px 0 4px}.melApp.ok{color:var(--mfGreen)}.melApp.bad{color:var(--mfRed)}
 .cdlTbl{grid-template-columns:1fr 1fr;max-width:420px}
-.cdlMaint{color:#8E949B;font-size:13px;margin:4px 0}
+.cdlMaint{color:var(--mfMuted);font-size:13px;margin:4px 0}
 
 /* Sub-tabs inside a page (MINIMA / ENR WX, APRT / FIR): MFD folder tabs flush with the bezel. */
-.subTabs{display:flex;background:#9CA3AF;border-bottom:2px solid #000;margin:-12px -14px 12px}
-.subTab{border:0!important;border-right:2px solid #000!important;border-radius:0!important;background:#9CA3AF!important;color:#111!important;padding:8px 18px!important;font-size:13px!important;font-weight:500!important;text-transform:uppercase}
-.subTab.active{background:#000!important;color:#FFF!important}
+.subTabs{display:flex;background:var(--mfTab);border-bottom:2px solid var(--mfDisp);margin:-12px -14px 12px}
+.subTab{border:0!important;border-right:2px solid var(--mfDisp)!important;border-radius:0!important;background:var(--mfTab)!important;color:var(--mfBarTxt)!important;padding:8px 18px!important;font-size:13px!important;font-weight:500!important;text-transform:uppercase}
+.subTab.active{background:var(--mfDisp)!important;color:var(--mfTxt)!important}
 @media(max-width:640px){.subTabs{margin:-10px -8px 10px}}
 
 /* V6.57 tabs after the MFD FCU BKUP page (AFS CP | EFIS CP): dark-grey tabs on black, the selected
    tab's label inside a thin white box; a light-grey title bar with the page name underneath. */
-.tabs{gap:0!important;background:#000;padding-bottom:0!important;border-bottom:0!important;margin:14px 0 0!important}
-.tab,.subTab,.windFlBtn{background:#3A3F46!important;color:#E5E7EB!important;border:0!important;border-right:2px solid #000!important;border-radius:0!important;padding:7px 12px!important;font-size:15px!important;font-weight:500!important;text-transform:uppercase;outline:0}
-.tab{background:#000!important;color:#19D6F0!important;border-right:0!important;padding:8px 18px 6px 0!important;font-size:16px!important}
-.tab.active,.subTab.active,.windFlBtn.active{background:#3A3F46!important;color:#FFF!important;border-color:#000!important;outline:1px solid #FFF!important;outline-offset:-4px}
-.tab.active{background:#000!important;color:#FFF!important;outline:0!important}
-.subTabs,.windPicker{background:#000!important;border-bottom:0!important}
+.tabs{gap:0!important;background:var(--mfDisp);padding-bottom:0!important;border-bottom:0!important;margin:14px 0 0!important}
+.tab,.subTab,.windFlBtn{background:var(--mfLine)!important;color:var(--mfTxt)!important;border:0!important;border-right:2px solid var(--mfDisp)!important;border-radius:0!important;padding:7px 12px!important;font-size:15px!important;font-weight:500!important;text-transform:uppercase;outline:0}
+.tab{background:var(--mfDisp)!important;color:var(--mfCyan)!important;border-right:0!important;padding:8px 18px 6px 0!important;font-size:16px!important}
+.tab.active,.subTab.active,.windFlBtn.active{background:var(--mfLine)!important;color:var(--mfTxt)!important;border-color:var(--mfDisp)!important;outline:1px solid var(--mfTxt)!important;outline-offset:-4px}
+.tab.active{background:var(--mfDisp)!important;color:var(--mfTxt)!important;outline:0!important}
+.subTabs,.windPicker{background:var(--mfDisp)!important;border-bottom:0!important}
 .subTabs{margin:-12px -14px 0!important}
-.subTitle{background:#C4C7CC;color:#111;font-size:20px;letter-spacing:.04em;padding:3px 10px;margin:0 -14px 12px}
-.windPickerButtons{background:#000}
+.subTitle{background:var(--mfBar);color:var(--mfBarTxt);font-size:20px;letter-spacing:.04em;padding:3px 10px;margin:0 -14px 12px}
+.windPickerButtons{background:var(--mfDisp)}
 @media(max-width:640px){
   .tab,.subTab,.windFlBtn{padding:10px 12px!important;font-size:12px!important}
   .tab.active,.subTab.active,.windFlBtn.active{outline-offset:-4px}
@@ -447,10 +452,61 @@ body.panelScroll main{padding-bottom:0}
 body.panelScroll #resultView section.card{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 
 /* V6.60: the scrolling panel itself carries the MFD bezel on every tab (OFP/WIND included). */
-body.panelScroll #tab-ofp,body.panelScroll #tab-wind{background:#000!important;border:10px solid #6B7280!important;border-radius:2px!important;padding:0!important}
+body.panelScroll #tab-ofp,body.panelScroll #tab-wind{background:var(--mfDisp)!important;border:10px solid var(--mfBezel)!important;border-radius:2px!important;padding:0!important}
 body.panelScroll .initPage,body.panelScroll .ofpMelMerged,body.panelScroll .windSheet{border:0!important;border-radius:0!important}
 body.panelScroll #tab-wx,body.panelScroll #tab-notam,body.panelScroll #tab-dgr{padding-top:0!important}
 body.panelScroll .subTabs{margin-top:0!important}
+
+/* Local preview (not released): tab strip + title bar stay fixed, only the content below scrolls. */
+body.panelScroll #tab-wx,body.panelScroll #tab-notam{display:flex;flex-direction:column;overflow:hidden!important}
+body.panelScroll #tab-wx>.subTabs,body.panelScroll #tab-wx>.subTitle,body.panelScroll #tab-notam>.subTabs,body.panelScroll #tab-notam>.subTitle{flex:none}
+body.panelScroll #tab-wx>[data-pane],body.panelScroll #tab-notam>.notamPaper{flex:1;min-height:0;overflow-y:auto!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+body.panelScroll .initTitle,body.panelScroll .windPicker{position:sticky;top:0;z-index:5}
+
+/* Preview V6.61: fixed title bar on OFP too; tab buttons after the FMS (option B). */
+body.panelScroll #tab-ofp{display:flex;flex-direction:column;overflow:hidden!important}
+body.panelScroll #tab-ofp>.subTitle{flex:none;margin:0}
+body.panelScroll #tab-ofp>.panelBody{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.subTitle{display:flex;justify-content:space-between;gap:12px}
+.subTitle span{color:var(--mfBarSub);font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;align-self:center}
+.subTab,.windFlBtn{position:relative;background:var(--mfTab)!important;color:var(--mfTabTxt)!important;padding:7px 11px!important;font-size:16px!important;letter-spacing:.04em;outline:0!important}
+.subTab.active,.windFlBtn.active{background:var(--mfTab)!important;color:var(--mfTabTxt)!important;outline:0!important}
+.subTab.active::before,.windFlBtn.active::before{content:"";position:absolute;inset:6px 8px;border:1px solid var(--mfTabTxt);pointer-events:none}
+
+/* Preview V6.61: main tabs inside the MFD frame (mockup option 2): black boxes with a thin grey outline,
+   cyan labels, selected label in a cyan box; grey rule between the main strip and the page. */
+.mfdFrame{border:10px solid var(--mfBezel);border-radius:2px;background:var(--mfDisp);margin-top:14px}
+#resultView .mfdFrame section.card{border:0!important;border-radius:0!important}
+.mfdFrame .tabs{margin:0!important;background:var(--mfDisp);border-bottom:2px solid var(--mfBezel)!important;padding:0!important;gap:0!important}
+.mfdFrame .tab{position:relative;background:var(--mfDisp)!important;color:var(--mfCyan)!important;border:1px solid var(--mfBezel)!important;border-right:0!important;border-radius:0!important;padding:7px 11px!important;font-size:16px!important;letter-spacing:.04em;white-space:nowrap;outline:0!important}
+.mfdFrame .tab:last-child{border-right:1px solid var(--mfBezel)!important}
+.mfdFrame .tab.active{background:var(--mfDisp)!important;color:var(--mfCyan)!important}
+.mfdFrame .tab.active::before{content:"";position:absolute;inset:5px 7px;border:1px solid var(--mfCyan);pointer-events:none}
+@media(max-width:640px){
+  .mfdFrame{border-width:8px}
+  .mfdFrame .tab{padding:6px 8px!important;font-size:13px!important}
+  .mfdFrame .tab.active::before{inset:4px 5px}
+}
+
+/* The MFD frame is a black display in both themes: inside it always use the night palette (Day mode only restyles the page around it). */
+.mfdFrame{--bg:var(--mfDisp);--card:var(--mfDisp);--panel2:var(--mfPanel);--text:var(--mfTxt);--sub:var(--mfTabTxt);--muted:var(--mfMuted);--line:var(--mfLine);--blue:var(--mfCyan);--blue2:rgba(25,214,240,.12);--onBlue:var(--mfDisp);--green:var(--mfGreen);--green2:rgba(31,229,31,.10);--amber:var(--mfAmber);--amber2:rgba(255,176,0,.12);--red:var(--mfRed);--red2:rgba(255,46,46,.12);--purple:var(--mfMag);--purple2:rgba(255,79,216,.12);--accent:var(--mfTxt);--bar:rgba(0,0,0,.97);color-scheme:dark;color:var(--text)}
+:root:not([data-theme="night"]) .mfdFrame{--bg:#F4F5F7;--card:#F4F5F7;--panel2:#E3E6EA;--text:#14171A;--sub:#3A3F46;--muted:#5C6269;--line:#C9CDD3;--blue:#0A6F8F;--blue2:rgba(10,111,143,.12);--onBlue:#fff;--green:#0F7A2A;--green2:rgba(15,122,42,.12);--amber:#9A5A00;--amber2:rgba(154,90,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.12);--purple:#A0128F;--purple2:rgba(160,18,143,.12);--accent:#14171A}
+
+/* Phone width: title bar on one line, flight id shrinks; tighter frame padding. */
+.subTitle{white-space:nowrap;align-items:center}
+@media(max-width:640px){
+  .subTitle{font-size:16px;padding:4px 8px}
+  .subTitle span{font-size:11px}
+  .mfdFrame .tab{padding:7px 7px!important;font-size:13px!important;letter-spacing:0}
+  .mfdFrame .tab.active::before{inset:4px 4px}
+  .subTab,.windFlBtn{padding:6px 8px!important;font-size:14px!important;letter-spacing:0}
+  .subTab.active::before,.windFlBtn.active::before{inset:5px 6px}
+  main{padding-left:4px;padding-right:4px}
+  .mfdFrame{border-width:6px}
+  .resultHomeLogo{font-size:14px!important;letter-spacing:.06em!important}
+  .resultActions button,.resultActions label.upload{padding:7px 8px!important;font-size:12px!important}
+  .themeToggle,.resultActions .themeToggle{font-size:22px!important;min-width:40px;height:36px}
+}
 </style>
 </head>
 <body>
@@ -501,14 +557,14 @@ body.panelScroll .subTabs{margin-top:0!important}
 </section>
 <section id="resultView" class="hidden">
 <div class="resultTopbar"><button id="homeLogoButton" class="resultHomeLogo" type="button">Flight Brief</button><div class="resultMeta hidden"><h2 id="flightTitle">Flight review</h2><div id="flightSub" class="muted"></div><div id="overview" class="overview"></div></div><div class="row wrap resultActions"><button id="themeReview" type="button" class="themeToggle">Day mode</button><button id="minimaReview" type="button">Minima</button><label class="upload">+ Add Docs<input id="moreUpload" type="file" accept=".pdf,application/pdf" multiple hidden></label></div></div>
-<div class="tabs"><button class="tab active" data-tab="ofp">OFP DETAIL</button><button class="tab" data-tab="wx">WEATHER</button><button class="tab" data-tab="notam">NOTAM</button><button class="tab" data-tab="wind">WIND</button><button class="tab" data-tab="dgr">DGR</button></div>
-<section id="tab-ofp" class="card"><div id="ofpResults" class="section"></div><div class="ofpMelMerged"><h3 id="melHeading">MEL / CDL</h3><div id="melResults" class="section" style="margin-top:8px"></div></div></section>
+<div class="mfdFrame"><div class="tabs"><button class="tab active" data-tab="ofp">OFP DETAIL</button><button class="tab" data-tab="wx">WEATHER</button><button class="tab" data-tab="notam">NOTAM</button><button class="tab" data-tab="wind">WIND</button><button class="tab" data-tab="dgr">DGR</button></div>
+<section id="tab-ofp" class="card"><div class="subTitle" id="ofpTitle">F-PLN</div><div class="panelBody"><div id="ofpResults" class="section"></div><div class="ofpMelMerged"><h3 id="melHeading">MEL / CDL</h3><div id="melResults" class="section" style="margin-top:8px"></div></div></div></section>
 <section id="tab-wx" class="card hidden"><div class="subTabs"><button type="button" class="subTab active" data-sub="minima" data-title="WEATHER MINIMA">MINIMA</button><button type="button" class="subTab" data-sub="enr" data-title="ENROUTE WEATHER">ENR WX</button></div><div class="subTitle">WEATHER MINIMA</div><div id="wxResults" class="section" data-pane="minima"></div><div id="enrResults" class="section hidden" data-pane="enr"></div></section>
 
 <section id="tab-notam" class="card hidden"><div class="subTabs"><button type="button" class="subTab active" data-sub="aprt" data-title="AIRPORT NOTAM">APRT</button><button type="button" class="subTab" data-sub="fir" data-title="FIR NOTAM">FIR</button></div><div class="subTitle">AIRPORT NOTAM</div><div class="notamPaper notamPaperFlush"><div id="notamResults" class="notamResults"></div></div></section>
 
 <section id="tab-wind" class="card hidden"><div id="windResults" class="section"></div></section>
-<section id="tab-dgr" class="card hidden"><div id="dgrItems" class="section"></div><button id="dgrAdd" type="button" style="margin-top:10px">+ Add item</button><div id="dgrPositions" class="section" style="margin-top:10px"></div><div id="dgrLoadsheet" class="section" style="margin-top:10px"></div><div id="dgrResults" class="section" style="margin-top:12px"></div></section>
+<section id="tab-dgr" class="card hidden"><div id="dgrItems" class="section"></div><button id="dgrAdd" type="button" style="margin-top:10px">+ Add item</button><div id="dgrPositions" class="section" style="margin-top:10px"></div><div id="dgrLoadsheet" class="section" style="margin-top:10px"></div><div id="dgrResults" class="section" style="margin-top:12px"></div></section></div>
 </section>
 </main>
 <div id="enrViewer" class="hidden"><div class="enrViewerBar"><button id="enrPrev" type="button">‹</button><button id="enrNext" type="button">›</button><span id="enrViewerTitle"></span><button id="enrZoomOut" type="button">−</button><button id="enrZoomIn" type="button">+</button><button id="enrClose" type="button">Close</button></div><div id="enrViewerScroll" class="enrViewerScroll"><img id="enrViewerImg" alt=""></div></div>
@@ -3550,7 +3606,7 @@ function renderOFP(){
   const dn=/[A-Z0-9]/i.test(o.dispatchNotes||'')?esc(o.dispatchNotes):'NIL';
 
   let h='<div class="initPage">';
-  h+='<div class="initTitle">F-PLN<span>'+esc([hvnFlight,o.ofpDecode||o.ofpNo].filter(Boolean).join(' · '))+'</span></div>';
+  const ot=$('#ofpTitle');if(ot)ot.innerHTML='F-PLN<span>'+esc([hvnFlight,o.ofpDecode||o.ofpNo].filter(Boolean).join(' · '))+'</span>';
   h+='<div class="initBody">';
   h+='<div class="initRow">'+fld('FLT NBR',box(esc(hvnFlight||na)))+fld('REG',box(esc(o.reg||na))+inl('PAX',box(esc(o.pax||na))))+'</div>';
   h+='<div class="initRow">'+fld('FROM/TO',box(esc(o.dep||na))+'<span class="initSlash">/</span>'+box(esc(o.dest||na)))+fld('ALTN',box(esc(o.destAlt||na)))+'</div>';
@@ -5573,7 +5629,8 @@ function fitPanels(){
   document.querySelectorAll('#resultView section.card').forEach(sec=>{
     if(sec.classList.contains('hidden'))return;
     const top=sec.getBoundingClientRect().top+window.scrollY;
-    sec.style.height=Math.max(200,window.innerHeight-top-fh-10)+'px';
+    const fr=sec.closest('.mfdFrame'),fb=fr?parseFloat(getComputedStyle(fr).borderBottomWidth)||0:0;
+    sec.style.height=Math.max(200,window.innerHeight-top-fh-10-fb)+'px';
   });
 }
 window.addEventListener('resize',fitPanels);
