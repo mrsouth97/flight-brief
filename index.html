@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.58">
-<title>Flight Brief V6.58</title>
+<meta name="flight-brief-version" content="6.59">
+<title>Flight Brief V6.59</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -426,11 +426,11 @@ header,footer{background:var(--bar)!important;backdrop-filter:none!important;bor
 
 /* V6.57 tabs after the MFD FCU BKUP page (AFS CP | EFIS CP): dark-grey tabs on black, the selected
    tab's label inside a thin white box; a light-grey title bar with the page name underneath. */
-.tabs{gap:0!important;background:#000;padding-bottom:0!important;border-bottom:0!important}
-.tab,.subTab,.windFlBtn{background:#3A3F46!important;color:#E5E7EB!important;border:0!important;border-right:2px solid #000!important;border-radius:0!important;padding:9px 14px!important;font-size:15px!important;font-weight:500!important;text-transform:uppercase;outline:0}
-.tab{color:#19D6F0!important}
-.tab.active,.subTab.active,.windFlBtn.active{background:#3A3F46!important;color:#FFF!important;border-color:#000!important;outline:1px solid #FFF!important;outline-offset:-5px}
-.tab.active{color:#19D6F0!important}
+.tabs{gap:0!important;background:#000;padding-bottom:0!important;border-bottom:0!important;margin:14px 0 0!important}
+.tab,.subTab,.windFlBtn{background:#3A3F46!important;color:#E5E7EB!important;border:0!important;border-right:2px solid #000!important;border-radius:0!important;padding:7px 12px!important;font-size:15px!important;font-weight:500!important;text-transform:uppercase;outline:0}
+.tab{background:#000!important;color:#19D6F0!important;border-right:0!important;padding:8px 18px 6px 0!important;font-size:16px!important}
+.tab.active,.subTab.active,.windFlBtn.active{background:#3A3F46!important;color:#FFF!important;border-color:#000!important;outline:1px solid #FFF!important;outline-offset:-4px}
+.tab.active{background:#000!important;color:#FFF!important;outline:0!important}
 .subTabs,.windPicker{background:#000!important;border-bottom:0!important}
 .subTabs{margin:-12px -14px 0!important}
 .subTitle{background:#C4C7CC;color:#111;font-size:20px;letter-spacing:.04em;padding:3px 10px;margin:0 -14px 12px}
