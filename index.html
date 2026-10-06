@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.46">
-<title>Flight Brief V6.46</title>
+<meta name="flight-brief-version" content="6.47">
+<title>Flight Brief V6.47</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -378,6 +378,14 @@ header,footer{background:var(--bar)!important;backdrop-filter:none!important;bor
   .windFlBtn{padding:8px 10px!important;font-size:12px!important}
   main{padding-left:6px;padding-right:6px}
 }
+
+.melProvItem{padding-left:22px;text-indent:-22px}
+.melOps{margin-top:6px}
+.melOps summary{list-style:none;cursor:pointer}
+.melOps summary::-webkit-details-marker{display:none}
+.melOpsBody{margin:8px 0 0 14px;color:#F2F3F4;font-size:13px;line-height:1.5}
+.melOpsHead{color:#F2F3F4;margin:6px 0 4px;text-decoration:underline;text-underline-offset:3px}
+.melOpsItem{padding-left:16px;text-indent:-16px;margin-bottom:4px}
 </style>
 </head>
 <body>
@@ -4625,14 +4633,52 @@ function renderMEL(){
     const flags=d.flags||[],effects=d.effects||[];
     let detail='';
     if(cond.title)detail+=`<div class="melCondTitle">${esc(cond.title)}</div>`;
-    if(effects.length)detail+=`<div class="melInfo">${effects.map(x=>esc(x)).join('<br>')}</div>`;
+    const prov=melProvisoHtml(cond);
+    if(prov)detail+=`<div class="melInfo">${prov}</div>`;
+    else if(effects.length)detail+=`<div class="melInfo">${effects.map(x=>esc(x)).join('<br>')}</div>`;
     if(flags.length)detail+=`<div class="melFlags">AFFECTED: ${flags.map(esc).join(', ')}</div>`;
-    if(cond.hasO)detail+=`<div class="melAct">OPS PROC ${esc(cond.ref)}<span class="melLead"></span>APPLY</div>`;
+    if(cond.hasO)detail+=`<details class="melOps"><summary class="melAct">OPS PROC ${esc(cond.ref)}<span class="melLead"></span>APPLY</summary><div class="melOpsBody">${melOpsHtml(d.ops)||'NOT FOUND IN MEL OPERATIONAL PROCEDURES'}</div></details>`;
     const raw=[cond.raw,d.ops?'--- OPERATIONAL PROCEDURE (O) ---\n'+d.ops:''].filter(Boolean).join('\n\n');
     if(raw)detail+=`<details class="melSimpleDetails"><summary>MEL TEXT</summary><pre>${esc(raw.slice(0,10000))}</pre></details>`;
     h+=item(`${esc(cond.ref)} ${esc(L.title)}`,'inop',meta,detail);
   }
   $('#melResults').innerHTML=h;
+}
+
+// Proviso lines as printed in the MEL (one line per numbered condition), taken from the item's raw text.
+function melProvisoHtml(cond){
+  const raw=String(cond?.raw||'');
+  let lines=raw.split('\n').map(l=>l.replace(/\s+$/,''));
+  const st=lines.findIndex(l=>/^\s*\((o|m)\)|^\s*(One|Two|Three|Any|All|May be|Both)\b/i.test(l));
+  if(st<0)return '';
+  lines=lines.slice(st);
+  const en=lines.findIndex(l=>/Reference\(s\)|^\s*\((o|m)\)\s+Refer to|HVN A350 FLEET/i.test(l));
+  if(en>0)lines=lines.slice(0,en);
+  const out=[];
+  for(const l of lines){
+    const t=l.trim(); if(!t)continue;
+    const starts=/^(\(\w\)\s*)*\d+\)|^\((o|m)\)|^(Note|NOTE)\s*:/.test(t);
+    if(starts||!out.length)out.push(t); else out[out.length-1]+=' '+t;
+  }
+  return out.map(t=>`<div class="${/^\d+\)/.test(t)?'melProvItem':''}">${esc(t)}</div>`).join('');
+}
+// (O) procedure as printed in the MEL OPERATIONAL PROCEDURES: phase titles, one line per dash bullet.
+function melOpsHtml(ops){
+  if(!ops)return '';
+  let lines=String(ops).split('\n');
+  const st=lines.findIndex(l=>/^\s*Applicable to\s*:/i.test(l));
+  if(st>=0)lines=lines.slice(st+1);
+  lines=lines.filter(l=>!/HVN A350 FLEET|MEL OPERATIONAL PROCEDURES|MINIMUM EQUIPMENT LIST|^\s*MEL\s{2,}|^\s*A350\s*$|^\s*Ident\.\s*:|^\s*\d{2}\s*-\s*[A-Z]|^\s*\d{2}-\d{2}\s+-\s/.test(l));
+  const out=[];
+  for(const l of lines){
+    const t=l.trim(); if(!t)continue;
+    if(/^\d{2}-\d{2}-\d{2}[A-Z]?\b/.test(t))break;
+    if(/^[‐\-•]\s*/.test(t))out.push({k:'b',t:t.replace(/^[‐\-•]\s*/,'')});
+    else if(/^[A-Z][A-Z0-9 \/&(),.'-]{2,}$/.test(t)&&t===t.toUpperCase())out.push({k:'h',t});
+    else if(out.length&&out[out.length-1].k==='b')out[out.length-1].t+=' '+t;
+    else out.push({k:'p',t});
+  }
+  return out.map(x=>x.k==='h'?`<div class="melOpsHead">${esc(x.t)}</div>`:x.k==='b'?`<div class="melOpsItem">‐ ${esc(x.t)}</div>`:`<div>${esc(x.t)}</div>`).join('');
 }
 const NOTAM_GROUPS=['DEP ARPT','DEST ARPT','ENR ALT','EDTO ALT','DEST ALT','DEP FIR','ENR FIR','DEST FIR'];
 // Display labels follow FCOM abbreviations (ALT = altitude, ALTN = alternate); internal role keys unchanged.
