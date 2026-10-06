@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.59">
-<title>Flight Brief V6.59</title>
+<meta name="flight-brief-version" content="6.60">
+<title>Flight Brief V6.60</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -441,6 +441,16 @@ header,footer{background:var(--bar)!important;backdrop-filter:none!important;bor
   .subTabs{margin:-10px -8px 0!important}
   .subTitle{margin:0 -8px 10px;font-size:16px}
 }
+
+body.panelScroll{overflow:hidden;height:100dvh}
+body.panelScroll main{padding-bottom:0}
+body.panelScroll #resultView section.card{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+
+/* V6.60: the scrolling panel itself carries the MFD bezel on every tab (OFP/WIND included). */
+body.panelScroll #tab-ofp,body.panelScroll #tab-wind{background:#000!important;border:10px solid #6B7280!important;border-radius:2px!important;padding:0!important}
+body.panelScroll .initPage,body.panelScroll .ofpMelMerged,body.panelScroll .windSheet{border:0!important;border-radius:0!important}
+body.panelScroll #tab-wx,body.panelScroll #tab-notam,body.panelScroll #tab-dgr{padding-top:0!important}
+body.panelScroll .subTabs{margin-top:0!important}
 </style>
 </head>
 <body>
@@ -5431,6 +5441,7 @@ async function addFiles(list){
     $('#scanText').textContent='Completed';
     $('#uploadView').classList.add('hidden');
     $('#resultView').classList.remove('hidden');
+    requestAnimationFrame(fitPanels);
     $('#appFooter').classList.remove('hidden');
   }catch(e){
     console.error('A350 review error:',e);
@@ -5536,6 +5547,7 @@ function goHome(){
   analysis=null;
   lastNotams=[];
   $('#resultView').classList.add('hidden');
+  document.body.classList.remove('panelScroll');
   $('#uploadView').classList.remove('hidden');
   $('#appFooter').classList.add('hidden');
   $('#uploadDocs').innerHTML='';
@@ -5552,6 +5564,19 @@ function goHome(){
   nativeHomeAction('home');
 }
 $('#homeLogoButton').onclick=goHome;
+// V6.60: in the flight view the page is fixed and each tab panel scrolls inside its MFD bezel.
+function fitPanels(){
+  const open=!$('#resultView').classList.contains('hidden');
+  document.body.classList.toggle('panelScroll',open);
+  if(!open)return;
+  const foot=$('#appFooter'),fh=foot&&!foot.classList.contains('hidden')?foot.getBoundingClientRect().height:0;
+  document.querySelectorAll('#resultView section.card').forEach(sec=>{
+    if(sec.classList.contains('hidden'))return;
+    const top=sec.getBoundingClientRect().top+window.scrollY;
+    sec.style.height=Math.max(200,window.innerHeight-top-fh-10)+'px';
+  });
+}
+window.addEventListener('resize',fitPanels);
 document.addEventListener('click',e=>{
   const b=e.target.closest('.subTab');if(!b)return;
   b.parentElement.querySelectorAll('.subTab').forEach(x=>x.classList.toggle('active',x===b));
@@ -5568,6 +5593,7 @@ document.querySelectorAll('.tab').forEach(b=>{
       const panel=$('#tab-'+t);
       if(panel)panel.classList.toggle('hidden',t!==target);
     });
+    fitPanels();
   };
 });
 // DGR lookup: IATA DGR Blue Pages data lives only inside the iPad app (licensed
