@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.61">
-<title>Flight Brief V6.61</title>
+<meta name="flight-brief-version" content="6.62">
+<title>Flight Brief V6.62</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -507,6 +507,8 @@ body.panelScroll #tab-ofp>.panelBody{flex:1;min-height:0;overflow-y:auto;-webkit
   .resultActions button,.resultActions label.upload{padding:7px 8px!important;font-size:12px!important}
   .themeToggle,.resultActions .themeToggle{font-size:22px!important;min-width:40px;height:36px}
 }
+body.homeFixed main{padding-bottom:0}
+body.homeFixed .homeView{min-height:0}
 </style>
 </head>
 <body>
@@ -5351,14 +5353,16 @@ function renderBriefingFlights(){
   appendBriefingFlights();
   fitBriefingFlights();
 }
-// Landscape: shrink the flight list so the whole home screen fits without page scrolling.
+// Home screen is fixed (no page scroll): only the flight list scrolls, sized to what is left of the screen.
 function fitBriefingFlights(){
-  const host=$('#briefingFlights');
+  const host=$('#briefingFlights'),home=$('#uploadView');
+  const atHome=!!home&&!home.classList.contains('hidden');
+  document.body.classList.toggle('homeFixed',atHome);
   if(!host)return;
   host.style.height='';
-  if(!host.classList.contains('hasFlights')||innerWidth<=innerHeight||$('#uploadView')?.classList.contains('hidden'))return;
+  if(!host.classList.contains('hasFlights')||!atHome)return;
   const overflow=document.documentElement.scrollHeight-innerHeight;
-  if(overflow>0)host.style.height=Math.max(160,host.offsetHeight-overflow-4)+'px';
+  if(overflow>0)host.style.height=Math.max(160,host.offsetHeight-overflow-2)+'px';
 }
 addEventListener('resize',()=>{fitBriefingFlights();setTimeout(fitBriefingFlights,300);});
 
@@ -5624,6 +5628,7 @@ $('#homeLogoButton').onclick=goHome;
 function fitPanels(){
   const open=!$('#resultView').classList.contains('hidden');
   document.body.classList.toggle('panelScroll',open);
+  if(open)document.body.classList.remove('homeFixed');
   if(!open)return;
   const foot=$('#appFooter'),fh=foot&&!foot.classList.contains('hidden')?foot.getBoundingClientRect().height:0;
   document.querySelectorAll('#resultView section.card').forEach(sec=>{
