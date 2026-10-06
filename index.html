@@ -5,16 +5,18 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
-<meta name="flight-brief-version" content="6.43">
-<title>Flight Brief V6.43</title>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
+<meta name="flight-brief-version" content="6.45">
+<title>Flight Brief V6.45</title>
 <style>
-:root{--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#6f7b90;--line:#dde5ef;--blue:#0b5cff;--blue2:#eaf1ff;--green:#137a46;--green2:#e8f6ee;--amber:#9a6700;--amber2:#fff5d8;--red:#b8322a;--red2:#fdeceb;--purple:#6541c1;--purple2:#f1ecff}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top)) 14px 10px}.shell{max-width:1180px;margin:auto}.brand{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand h1{font-size:19px;margin:0}.sub,.muted{font-size:12px;color:var(--muted)}main{max-width:1180px;margin:auto;padding:16px 14px calc(88px + env(safe-area-inset-bottom))}.hero{padding:22px;border-radius:18px;background:linear-gradient(145deg,#0b5cff,#3d74ff);color:#fff;margin-bottom:14px;box-shadow:0 8px 28px rgba(11,92,255,.18)}.hero h2{font-size:24px;margin:0 0 8px}.hero p{margin:0;color:#ebf1ff;line-height:1.45;font-size:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 5px 20px rgba(25,45,75,.05)}h2{font-size:18px;margin:0 0 5px}h3{font-size:15px;margin:0}.row{display:flex;align-items:center;gap:10px}.between{justify-content:space-between}.wrap{flex-wrap:wrap}button,label.upload{border:0;border-radius:12px;padding:11px 14px;font-size:14px;font-weight:700;cursor:pointer;background:var(--blue2);color:#184aa4}.primary{background:var(--blue)!important;color:#fff!important}.ghost{background:#eef2f6!important;color:#4f5a6c!important}.danger{background:var(--red2)!important;color:var(--red)!important}.drop{border:2px dashed #b8c7da;border-radius:16px;background:#fafcff;padding:30px 14px;text-align:center;margin-top:14px}.progress{height:9px;background:#e8edf4;border-radius:99px;overflow:hidden;margin-top:8px}.bar{height:100%;background:var(--blue);width:0;transition:.2s}.hidden{display:none!important}.tabs{display:flex;gap:8px;overflow:auto;margin:14px 0}.tab{white-space:nowrap}.tab.active{background:var(--blue)!important;color:#fff!important}.overview{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:14px}@media(min-width:800px){.overview{grid-template-columns:repeat(6,1fr)}}.kv{border:1px solid var(--line);border-radius:13px;padding:10px;background:#fbfcfe}.kv label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:5px}.kv strong{font-size:14px;word-break:break-word}.section{display:grid;gap:10px}.item{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}.item.pass{border-left:5px solid var(--green)}.item.warn{border-left:5px solid var(--amber)}.item.fail{border-left:5px solid var(--red)}.item.info{border-left:5px solid var(--blue)}.item.review{border-left:5px solid var(--purple)}.itemhead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.badge{display:inline-block;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:800;white-space:nowrap}.badge.pass{background:var(--green2);color:var(--green)}.badge.warn{background:var(--amber2);color:var(--amber)}.badge.fail{background:var(--red2);color:var(--red)}.badge.info{background:var(--blue2);color:var(--blue)}.badge.review{background:var(--purple2);color:var(--purple)}.body{font-size:13px;line-height:1.45;color:#445064;margin-top:8px}.source{font-size:11px;color:var(--muted);margin-top:8px}.raw{white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;background:#f7f9fc;border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px;max-height:260px;overflow:auto}.docs{display:grid;gap:8px;margin-top:12px}.doc{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:11px}.docname{font-weight:700;word-break:break-word}.pill{display:inline-block;padding:4px 7px;border-radius:999px;background:#eef2f7;color:#566174;font-size:10px;font-weight:700;margin-top:5px}.timeline{display:flex;overflow:auto;gap:9px;padding-bottom:4px;margin-top:12px}.timebox{min-width:190px;border:1px solid var(--line);border-radius:13px;padding:10px;background:#fbfcfe}.timebox strong{display:block;font-size:13px}.timebox span{font-size:11px;color:var(--muted)}.note{font-size:12px;background:#fff9e9;border:1px solid #efdda6;color:#77560e;border-radius:12px;padding:10px;line-height:1.4;margin-top:12px}.grid2{display:grid;grid-template-columns:1fr;gap:12px}@media(min-width:900px){.grid2{grid-template-columns:.9fr 1.1fr}}.filter{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:11px;font-size:14px;background:#fff}.groupTitle{margin:18px 2px 7px;font-size:14px;font-weight:850;color:#25344b;border-bottom:1px solid var(--line);padding-bottom:7px}.groupSub{font-size:11px;color:var(--muted);font-weight:500;margin-left:6px}.ofpCard{border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px 16px}.ofpGrid{display:grid;grid-template-columns:150px 1fr;gap:9px 14px;align-items:start}.ofpLabel{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}.ofpValue{font-size:14px;font-weight:700;color:#172033;min-width:0;word-break:break-word}.ofpRwy.pass{color:var(--green)}.ofpRwy.warn{color:#9a6500}.ofpRwy.review{color:var(--purple)}.wxCard{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}.wxRow{display:grid;grid-template-columns:180px 1fr;gap:14px;padding:12px 16px;border-bottom:1px solid var(--line);align-items:start}.wxRow:last-child{border-bottom:0}.wxAirport{font-size:13px;font-weight:850;color:#25344b}.wxValue{font-size:14px;font-weight:700;color:#172033;word-break:break-word}.wxUseTime{font-size:10px;font-weight:650;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}.wxValue.warn{color:#9a6500}.wxValue.review{color:var(--purple)}.wxVisGood{color:var(--green);font-weight:850}.wxVisLow{color:var(--amber);font-weight:850}.wxVisBad{color:var(--red);font-weight:850}.wxTs{color:var(--red);font-weight:900}.wxSh{color:var(--amber);font-weight:900}.wxGroup{padding:12px 16px;border-bottom:1px solid var(--line)}.wxGroup:last-child{border-bottom:0}.wxGroupTitle{font-size:13px;font-weight:900;color:#25344b;margin-bottom:6px}.wxGroupItem{display:grid;grid-template-columns:180px minmax(0,1fr);gap:14px;padding:5px 0;align-items:start}.wxGroupCode{font-size:13px;font-weight:850;color:#25344b;white-space:normal;overflow-wrap:anywhere}.wxGroupItem .wxValue{min-width:0}@media(max-width:640px){.wxGroupItem{grid-template-columns:1fr;gap:2px;padding:7px 0}}@media(max-width:640px){.wxRow{grid-template-columns:1fr;gap:4px}}@media(max-width:640px){.ofpGrid{grid-template-columns:1fr}.ofpLabel{margin-top:4px}.ofpValue{margin-bottom:4px}}footer{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:9px 14px calc(9px + env(safe-area-inset-bottom))}footer .shell{display:flex;align-items:center;justify-content:space-between;gap:10px}
+:root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
+:root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}header{position:sticky;top:0;z-index:20;background:var(--bar);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top)) 14px 10px}.shell{max-width:1180px;margin:auto}.brand{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand h1{font-size:19px;margin:0}.sub,.muted{font-size:12px;color:var(--muted)}main{max-width:1180px;margin:auto;padding:16px 14px calc(88px + env(safe-area-inset-bottom))}.hero{padding:22px;border-radius:18px;background:linear-gradient(145deg,var(--blue),#3d74ff);color:var(--onBlue);margin-bottom:14px;box-shadow:0 8px 28px rgba(11,92,255,.18)}.hero h2{font-size:24px;margin:0 0 8px}.hero p{margin:0;color:var(--blue2);line-height:1.45;font-size:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 5px 20px rgba(25,45,75,.05)}h2{font-size:18px;margin:0 0 5px}h3{font-size:15px;margin:0}.row{display:flex;align-items:center;gap:10px}.between{justify-content:space-between}.wrap{flex-wrap:wrap}button,label.upload{border:0;border-radius:12px;padding:11px 14px;font-size:14px;font-weight:700;cursor:pointer;background:var(--blue2);color:var(--blue)}.primary{background:var(--blue)!important;color:var(--onBlue)!important}.ghost{background:var(--panel2)!important;color:var(--sub)!important}.danger{background:var(--red2)!important;color:var(--red)!important}.drop{border:2px dashed var(--line);border-radius:16px;background:var(--panel2);padding:30px 14px;text-align:center;margin-top:14px}.progress{height:9px;background:var(--panel2);border-radius:99px;overflow:hidden;margin-top:8px}.bar{height:100%;background:var(--blue);width:0;transition:.2s}.hidden{display:none!important}.tabs{display:flex;gap:8px;overflow:auto;margin:14px 0}.tab{white-space:nowrap}.tab.active{background:var(--blue)!important;color:var(--onBlue)!important}.overview{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:14px}@media(min-width:800px){.overview{grid-template-columns:repeat(6,1fr)}}.kv{border:1px solid var(--line);border-radius:13px;padding:10px;background:var(--panel2)}.kv label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:5px}.kv strong{font-size:14px;word-break:break-word}.section{display:grid;gap:10px}.item{border:1px solid var(--line);border-radius:14px;padding:13px;background:var(--card)}.item.pass{border-left:5px solid var(--green)}.item.warn{border-left:5px solid var(--amber)}.item.fail{border-left:5px solid var(--red)}.item.info{border-left:5px solid var(--blue)}.item.review{border-left:5px solid var(--purple)}.itemhead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.badge{display:inline-block;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:800;white-space:nowrap}.badge.pass{background:var(--green2);color:var(--green)}.badge.warn{background:var(--amber2);color:var(--amber)}.badge.fail{background:var(--red2);color:var(--red)}.badge.info{background:var(--blue2);color:var(--blue)}.badge.review{background:var(--purple2);color:var(--purple)}.body{font-size:13px;line-height:1.45;color:var(--sub);margin-top:8px}.source{font-size:11px;color:var(--muted);margin-top:8px}.raw{white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px;max-height:260px;overflow:auto}.docs{display:grid;gap:8px;margin-top:12px}.doc{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:11px}.docname{font-weight:700;word-break:break-word}.pill{display:inline-block;padding:4px 7px;border-radius:999px;background:var(--panel2);color:var(--sub);font-size:10px;font-weight:700;margin-top:5px}.timeline{display:flex;overflow:auto;gap:9px;padding-bottom:4px;margin-top:12px}.timebox{min-width:190px;border:1px solid var(--line);border-radius:13px;padding:10px;background:var(--panel2)}.timebox strong{display:block;font-size:13px}.timebox span{font-size:11px;color:var(--muted)}.note{font-size:12px;background:var(--amber2);border:1px solid var(--amber);color:var(--amber);border-radius:12px;padding:10px;line-height:1.4;margin-top:12px}.grid2{display:grid;grid-template-columns:1fr;gap:12px}@media(min-width:900px){.grid2{grid-template-columns:.9fr 1.1fr}}.filter{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:11px;font-size:14px;background:var(--card)}.groupTitle{margin:18px 2px 7px;font-size:14px;font-weight:850;color:var(--text);border-bottom:1px solid var(--line);padding-bottom:7px}.groupSub{font-size:11px;color:var(--muted);font-weight:500;margin-left:6px}.ofpCard{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:14px 16px}.ofpGrid{display:grid;grid-template-columns:150px 1fr;gap:9px 14px;align-items:start}.ofpLabel{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}.ofpValue{font-size:14px;font-weight:700;color:var(--text);min-width:0;word-break:break-word}.ofpRwy.pass{color:var(--green)}.ofpRwy.warn{color:var(--amber)}.ofpRwy.review{color:var(--purple)}.wxCard{border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}.wxRow{display:grid;grid-template-columns:180px 1fr;gap:14px;padding:12px 16px;border-bottom:1px solid var(--line);align-items:start}.wxRow:last-child{border-bottom:0}.wxAirport{font-size:13px;font-weight:850;color:var(--text)}.wxValue{font-size:14px;font-weight:700;color:var(--text);word-break:break-word}.wxUseTime{font-size:10px;font-weight:650;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}.wxValue.warn{color:var(--amber)}.wxValue.review{color:var(--purple)}.wxVisGood{color:var(--green);font-weight:850}.wxVisLow{color:var(--amber);font-weight:850}.wxVisBad{color:var(--red);font-weight:850}.wxTs{color:var(--red);font-weight:900}.wxSh{color:var(--amber);font-weight:900}.wxGroup{padding:12px 16px;border-bottom:1px solid var(--line)}.wxGroup:last-child{border-bottom:0}.wxGroupTitle{font-size:13px;font-weight:900;color:var(--text);margin-bottom:6px}.wxGroupItem{display:grid;grid-template-columns:180px minmax(0,1fr);gap:14px;padding:5px 0;align-items:start}.wxGroupCode{font-size:13px;font-weight:850;color:var(--text);white-space:normal;overflow-wrap:anywhere}.wxGroupItem .wxValue{min-width:0}@media(max-width:640px){.wxGroupItem{grid-template-columns:1fr;gap:2px;padding:7px 0}}@media(max-width:640px){.wxRow{grid-template-columns:1fr;gap:4px}}@media(max-width:640px){.ofpGrid{grid-template-columns:1fr}.ofpLabel{margin-top:4px}.ofpValue{margin-bottom:4px}}footer{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--bar);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:9px 14px calc(9px + env(safe-area-inset-bottom))}footer .shell{display:flex;align-items:center;justify-content:space-between;gap:10px}
 
 .melSimple{padding:10px 0;border-bottom:1px solid var(--line)}
 .melSimple:last-child{border-bottom:0}
-.melSimpleTitle{font-size:15px;font-weight:850;color:#172033;margin-bottom:5px}
-.melSimpleBody{font-size:14px;line-height:1.45;color:#25344b}
+.melSimpleTitle{font-size:15px;font-weight:850;color:var(--text);margin-bottom:5px}
+.melSimpleBody{font-size:14px;line-height:1.45;color:var(--text)}
 .melSimple.pass .melSimpleTitle{color:var(--green)}
 .melSimple.fail .melSimpleTitle{color:var(--red)}
 .melSimple.review .melSimpleTitle{color:var(--purple)}
@@ -22,74 +24,74 @@
 .melSimpleDetails summary{cursor:pointer;font-weight:700}
 .melSimpleDetails pre{white-space:pre-wrap;word-break:break-word;font-size:12px;margin:8px 0 0}
 
-.ofpMelMerged{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}.ofpMelMerged h3{font-size:15px;margin:0;color:#25344b}
+.ofpMelMerged{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}.ofpMelMerged h3{font-size:15px;margin:0;color:var(--text)}
 .notamResults{display:block}
 .notamGroup{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
 .notamGroup:first-child{margin-top:0}
-.notamGroupHead{display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:850;color:#25344b;padding:0 2px 6px}
+.notamGroupHead{display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:850;color:var(--text);padding:0 2px 6px}
 .notamGroupCount{font-size:11px;color:var(--muted);font-weight:700}
 .notamNone{font-size:12px;color:var(--muted);padding:5px 2px 9px}
-.notamSimple{padding:10px 2px 11px;border-top:1px solid #edf0f5}
+.notamSimple{padding:10px 2px 11px;border-top:1px solid var(--line)}
 .notamSimple:first-of-type{border-top:0}
 .notamSimpleHead{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.notamId{font-size:13px;font-weight:850;color:#1f2937}
-.notamLoc{font-size:12px;font-weight:750;color:var(--muted);margin-left:8px}.notamLocOnly{font-size:13px;font-weight:850;color:#1f2937;margin-left:0}
+.notamId{font-size:13px;font-weight:850;color:var(--text)}
+.notamLoc{font-size:12px;font-weight:750;color:var(--muted);margin-left:8px}.notamLocOnly{font-size:13px;font-weight:850;color:var(--text);margin-left:0}
 .notamTopic{font-size:11px;font-weight:850;margin-top:5px}
 .notamTopic.warn{color:var(--amber)}
 .notamTopic.review{color:var(--purple)}
 .notamTopic.info{color:var(--blue)}
 .notamTopic.fail{color:var(--red)}
-.notamText{font-size:13px;line-height:1.45;color:#354052;margin-top:5px;white-space:pre-wrap;word-break:break-word}
+.notamText{font-size:13px;line-height:1.45;color:var(--sub);margin-top:5px;white-space:pre-wrap;word-break:break-word}
 .notamMeta{font-size:11px;line-height:1.45;color:var(--muted);margin-top:6px}
 .notamTimeReview{font-size:10px;font-weight:850;color:var(--purple);background:var(--purple2);border-radius:999px;padding:4px 7px;white-space:nowrap}
 .notamDetails{font-size:11px;color:var(--muted);margin-top:6px}
-.notamDetails summary{cursor:pointer;font-weight:750;color:#596579}
-.notamDetails pre{white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;line-height:1.4;background:#f7f9fc;border-radius:8px;padding:8px;margin:7px 0 0;max-height:220px;overflow:auto}
+.notamDetails summary{cursor:pointer;font-weight:750;color:var(--muted)}
+.notamDetails pre{white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;line-height:1.4;background:var(--panel2);border-radius:8px;padding:8px;margin:7px 0 0;max-height:220px;overflow:auto}
 .notamEmpty{font-size:13px;padding:8px 2px}
 .notamEmpty.warn{color:var(--amber)}
 
 
-.notamAirportBlock{padding:7px 0 5px;border-top:1px solid #edf0f5}
+.notamAirportBlock{padding:7px 0 5px;border-top:1px solid var(--line)}
 .notamAirportBlock:first-of-type{border-top:0}
-.notamAirportCode{font-size:13px;font-weight:850;color:#1f2937;padding:1px 2px 3px}
+.notamAirportCode{font-size:13px;font-weight:850;color:var(--text);padding:1px 2px 3px}
 .notamAirportNA{font-size:12px;color:var(--muted);padding:2px 2px 6px}.notamAirportNA.nil{color:var(--green);font-weight:850}.notamAirportNA.notFound{color:var(--red);font-weight:850}
 
 
 .notamGroup{margin-top:16px;border-top:1px solid var(--line);padding-top:10px}
 .notamGroup:first-child{margin-top:0}
-.notamGroupHead{font-size:14px;font-weight:850;color:#25344b;padding:0 2px 7px}
-.notamEntity,.notamEntityRow{border-top:1px solid #edf0f5}
+.notamGroupHead{font-size:14px;font-weight:850;color:var(--text);padding:0 2px 7px}
+.notamEntity,.notamEntityRow{border-top:1px solid var(--line)}
 .notamEntity summary{list-style:none;cursor:pointer;padding:10px 2px;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .notamEntity summary::-webkit-details-marker{display:none}
 .notamEntity summary::after{content:'›';font-size:19px;color:var(--muted);transition:transform .15s ease}
 .notamEntity[open]>summary::after{transform:rotate(90deg)}
 .notamEntityRow{padding:10px 2px;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .notamEntityMain{display:flex;align-items:baseline;gap:6px;min-width:0;flex-wrap:wrap}
-.notamEntityName{font-size:13px;font-weight:850;color:#1f2937}
+.notamEntityName{font-size:13px;font-weight:850;color:var(--text)}
 .notamEntityTime{font-size:11px;font-weight:650;color:var(--muted)}
 .notamAffected{font-size:10px;font-weight:850;color:var(--amber);margin-left:auto}
 .notamEntityBody{padding:0 0 7px 14px}
-.notamType{border-top:1px solid #f0f2f6}
+.notamType{border-top:1px solid var(--line)}
 .notamType:first-child{border-top:0}
-.notamType>summary{list-style:none;cursor:pointer;padding:9px 2px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:850;color:#344054}
+.notamType>summary{list-style:none;cursor:pointer;padding:9px 2px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:850;color:var(--sub)}
 .notamType>summary::-webkit-details-marker{display:none}
 .notamType>summary::after{content:'+';font-size:15px;color:var(--muted);margin-left:8px}
 .notamType[open]>summary::after{content:'−'}
 .notamTypeCount{font-size:10px;color:var(--muted);font-weight:700;margin-left:auto;padding-right:8px}
 .notamTypeBody{padding:0 0 6px 10px}
-.notamTypeRecord{padding:7px 0 9px;border-top:1px solid #f4f5f7}
+.notamTypeRecord{padding:7px 0 9px;border-top:1px solid var(--line)}
 .notamTypeRecord:first-child{border-top:0}
 .notamTimeReview.inline{display:inline-block;margin-bottom:4px}
 
 
-.notamInfoLine{display:grid;grid-template-columns:42px 1fr;gap:8px;font-size:12px;line-height:1.45;color:#445064;margin-top:4px}
+.notamInfoLine{display:grid;grid-template-columns:42px 1fr;gap:8px;font-size:12px;line-height:1.45;color:var(--sub);margin-top:4px}
 .notamInfoLine.info{margin-top:5px}
-.notamInfoLabel{font-weight:850;color:#25344b}
+.notamInfoLabel{font-weight:850;color:var(--text)}
 
 
 .notamRecordTime{font-size:11px;font-weight:750;color:var(--muted);margin-top:3px}
-.notamRecordInfo{font-size:13px;line-height:1.45;color:#354052;margin-top:4px}
-.notamRaw{white-space:pre-wrap;word-break:break-word;font-size:13px;line-height:1.45;color:#354052;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.notamRecordInfo{font-size:13px;line-height:1.45;color:var(--sub);margin-top:4px}
+.notamRaw{white-space:pre-wrap;word-break:break-word;font-size:13px;line-height:1.45;color:var(--sub);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .notamTypeRecord{cursor:pointer}
 .notamTypeRecord.open .notamRaw{display:block;-webkit-line-clamp:unset;overflow:visible}
 
@@ -102,16 +104,16 @@
 .notamScheduleTime{font-size:11px;font-weight:800;color:var(--amber);margin-top:2px}
 
 
-.notamPaper{margin-top:12px;border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden;padding:0 12px}
+.notamPaper{margin-top:12px;border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden;padding:0 12px}
 .notamPaper .notamGroup{margin-left:0;margin-right:0}
 
 
 .homeView{min-height:calc(100vh - 40px);display:flex;align-items:center;justify-content:center;padding:24px}
 .homeCenter{width:min(520px,100%);display:flex;flex-direction:column;align-items:center;justify-content:center}
-.homeLogo{font-size:40px;font-weight:900;letter-spacing:.02em;color:#25344b;text-align:center}
-.homeUploadBtn{margin-top:28px;width:88px;height:88px;border-radius:999px;border:1px solid var(--line);background:#fff;box-shadow:0 10px 30px rgba(25,45,75,.08);display:grid;place-items:center;cursor:pointer;transition:transform .15s ease, box-shadow .15s ease}
+.homeLogo{font-size:40px;font-weight:900;letter-spacing:.02em;color:var(--text);text-align:center}
+.homeUploadBtn{margin-top:28px;width:88px;height:88px;border-radius:999px;border:1px solid var(--line);background:var(--card);box-shadow:0 10px 30px rgba(25,45,75,.08);display:grid;place-items:center;cursor:pointer;transition:transform .15s ease, box-shadow .15s ease}
 .homeUploadBtn:hover{transform:translateY(-1px);box-shadow:0 14px 34px rgba(25,45,75,.12)}
-.homeUploadBtn span{font-size:34px;font-weight:800;line-height:1;color:#25344b}
+.homeUploadBtn span{font-size:34px;font-weight:800;line-height:1;color:var(--text)}
 .homeScan{margin-top:22px;width:min(420px,100%)}
 .homeDocs{margin-top:18px;width:min(420px,100%)}
 
@@ -119,19 +121,19 @@
 .resultTopbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:12px}
 .resultActions{justify-content:flex-end;margin-left:auto}
 .resultMeta.hidden{display:none}
-.resultHomeLogo{border:0!important;background:transparent!important;color:#25344b!important;padding:6px 0!important;border-radius:0!important;font-size:22px!important;font-weight:900!important;letter-spacing:.01em;cursor:pointer;white-space:nowrap}
+.resultHomeLogo{border:0!important;background:transparent!important;color:var(--text)!important;padding:6px 0!important;border-radius:0!important;font-size:22px!important;font-weight:900!important;letter-spacing:.01em;cursor:pointer;white-space:nowrap}
 .resultHomeLogo:hover{opacity:.72}
 
 
-.windSheet{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}
+.windSheet{border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}
 .windLevels{display:flex;gap:7px;flex-wrap:wrap;padding:11px 12px 4px}
-.windLevels span{font-size:11px;font-weight:850;padding:4px 7px;border:1px solid var(--line);border-radius:999px;color:#344054;background:#f8fafc}
+.windLevels span{font-size:11px;font-weight:850;padding:4px 7px;border:1px solid var(--line);border-radius:999px;color:var(--sub);background:var(--panel2)}
 .windRule{padding:3px 12px 11px;font-size:10px;color:var(--muted)}
 .windTable{display:grid;grid-template-columns:minmax(70px,.8fr) repeat(4,minmax(82px,1fr));border-top:1px solid var(--line);overflow-x:auto}
-.windHead{font-size:10px;font-weight:850;color:#667085;padding:8px 7px;background:#fafbfc;border-right:1px solid #eef1f5;border-bottom:1px solid #eef1f5;text-align:center}
+.windHead{font-size:10px;font-weight:850;color:var(--muted);padding:8px 7px;background:var(--panel2);border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center}
 .windHead.windWpt{text-align:left}
-.windCell{min-width:0;padding:9px 7px;border-right:1px solid #eef1f5;border-bottom:1px solid #eef1f5;text-align:center;font-size:12px;color:#344054}
-.windCell.windWpt{text-align:left;font-size:12px;color:#25344b}
+.windCell{min-width:0;padding:9px 7px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;font-size:12px;color:var(--sub)}
+.windCell.windWpt{text-align:left;font-size:12px;color:var(--text)}
 .windVector{font-weight:850;font-variant-numeric:tabular-nums}
 .windTemp{font-size:10px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
 .windMissing{color:var(--muted)}
@@ -139,10 +141,10 @@
 
 
 .windPicker{padding:11px 12px 8px}
-.windPickerTitle{font-size:12px;font-weight:850;color:#25344b;margin-bottom:8px}
+.windPickerTitle{font-size:12px;font-weight:850;color:var(--text);margin-bottom:8px}
 .windPickerButtons{display:flex;gap:7px;flex-wrap:wrap}
-.windFlBtn{appearance:none;border:1px solid var(--line);background:#fff;color:#475467;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:850;cursor:pointer}
-.windFlBtn.active{background:#25344b;color:#fff;border-color:#25344b}
+.windFlBtn{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;padding:7px 10px;font-size:11px;font-weight:850;cursor:pointer}
+.windFlBtn.active{background:#25344b;color:var(--onBlue);border-color:#25344b}
 .windPickerStatus{font-size:10px;font-weight:800;margin-top:8px}
 .windPickerStatus.ok{color:var(--green)}
 .windPickerStatus.review{color:var(--amber)}
@@ -157,41 +159,41 @@
 
 
 .windSheet{border:0!important;border-radius:0!important;background:transparent!important;overflow:visible!important}
-.windWptLabel{font-weight:850;color:#25344b}
+.windWptLabel{font-weight:850;color:var(--text)}
 .windWptSub{font-size:10px;font-style:italic;font-weight:500;color:var(--muted);margin-top:2px}
-.windWptTemp{font-size:11px;font-weight:500;color:#667085;margin-left:5px;white-space:nowrap}.windWptTemp.changed{font-weight:900;color:#25344b}
+.windWptTemp{font-size:11px;font-weight:500;color:var(--muted);margin-left:5px;white-space:nowrap}.windWptTemp.changed{font-weight:900;color:var(--text)}
 .windVector{font-weight:400}
-.windVector.changed{font-weight:900;color:#25344b}
+.windVector.changed{font-weight:900;color:var(--text)}
 .windTempProfile{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
-.windTempTitle{font-size:10px;font-weight:900;letter-spacing:.08em;color:#667085;margin-bottom:6px}
-.windTempProfileRow{display:block;padding:6px 0;border-bottom:1px solid #eef1f5}
+.windTempTitle{font-size:10px;font-weight:900;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+.windTempProfileRow{display:block;padding:6px 0;border-bottom:1px solid var(--line)}
 .windTempProfileRow:last-child{border-bottom:0}
-.windTempFl{font-size:11px;font-weight:900;color:#25344b;padding-top:1px}
-.windTempFlow{display:flex;flex-wrap:wrap;align-items:center;gap:5px 7px;font-size:11px;color:#344054;line-height:1.45}
+.windTempFl{font-size:11px;font-weight:900;color:var(--text);padding-top:1px}
+.windTempFlow{display:flex;flex-wrap:wrap;align-items:center;gap:5px 7px;font-size:11px;color:var(--sub);line-height:1.45}
 .windTempPoint{white-space:nowrap}
 .windTempPointName{font-weight:800}
-.windTempPointStep{font-size:9px;font-style:italic;color:#667085;margin-left:3px}
-.windTempArrow{color:#98a2b3}
+.windTempPointStep{font-size:9px;font-style:italic;color:var(--muted);margin-left:3px}
+.windTempArrow{color:var(--muted)}
 
 
 .windTable{border-left:1px solid var(--line)}
 
 
-.briefingsFolderBtn{margin-top:14px;border:0;background:transparent;color:#667085;font-size:12px;font-weight:850;cursor:pointer;padding:6px 10px;border-radius:999px}
-.briefingsFolderBtn:hover{background:#f2f4f7;color:#344054}
+.briefingsFolderBtn{margin-top:14px;border:0;background:transparent;color:var(--muted);font-size:12px;font-weight:850;cursor:pointer;padding:6px 10px;border-radius:999px}
+.briefingsFolderBtn:hover{background:var(--panel2);color:var(--sub)}
 .briefingsFolderName{margin-top:8px;font-size:10px;color:var(--muted);text-align:center}
-.briefingFlights{width:min(500px,100%);margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.briefingFlights{width:min(500px,100%);margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .briefingFlights.hasFlights{height:522px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .briefingFlights.hasFlights::after{content:"";display:block;height:12px}
-.briefingSearch{width:min(500px,100%);margin-top:16px;display:grid;grid-template-columns:1fr auto;gap:8px}.briefingSearch input{min-width:0;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:15px;background:#fff;color:var(--text)}.briefingDateWrap{position:relative;display:block}.briefingDateWrap input{width:150px;height:100%}#briefingDateHint{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#98a2b3;font-size:15px;pointer-events:none}.briefingDateWrap.hasDate #briefingDateHint{display:none}
+.briefingSearch{width:min(500px,100%);margin-top:16px;display:grid;grid-template-columns:1fr auto;gap:8px}.briefingSearch input{min-width:0;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:15px;background:var(--card);color:var(--text)}.briefingDateWrap{position:relative;display:block}.briefingDateWrap input{width:150px;height:100%}#briefingDateHint{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px;pointer-events:none}.briefingDateWrap.hasDate #briefingDateHint{display:none}
 #scan .row{display:none}#scan.scanError .row{display:flex}#uploadDocs{display:none}
 @media (orientation:landscape) and (max-height:900px){.homeView,.native-home .homeView{min-height:0;padding:12px 24px;padding-top:calc(12px + env(safe-area-inset-top))}body:has(#uploadView:not(.hidden)) main{padding-bottom:8px}.homeLogo{font-size:32px}.homeUploadBtn{margin-top:12px;width:64px;height:64px}.briefingFlights{margin-top:10px}}
 .briefingFlight{width:100%;height:52px;appearance:none;border:0;border-bottom:1px solid var(--line);background:transparent;padding:11px 12px;display:flex;align-items:center;justify-content:space-between;gap:14px;cursor:pointer;text-align:left}
-.briefingFlight:hover{background:#f8fafc}
+.briefingFlight:hover{background:var(--panel2)}
 .briefingFlightMain{min-width:0}
-.briefingFlightNo{font-size:14px;font-weight:900;color:#25344b}
+.briefingFlightNo{font-size:14px;font-weight:900;color:var(--text)}
 .briefingFlightMeta{font-size:10px;color:var(--muted);margin-top:2px}
-.briefingFlightCount{font-size:10px;color:#98a2b3;white-space:nowrap}
+.briefingFlightCount{font-size:10px;color:var(--muted);white-space:nowrap}
 .briefingsEmpty{padding:14px 4px;font-size:11px;color:var(--muted);text-align:center}
 .nativeHomeOnly{display:none}
 .native-home .nativeHomeOnly{display:block}
@@ -199,40 +201,151 @@
 .native-home .homeView{align-items:flex-start;padding-top:calc(60px + env(safe-area-inset-top))}
 .native-home .briefingFlightNo{display:block;font-size:16px}
 .native-home .briefingFlightMeta{display:block;font-size:12px}
-.briefingFlightMain{display:flex;align-items:baseline;gap:12px}.briefingFlightNo{display:inline;min-width:64px}.briefingFlightReg{font-size:14px;font-weight:700;color:var(--muted)}.briefingFlightTime{font-size:14px;font-weight:700;color:#25344b;white-space:nowrap;font-variant-numeric:tabular-nums}
+.briefingFlightMain{display:flex;align-items:baseline;gap:12px}.briefingFlightNo{display:inline;min-width:64px}.briefingFlightReg{font-size:14px;font-weight:700;color:var(--muted)}.briefingFlightTime{font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;font-variant-numeric:tabular-nums}
 .nativeHomeMenu{position:absolute;right:22px;top:calc(12px + env(safe-area-inset-top));z-index:25}
 .nativeHomeMenu summary{cursor:pointer;font-size:24px;list-style:none;text-align:right}
-.nativeHomeMenu[open]{background:white;border:1px solid var(--line);border-radius:12px;padding:10px;box-shadow:0 4px 16px #0002}
+.nativeHomeMenu[open]{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;box-shadow:0 4px 16px #0002}
 .nativeHomeMenu button{display:block;width:100%;text-align:left;margin-top:6px}
 .nativeHomeVersion{font-size:11px;color:var(--muted);margin:4px 0 16px}
 .nativeHomeFolder,.nativeHomeUpdate{margin-top:16px;text-align:center}
 .nativeHomeUpdate p,.nativeHomeFolder p{font-size:11px;color:var(--muted);max-width:430px;line-height:1.5}
 
 
-.wxWindInline{font-weight:850;color:#25344b;white-space:nowrap}.wxWindSep{color:#98a2b3;font-weight:500;margin:0 5px}
+.wxWindInline{font-weight:850;color:var(--text);white-space:nowrap}.wxWindSep{color:var(--muted);font-weight:500;margin:0 5px}
 
-.minimaDialog{width:min(820px,96vw);max-height:90dvh;overflow:auto;border:1px solid var(--line);border-radius:18px;padding:22px;color:var(--text);background:var(--bg)}.minimaDialog::backdrop{background:#17203399}.minimaForm{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.minimaForm label{font-size:12px;font-weight:650;display:grid;gap:6px}.minimaWide{grid-column:1/-1}.minimaAirports button.active{background:var(--blue);color:#fff}body:has(#minimaDialog[open]){overflow:hidden}.dgrGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:8px}.dgrGrid label{font-size:11px;font-weight:650;color:var(--muted);display:grid;gap:4px}.dgrGrid input{padding:8px}@media(max-width:700px){.dgrGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}#dgrItems>*,#dgrPositions>*,#dgrResults>*{min-width:0}.dgrOut,.dgrEntry{min-width:0;max-width:100%}@media(max-width:600px){.dgrItem>.row{flex-wrap:wrap}.dgrItem>.row [data-un]{flex:1;min-width:90px;max-width:none!important}.dgrItem>.row [data-rm]{padding:8px 10px}.dgrEntry .itemhead{flex-wrap:wrap}.dgrTable{display:block;overflow-x:auto;white-space:nowrap}}.dgrSpText{cursor:pointer;background:#f7f9fc;border:1px solid var(--line);border-radius:10px;padding:8px 10px;white-space:pre-line}.dgrItem summary{cursor:pointer;color:var(--blue);font-weight:700;margin-top:8px}.dgrTable{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}.dgrTable th,.dgrTable td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left;vertical-align:top}.dgrTable th{font-size:10px;color:var(--muted);text-transform:uppercase}.dgrBad{color:var(--red);font-weight:800}.dgrOk{color:var(--green);font-weight:800}.dgrWarn{color:var(--amber);font-weight:700}.wxMinima{font-size:12px;font-weight:650;color:var(--muted);margin-top:4px}.wxMinOk{color:var(--green);font-weight:850}.wxMinFail{color:var(--red);font-weight:850}@media(max-width:540px){.minimaForm{grid-template-columns:1fr}.minimaDialog{padding:16px}}
+.minimaDialog{width:min(820px,96vw);max-height:90dvh;overflow:auto;border:1px solid var(--line);border-radius:18px;padding:22px;color:var(--text);background:var(--bg)}.minimaDialog::backdrop{background:#17203399}.minimaForm{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.minimaForm label{font-size:12px;font-weight:650;display:grid;gap:6px}.minimaWide{grid-column:1/-1}.minimaAirports button.active{background:var(--blue);color:var(--onBlue)}body:has(#minimaDialog[open]){overflow:hidden}.dgrGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:8px}.dgrGrid label{font-size:11px;font-weight:650;color:var(--muted);display:grid;gap:4px}.dgrGrid input{padding:8px}@media(max-width:700px){.dgrGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}#dgrItems>*,#dgrPositions>*,#dgrResults>*{min-width:0}.dgrOut,.dgrEntry{min-width:0;max-width:100%}@media(max-width:600px){.dgrItem>.row{flex-wrap:wrap}.dgrItem>.row [data-un]{flex:1;min-width:90px;max-width:none!important}.dgrItem>.row [data-rm]{padding:8px 10px}.dgrEntry .itemhead{flex-wrap:wrap}.dgrTable{display:block;overflow-x:auto;white-space:nowrap}}.dgrSpText{cursor:pointer;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;white-space:pre-line}.dgrItem summary{cursor:pointer;color:var(--blue);font-weight:700;margin-top:8px}.dgrTable{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}.dgrTable th,.dgrTable td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left;vertical-align:top}.dgrTable th{font-size:10px;color:var(--muted);text-transform:uppercase}.dgrBad{color:var(--red);font-weight:800}.dgrOk{color:var(--green);font-weight:800}.dgrWarn{color:var(--amber);font-weight:700}.wxMinima{font-size:12px;font-weight:650;color:var(--muted);margin-top:4px}.wxMinOk{color:var(--green);font-weight:850}.wxMinFail{color:var(--red);font-weight:850}@media(max-width:540px){.minimaForm{grid-template-columns:1fr}.minimaDialog{padding:16px}}
 .enrTag{display:inline-block;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:850;margin-right:7px;vertical-align:1px}
 .enrTag.on{background:var(--red2);color:var(--red)}
 .enrTag.near{background:var(--amber2);color:var(--amber)}
-.enrTag.off{background:#eef2f6;color:#566174}
+.enrTag.off{background:var(--panel2);color:var(--sub)}
 .enrTime{font-weight:650;color:var(--muted);font-variant-numeric:tabular-nums;margin-left:4px}
 .enrSub{font-size:12px;font-weight:600;color:var(--muted);margin-top:3px}
 .enrBad{color:var(--red)}
-.enrRaw{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;font-weight:500;line-height:1.4;color:#445064;margin-top:5px;word-break:break-word}
+.enrRaw{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;font-weight:500;line-height:1.4;color:var(--sub);margin-top:5px;word-break:break-word}
 .enrMore{margin-top:8px}
 .enrMore summary{font-size:12px;font-weight:750;color:var(--muted);cursor:pointer;padding:4px 0}
 .enrCharts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:start}
 @media(max-width:640px){.enrCharts{grid-template-columns:1fr}}
-.enrChart{display:block;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff!important;text-align:left}
-.enrChart img{display:block;width:100%;min-height:120px;background:#f1f4f8}
+.enrChart{display:block;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)!important;text-align:left}
+.enrChart img{display:block;width:100%;min-height:120px;background:var(--panel2)}
 .enrChart span{display:block;padding:6px 10px;font-size:11px;font-weight:700;color:var(--muted)}
 #enrViewer{position:fixed;inset:0;z-index:100;background:#10151d;display:flex;flex-direction:column}
 .enrViewerBar{display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top)) 12px 8px}
-.enrViewerBar span{flex:1;min-width:0;color:#fff;font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.enrViewerBar span{flex:1;min-width:0;color:var(--onBlue);font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .enrViewerBar button{padding:8px 13px}
-.enrViewerScroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;background:#fff}
+.enrViewerScroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;background:var(--card)}
 .enrViewerScroll img{display:block;width:100%}
+
+.wxValue,.wxUseTime,.notamRaw,.notamRecordTime,.enrTime,.enrRaw,.notamEntityTime{font-family:ui-monospace,"SF Mono",SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums;letter-spacing:0}
+.wxValue{font-weight:600}
+.homeLogo,.resultHomeLogo{color:var(--accent)!important}
+input,select,textarea{background:var(--card);color:var(--text);border-color:var(--line)}
+
+/* ECAM look (V6.45): one monospaced display face, black ground, thin lines, no boxes-in-boxes,
+   colours carry meaning only: white data, green normal, amber caution, red warning, cyan titles/actions. */
+body,button,input,select,textarea,label.upload{font-family:"SF Mono",ui-monospace,Menlo,monospace!important;letter-spacing:0}
+body{text-rendering:geometricPrecision}
+*,*::before,*::after{box-shadow:none!important;text-shadow:none!important}
+.card,.item,.kv,.doc,.timebox,.ofpCard,.wxCard,.minimaDialog,.homeList,.briefingList,.homeCard,.notamPaper,.raw,.enrRaw,.notamDetails pre,.melSimpleDetails pre{border-radius:2px!important}
+button,label.upload,.tab,.pill,.badge,.enrTag,.filter,input,select{border-radius:2px!important}
+.card,.wxCard,.ofpCard,.notamPaper{background:var(--card)!important;border:1px solid var(--line)!important}
+.item{background:var(--card)!important}
+h1,h2,h3,.groupTitle,.wxGroupTitle,.wxAirport,.notamGroupHead,.ofpLabel,.melSimpleTitle,.notamEntityName,.homeLogo,.resultHomeLogo{text-transform:uppercase;letter-spacing:.02em;font-weight:500!important}
+.groupTitle,.wxGroupTitle,.notamGroupHead{color:var(--text)!important;border-bottom:1px solid var(--text)!important;padding-bottom:3px;display:inline-block}
+.wxAirport,.wxGroupCode,.ofpLabel,.notamEntityName{color:var(--text)!important}
+.wxValue,.ofpValue,.notamRaw,.notamRecordInfo{color:var(--text)!important;font-weight:500!important}
+.wxUseTime,.muted,.sub,.notamRecordTime,.notamEntityTime,.enrTime,.enrSub{color:var(--muted)!important;font-weight:500!important}
+.wxVisGood,.ofpRwy.pass,.melSimple.pass .melSimpleTitle,.notamAirportNA.nil,.notamEntityName.nilName{color:var(--green)!important;font-weight:500!important}
+.wxVisLow,.wxSh,.enrTag.near,.notamEntityName.affectedName,.notamAffected{color:var(--amber)!important;font-weight:500!important}
+.wxVisBad,.wxTs,.wxMinFail,.enrBad,.enrTag.on,.notamAirportNA.notFound,.notamEntityName.notFoundName,.melSimple.fail .melSimpleTitle{color:var(--red)!important;font-weight:500!important}
+.enrTag,.badge{background:transparent!important;border:1px solid currentColor;padding:1px 6px}
+button,label.upload{background:transparent!important;color:var(--blue)!important;border:1px solid var(--line)!important;font-weight:500!important;text-transform:uppercase}
+.primary{background:var(--blue)!important;color:var(--onBlue)!important;border-color:var(--blue)!important}
+.ghost{background:transparent!important;color:var(--sub)!important}
+.danger{background:transparent!important;color:var(--red)!important;border-color:var(--red)!important}
+/* FCOM DSC-31-CDS-60-10-50 SD page title: manually selected page = title in a blue box; other titles white. */
+.tabs{gap:6px;border-bottom:1px solid var(--line);margin:14px 0 10px;padding-bottom:8px}
+.tab{border:1px solid transparent!important;background:transparent!important;color:var(--text)!important;padding:8px 12px;border-radius:2px!important}
+.tab.active{background:transparent!important;color:var(--blue)!important;border-color:var(--blue)!important}
+/* FCOM DSC-31-CDS-60-10-10 ECAM colour code: blue = limitations → applicable minima line in blue. */
+.wxMinima,.wxMinimaUsed{color:var(--blue)!important}
+.wxGroupCode{font-weight:500!important}
+/* ECAM text is upper case throughout; keep free text (DGR special provisions, inputs) as written. */
+main{text-transform:uppercase}
+.dgrSpText,input,select,textarea,.minimaDialog{text-transform:none}
+/* ECAM action/memo line: ITEM.......VALUE — dotted leader between OFP label and value. */
+.ofpGrid .ofpLabel{display:flex;align-items:baseline;gap:6px;letter-spacing:0}
+.ofpGrid .ofpLabel::after{content:"";flex:1;border-bottom:1px dotted var(--muted);margin-bottom:4px;min-width:12px}
+.item.pass,.item.warn,.item.fail,.item.info,.item.review{border-left-width:2px!important}
+.homeLogo,.resultHomeLogo{color:var(--text)!important;letter-spacing:.12em}
+.homeUploadBtn{border:1px solid var(--line)!important;background:transparent!important;color:var(--blue)!important}
+header,footer{background:var(--bar)!important;backdrop-filter:none!important;border-color:var(--line)!important}
+.nativeHomeMenu[open]{background:var(--card)!important;border:1px solid var(--line)!important;border-radius:2px!important}
+.wxMinima{color:var(--muted)!important;font-weight:500!important}
+.filter,input,select{border:1px solid var(--line)!important;background:var(--card)!important;color:var(--text)!important}
+.briefingFlights{border-radius:2px!important;border:1px solid var(--line)!important;background:var(--card)!important}
+.briefingFlight{border-bottom:1px solid var(--line)!important}
+.briefingFlight *{font-weight:500!important}
+.briefingsFolderBtn,.nativeHomeVersion{text-transform:uppercase;font-weight:500!important}
+
+/* WIND tab in the style of the MFD ACTIVE/WIND page (FCOM DSC-22-FMS-10-40-30): grey bezel, black panel,
+   folder tabs for FL selection, small units; no colour coding — CFP deviations stay bold white. */
+.windSheet{background:#000!important;border:10px solid #6B7280!important;border-radius:2px!important;padding:0}
+.windPicker{padding:0!important;background:#9CA3AF;border-bottom:2px solid #000}
+.windPickerButtons{gap:0!important;flex-wrap:nowrap!important;overflow-x:auto}
+.windFlBtn{border:0!important;border-right:2px solid #000!important;border-radius:0!important;background:#9CA3AF!important;color:#111!important;padding:8px 16px!important;font-size:13px!important;font-weight:500!important;text-transform:uppercase}
+.windFlBtn.active{background:#000!important;color:#FFF!important}
+.windTable{border:0!important;margin:0}
+.windHead{background:#000!important;color:#FFF!important;font-size:13px!important;font-weight:500!important;border-color:#4B5563!important;padding:10px 7px!important;text-transform:uppercase}
+.windCell{border-color:#4B5563!important;color:#FFF!important;padding:10px 7px!important}
+.windWptLabel{color:#1FE51F!important;font-weight:500!important}
+.windWptSub{color:#9CA3AF!important;font-style:normal!important}
+.windWptTemp{color:#9CA3AF!important;font-size:13px!important}
+.windWptTemp.changed{color:#FFF!important;font-weight:700!important}
+.windVector{color:#C9CCD0;font-size:15px;font-weight:400}
+.windVector.changed{color:#FFF!important;font-weight:700!important}
+.windUnit{color:#9CA3AF;font-size:10px;margin-left:1px}
+.windVector.changed .windUnit{color:#FFF}
+.windMissing{color:#9CA3AF!important}
+.windChoosePrompt{color:#19D6F0!important;border:0!important}
+
+/* OFP DETAIL as MFD ACTIVE/INIT page; MEL/CDL as ECAM STATUS section (V6.45). */
+.initPage{background:#000;border:10px solid #6B7280;border-radius:2px}
+.initTitle{background:#9CA3AF;color:#111;font-size:14px;padding:4px 10px;display:flex;justify-content:space-between;gap:12px}
+.initTitle span{color:#4B5563;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.initBody{padding:14px 14px 10px;color:#F2F3F4}
+.initRow{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin-bottom:12px}
+.initRow.one{grid-template-columns:1fr}
+.initFld{display:flex;align-items:center;gap:10px;min-height:38px;min-width:0;flex-wrap:wrap}
+.initLbl{font-size:13px;min-width:84px}
+.initLbl.initIn{min-width:0;margin-left:12px}
+.initBox{border:1px solid #8E949B;padding:6px 10px;color:#19D6F0;min-width:92px;text-align:center;border-radius:2px;font-size:15px}
+.initBox.green{color:#1FE51F;border-color:#3A3F46}
+.initBox.wide{min-width:0;flex:1;text-align:left}
+.initPlain,.initWind{color:#1FE51F;font-size:15px}
+.initWind.warn{color:#FFB000}
+.initUnit{color:#F2F3F4;font-size:11px;margin-left:2px}
+.initSlash{color:#F2F3F4}
+.initSep{height:1px;background:#3A3F46;margin:6px 0 14px}
+@media(max-width:640px){.initRow{grid-template-columns:1fr}}
+.initPage{border-bottom:0!important;border-radius:2px 2px 0 0!important}
+.ofpMelMerged{margin-top:0!important;padding:0 14px 14px;background:#000;border:10px solid #6B7280;border-top:0!important;border-radius:0 0 2px 2px}
+.ofpMelMerged::before{content:"";display:block;height:2px;background:#3A3F46;margin:0 -14px 12px}
+.ofpMelMerged h3{display:inline-block;border-bottom:1px solid #F2F3F4;padding-bottom:3px;margin-bottom:10px!important;font-size:14px!important;color:#F2F3F4!important}
+.melItem{margin-bottom:10px}
+.melLine{font-size:15px;color:#F2F3F4}
+.melLine.inop{color:#FFB000}.melLine.pass{color:#1FE51F}.melLine.fail{color:#FF2E2E}.melLine.review{color:#FF4FD8}
+.melMeta{color:#F2F3F4;font-size:13px;margin-left:10px}
+.melCond{margin-top:6px}
+.melCond summary{list-style:none;cursor:pointer;color:#19D6F0;font-size:13px;display:flex;align-items:center;gap:6px}
+.melCond summary::-webkit-details-marker{display:none}
+.melLead{flex:1;border-bottom:1px dotted #3A3F46;min-width:24px;max-width:160px}
+.melCondBody{margin:8px 0 0 14px}
+.melCondTitle{color:#F2F3F4;font-size:13px;margin-bottom:6px}
+.melInfo{color:#1FE51F;font-size:13px;line-height:1.5;margin-bottom:8px}
+.melFlags{color:#FFB000;font-size:13px;margin-bottom:8px}
+.melAct{color:#19D6F0;font-size:13px;display:flex;align-items:center;gap:6px}
+.melSimpleDetails summary{color:#8E949B;font-size:12px;cursor:pointer;margin-top:8px}
 </style>
 </head>
 <body>
@@ -245,6 +358,7 @@
   <button type="button" data-native-action="pickFolder" data-folder-required>Change Briefings Folder</button>
   <button type="button" data-native-action="forgetFolder" data-folder-required>Forget Briefings Folder</button>
   <button id="minimaMenu" type="button">Approach Minima</button>
+  <button id="themeMenu" type="button" class="themeToggle">Day mode</button>
   <button type="button" data-native-action="update">Update Flight Brief</button>
   <button id="nativeRestore" type="button" data-native-action="restore">Restore Bundled Version</button>
 </details>
@@ -281,7 +395,7 @@
 </div>
 </section>
 <section id="resultView" class="hidden">
-<div class="resultTopbar"><button id="homeLogoButton" class="resultHomeLogo" type="button">Flight Brief</button><div class="resultMeta hidden"><h2 id="flightTitle">Flight review</h2><div id="flightSub" class="muted"></div><div id="overview" class="overview"></div></div><div class="row wrap resultActions"><button id="minimaReview" type="button">Minima</button><label class="upload">+ Add Docs<input id="moreUpload" type="file" accept=".pdf,application/pdf" multiple hidden></label></div></div>
+<div class="resultTopbar"><button id="homeLogoButton" class="resultHomeLogo" type="button">Flight Brief</button><div class="resultMeta hidden"><h2 id="flightTitle">Flight review</h2><div id="flightSub" class="muted"></div><div id="overview" class="overview"></div></div><div class="row wrap resultActions"><button id="themeReview" type="button" class="themeToggle">Day mode</button><button id="minimaReview" type="button">Minima</button><label class="upload">+ Add Docs<input id="moreUpload" type="file" accept=".pdf,application/pdf" multiple hidden></label></div></div>
 <div class="tabs"><button class="tab active" data-tab="ofp">OFP DETAIL</button><button class="tab" data-tab="wx">WEATHER</button><button class="tab" data-tab="enr">ENR WX</button><button class="tab" data-tab="notam">NOTAM</button><button class="tab" data-tab="wind">WIND</button><button class="tab" data-tab="dgr">DGR</button></div>
 <section id="tab-ofp" class="card"><div id="ofpResults" class="section"></div><div class="ofpMelMerged"><h3 id="melHeading">MEL / CDL</h3><div id="melResults" class="section" style="margin-top:8px"></div></div></section>
 <section id="tab-wx" class="card hidden"><div id="wxResults" class="section"></div></section>
@@ -938,27 +1052,26 @@ function parseAscEntry(t,icao,iata=''){
 }
 
 function extractDispatchNotesField(...sources){
+  // Lido layout: "DISPATCH NOTES:" then a dashed rule, the note lines, and a closing dashed rule.
+  // Collect every line between the rules (same-line text after the colon counts too).
+  const stop=/^\s*(DISPATCHER\s*:|END\s+OF\s+FLIGHT\s+BRIEF|MEL\s*\/\s*CDL|FUEL\s+ANALYSIS)/i;
   for(const source of sources){
     const src=String(source||'');
     if(!src)continue;
-
-    // Prefer the actual LIDO line from layout text.
-    const line=src.match(/(?:^|\n)\s*DISPATCH\s+NOTES?\s*:\s*([^\n\r]+)/i);
-    if(line){
-      const x=String(line[1]||'')
-        .replace(/^-{3,}.*$/,'')
-        .replace(/\s+/g,' ')
-        .trim();
-      if(x)return x;
+    const lines=src.split(/\r?\n/);
+    const at=lines.findIndex(l=>/^\s*DISPATCH\s+NOTES?\s*:/i.test(l));
+    if(at<0)continue;
+    const out=[];
+    const first=lines[at].replace(/^\s*DISPATCH\s+NOTES?\s*:/i,'').trim();
+    if(first&&!/^-{3,}$/.test(first))out.push(first);
+    for(let i=at+1;i<lines.length&&i<at+12;i++){
+      const l=lines[i].trim();
+      if(/^-{3,}$/.test(l)){if(out.length)break;continue;}
+      if(stop.test(l))break;
+      if(l)out.push(l);
     }
-
-    // Fallback for pdf.js flattened page text.
-    const flat=src.replace(/\s+/g,' ').trim();
-    const m=flat.match(/\bDISPATCH\s+NOTES?\s*:\s*(.*?)(?=\s+-{5,}|\s+NO\s+TANKERING|\s+TANKERING\b|\s+DISPATCHER\s*:|\s+END\s+OF\s+FLIGHT\s+BRIEF\b|$)/i);
-    if(m){
-      const x=String(m[1]||'').replace(/\s+/g,' ').trim();
-      if(x)return x;
-    }
+    const x=out.join(' ').replace(/\s+/g,' ').trim();
+    if(x)return x;
   }
   return '';
 }
@@ -1020,6 +1133,7 @@ function parseOFP(t,layoutText=t,layoutRows=[]){
 
   const perf=extractPerfFactor(brief)||extractPerfFactor(t);
   const pax=rx1(t,/\bPAX\s*:\s*(\d{1,4})\b/i);
+  const costIndex=rx1(brief,/FMS\s+COST\s+INDEX\s*:[^\n]*?\bCI\s*(\d{1,4})\b/i)||rx1(t,/FMS\s+COST\s+INDEX\s*:[^\n]*?\bCI\s*(\d{1,4})\b/i);
 
   const edtoM=brief.match(/\bEDTO\s*:\s*(YES|NO)(?:\s*\/\s*(\d+)\s*MINS?)?/i);
   const edto=edtoM?edtoM[1].toUpperCase():'UNKNOWN';
@@ -1140,7 +1254,7 @@ function parseOFP(t,layoutText=t,layoutRows=[]){
     flight,ofpNo,ofpDecode,
     dep,dest,destAlt,
     depIata,destIata,destAltIata,
-    dof,date0,reg,perf,pax,edto,edtoRule,etd,eta,totalEet,
+    dof,date0,reg,perf,pax,costIndex,edto,edtoRule,etd,eta,totalEet,
     flightTime,landingTime,initialFltLvl,maxShr,maxShrWpt,maxShrEto,maxShrElapsed,
     eet,eetRaw,dispatch,dispatchNotes,techConditions,
     route:routeInfo.raw,routeSec:routeInfo.section,
@@ -3048,7 +3162,7 @@ function renderWind(){
       const windChanged=!!p.windChanges?.[fl];
       h+=
         `<div class="windCell">`+
-          `<div class="windVector ${windChanged?'changed':''}">${String(x.dir).padStart(3,'0')}/${String(x.spd).padStart(3,'0')}</div>`+
+          `<div class="windVector ${windChanged?'changed':''}">${String(x.dir).padStart(3,'0')}<span class="windUnit">°</span> /${String(x.spd).padStart(3,'0')}<span class="windUnit">KT</span></div>`+
         `</div>`;
     }
   }
@@ -3253,82 +3367,45 @@ function analyse(){
 }
 function render(){const a=analysis,o=a.o;const flightTitleEl=$('#flightTitle');if(flightTitleEl)flightTitleEl.textContent=[o.flight,o.dep&&o.dest?o.dep+'-'+o.dest:''].filter(Boolean).join(' • ')||'Flight review';const flightSubEl=$('#flightSub');if(flightSubEl)flightSubEl.textContent=[o.dof?`DOF ${o.dof}`:'',o.reg,o.edto==='YES'?`EDTO ${o.edtoRule||''} MIN`:o.edto==='NO'?'NON-EDTO':''].filter(Boolean).join(' • ');const overviewEl=$('#overview');if(overviewEl){const ovs=[['Flight',o.flight],['OFP',o.ofpDecode||o.ofpNo],['DEP',o.dep],['DEST',o.dest],['DEST ALTN',o.destAlt],['REG',o.reg]];overviewEl.innerHTML=ovs.map(([k,v])=>`<div class="kv"><label>${k}</label><strong>${esc(v||'Not found')}</strong></div>`).join('')}renderOFP();renderWX();try{renderEnr()}catch(e){$('#enrResults').innerHTML=`<div class="wxValue review">ENR WX could not be read (${esc(e.message||e)})</div>`}renderWind();renderMEL();renderNotam();$('#footer').textContent=`${docs.length} PDF • ${a.relevant.length} listed NOTAM • ${a.mel.refs.length} MEL/CDL refs`}
 function renderOFP(){
+  // Layout after the MFD ACTIVE/INIT page (FCOM DSC-22-FMS-20-20-20): labelled entry fields in two
+  // columns. Cyan box = value as filed (FLT NBR, FROM/TO, ALTN, CRZ FL, CI); green = read/derived.
   const o=analysis.o;
-  const depR=analysis.depRwyCheck||{status:'review',body:''};
-  const destR=analysis.destRwyCheck||{status:'review',body:''};
-
-  const hvnFlight=String(o.flight||'').toUpperCase()
-    .replace(/^VN(?=\d)/,'HVN')
-    .replace(/\s+/g,'');
-  const ofpCore=o.ofpDecode
-    ? o.ofpDecode
-    : (o.ofpNo||'Not extracted');
-  const ofpText=[hvnFlight,ofpCore]
-    .filter(Boolean)
-    .map(esc)
-    .join(' • ');
-
-  const edtoText=o.edto&&o.edto!=='UNKNOWN'
-    ? `${esc(o.edto)}${o.edtoRule?` / ${esc(o.edtoRule)} MIN`:''}`
-    : 'Not extracted';
-
-  const depRwyText=depR.body
-    ? `<span class="ofpRwy ${esc(depR.status||'review')}">${depR.body}</span>`
-    : `RWY ${esc(o.expectedDepRunway||'not extracted')} • wind unavailable`;
-
-  const destRwyText=destR.body
-    ? `<span class="ofpRwy ${esc(destR.status||'review')}">${destR.body}</span>`
-    : `RWY ${esc(o.expectedDestRunway||'not extracted')} • wind unavailable`;
-
-  const sidRaw=String(o.sid||'').trim();
-  const starRaw=String(o.star||'').trim();
-  const sidText=(
-    !sidRaw ||
-    /^\.\s*\.$/.test(sidRaw) ||
-    sidRaw==='…' ||
-    sidRaw==='··'
-  ) ? 'N/A' : sidRaw;
-  const starText=(
-    !starRaw ||
-    /^\.\s*\.$/.test(starRaw) ||
-    starRaw==='…' ||
-    starRaw==='··'
-  ) ? 'N/A' : starRaw;
-
-  const depBlock=
-    `<b>${esc(o.dep||'Not extracted')}</b>`+
-    (o.etd?` • ETD ${esc(hhmmZ(o.etd))}`:'')+
-    `<br>${esc(sidText)}`+
-    `<br>${depRwyText}`;
-
-  const destBlock=
-    `<b>${esc(o.dest||'Not extracted')}</b>`+
-    ((o.landingTime||o.eta)?` • ETA ${esc(o.landingTime||hhmmZ(o.eta))}`:'')+
-    `<br>${esc(starText)}`+
-    `<br>${destRwyText}`;
-
-  const maxShrText=o.maxShr
-    ? `${esc(o.maxShr)}${o.maxShrElapsed?`/${esc(o.maxShrElapsed)}`:''}`
-    : 'Not extracted';
-
-  const rows=[
-    ['OFP',ofpText],
-    ['DEP',depBlock],
-    ['DEST',destBlock],
-    ['DEST ALT',esc(o.destAlt||'Not extracted')],
-    ['FLIGHT TIME',esc(o.flightTime||'Not extracted')],
-    ['INITIAL FLT LVL',esc(o.initialFltLvl||'Not extracted')],
-    ['MAX SHR',maxShrText],
-    ['PERF factor',esc(o.perf||'Not extracted')],
-    ['EDTO',edtoText],
-    ['PAX',esc(o.pax||'Not extracted')],
-    ['DISPATCH NOTES',esc(o.dispatchNotes||'N/A')]
-  ];
-
-  let h='<div class="ofpCard"><div class="ofpGrid">';
-  for(const [label,value] of rows){
-    h+=`<div class="ofpLabel">${esc(label)}</div><div class="ofpValue">${value}</div>`;
+  const depR=analysis.depRwyCheck||{status:'review',body:'',rwy:'',windText:''};
+  const destR=analysis.destRwyCheck||{status:'review',body:'',rwy:'',windText:''};
+  const hvnFlight=String(o.flight||'').toUpperCase().replace(/^VN(?=\d)/,'HVN').replace(/\s+/g,'');
+  const na='N/A';
+  const box=(v,cls='')=>`<span class="initBox ${cls}">${v}</span>`;
+  const fld=(lbl,html)=>`<div class="initFld"><span class="initLbl">${lbl}</span>${html}</div>`;
+  const inl=(lbl,html)=>`<span class="initLbl initIn">${lbl}</span>${html}`;
+  const unit=u=>`<span class="initUnit">${u}</span>`;
+  const z=t=>t?box(esc(String(t).replace(/Z$/,''))+unit('Z'),'green'):box(na,'green');
+  // FMS wind format: 220° /06KT (first TAF wind token of the runway check).
+  function fmsWind(r){
+    const m=String(r.windText||'').match(/^(\d{3}|VRB)(\d{2,3})(?:G(\d{2,3}))?KT/);
+    if(!m)return '';
+    const g=m[3]?`<span class="initUnit">G</span>${esc(m[3])}`:'';
+    return `<span class="initWind ${esc(r.status||'')}">${esc(m[1])}${m[1]==='VRB'?'':'°'} /${esc(m[2])}${g}${unit('KT')}</span>`;
   }
+  const rwy=r=>r.rwy?box(esc(r.rwy),'green')+fmsWind(r):box(na,'green');
+  const proc=v=>{const x=String(v||'').trim();return (!x||/^\.\s*\.$/.test(x)||x==='…'||x==='··')?'NONE':x;};
+  const shr=o.maxShr?`<span class="initPlain">${esc(String(o.maxShr).replace(/\//g,' · '))}${o.maxShrElapsed?` · ${esc(o.maxShrElapsed)}`:''}</span>`:box(na,'green');
+  const edto=o.edto==='YES'?box(esc(o.edtoRule||'')+unit('MIN'),'green'):box(esc(o.edto==='NO'?'NO':na),'green');
+  const dn=/[A-Z0-9]/i.test(o.dispatchNotes||'')?esc(o.dispatchNotes):'NIL';
+
+  let h='<div class="initPage">';
+  h+='<div class="initTitle">OFP/INIT<span>'+esc([hvnFlight,o.ofpDecode||o.ofpNo].filter(Boolean).join(' · '))+'</span></div>';
+  h+='<div class="initBody">';
+  h+='<div class="initRow">'+fld('FLT NBR',box(esc(hvnFlight||na)))+fld('REG',box(esc(o.reg||na))+inl('PAX',box(esc(o.pax||na))))+'</div>';
+  h+='<div class="initRow">'+fld('FROM/TO',box(esc(o.dep||na))+'<span class="initSlash">/</span>'+box(esc(o.dest||na)))+fld('ALTN',box(esc(o.destAlt||na)))+'</div>';
+  h+='<div class="initRow">'+fld('ETD',z(o.etd?hhmmZ(o.etd):'')+inl('ETA',z(o.landingTime||(o.eta?hhmmZ(o.eta):''))))+fld('FLT TIME',box(esc(o.flightTime||na),'green'))+'</div>';
+  h+='<div class="initSep"></div>';
+  h+='<div class="initRow">'+fld('DEP RWY',rwy(depR))+fld('SID',box(esc(proc(o.sid)),'green'))+'</div>';
+  h+='<div class="initRow">'+fld('LDG RWY',rwy(destR))+fld('STAR',box(esc(proc(o.star)),'green'))+'</div>';
+  h+='<div class="initSep"></div>';
+  h+='<div class="initRow">'+fld('CRZ FL',box(esc(o.initialFltLvl||na))+inl('CI',box(esc(o.costIndex||na))))+fld('MAX SHR',shr)+'</div>';
+  h+='<div class="initRow">'+fld('EDTO',edto)+fld('PERF',box(esc(o.perf||na),'green'))+'</div>';
+  h+='<div class="initSep"></div>';
+  h+='<div class="initRow one">'+fld('DISPATCH',box(dn,'green wide'))+'</div>';
   h+='</div></div>';
   $('#ofpResults').innerHTML=h;
 }
@@ -4448,13 +4525,13 @@ function renderWX(){
 
   function wxGroup(title,rows){
     if(!rows.length)return '';
-    let out=`<div class="wxGroup"><div class="wxGroupTitle">${esc(title)}:</div>`;
+    let out=`<div class="wxGroup"><div class="wxGroupTitle">${esc(ecamLabel(title))}:</div>`;
     for(const w of rows){
       const v=wxText(w);
       const useTime=wxUseTime(w);
       out+=
         `<div class="wxGroupItem">`+
-          `<div class="wxGroupCode">- ${esc(wxAirportDisplay(w.icao))}${useTime?`<div class="wxUseTime">${esc(useTime)}</div>`:''}${minimaUsed(w)?`<div class="wxUseTime">${esc(minimaUsed(w))}</div>`:''}</div>`+
+          `<div class="wxGroupCode">- ${esc(wxAirportDisplay(w.icao))}${useTime?`<div class="wxUseTime">${esc(useTime)}</div>`:''}${minimaUsed(w)?`<div class="wxUseTime wxMinimaUsed">${esc(minimaUsed(w))}</div>`:''}</div>`+
           `<div class="wxValue ${v.cls}">${v.html}</div>`+
         `</div>`;
     }
@@ -4473,7 +4550,7 @@ function renderWX(){
       const useTime=wxUseTime(w);
       h+=
         `<div class="wxRow">`+
-          `<div class="wxAirport">${esc(depDestTitle(w))}${useTime?`<div class="wxUseTime">${esc(useTime)}</div>`:''}${minimaUsed(w)?`<div class="wxUseTime">${esc(minimaUsed(w))}</div>`:''}</div>`+
+          `<div class="wxAirport">${esc(depDestTitle(w))}${useTime?`<div class="wxUseTime">${esc(useTime)}</div>`:''}${minimaUsed(w)?`<div class="wxUseTime wxMinimaUsed">${esc(minimaUsed(w))}</div>`:''}</div>`+
           `<div class="wxValue ${v.cls}">${v.html}</div>`+
         `</div>`;
     }
@@ -4488,126 +4565,46 @@ function renderWX(){
   $('#wxResults').innerHTML=h;
 }
 function renderMEL(){
+  // MEL/CDL in the style of the ECAM STATUS page: inoperative item in amber, one summary line in
+  // white, a cyan CONDITIONS action line that opens the provisos / (O) procedure on tap.
   const m=analysis.mel,o=analysis.o,tc=o.techConditions;
   const melHeading=$('#melHeading');
-  if(melHeading)melHeading.textContent=`MEL / CDL${o.reg?` - ${o.reg}`:''}`;
+  if(melHeading)melHeading.textContent='MEL/CDL';
   let h='';
+  const item=(title,cls,meta='',detail='')=>
+    `<div class="melItem"><div class="melLine ${cls}">${title}${meta?`<span class="melMeta">${meta}</span>`:''}</div>`+
+    (detail?`<details class="melCond"><summary>CONDITIONS<span class="melLead"></span>▸</summary><div class="melCondBody">${detail}</div></details>`:'')+
+    `</div>`;
 
-  function block(title,state,body,raw=''){
-    const stateClass=state==='fail'?'fail':state==='pass'?'pass':state==='review'?'review':'';
-    let x=`<div class="melSimple ${stateClass}">`;
-    if(title)x+=`<div class="melSimpleTitle">${title}</div>`;
-    if(body)x+=`<div class="melSimpleBody">${body}</div>`;
-    if(raw){
-      x+=`<details class="melSimpleDetails"><summary>Details</summary>`+
-         `<pre>${esc(raw)}</pre></details>`;
-    }
-    x+='</div>';
-    return x;
-  }
-
-  if(!tc?.found){
-    h+=block(
-      'MEL / CDL',
-      'review',
-      'MEL / CDL field was not confidently extracted from the OFP.'
-    );
-    $('#melResults').innerHTML=h;
-    return;
-  }
-
-  if(tc.applicable===false){
-    h+=block(
-      'MEL / CDL',
-      'pass',
-      'NOT APPLICABLE'
-    );
-    $('#melResults').innerHTML=h;
-    return;
-  }
-
-  if(!m.refs.length){
-    h+=block(
-      'MEL / CDL',
-      'review',
-      `Reference not resolved automatically.${tc.raw?`<br>${esc(tc.raw)}`:''}`
-    );
-  }
+  if(!tc?.found){h+=item('MEL/CDL NOT EXTRACTED','review');$('#melResults').innerHTML=h;return;}
+  if(tc.applicable===false){h+=item('NOT APPLICABLE','pass');$('#melResults').innerHTML=h;return;}
+  if(!m.refs.length)h+=item('REFERENCE NOT RESOLVED','review',esc(tc.raw||''));
 
   for(const d of m.details||[]){
-    if(d.type==='CDL'){
-      h+=block(
-        `CDL ${esc(d.ref)}`,
-        'review',
-        'CDL number detected. Full CDL dispatch effects require the applicable CDL source.'
-      );
-      continue;
-    }
-
-    if(!d.lookup){
-      h+=block(
-        `MEL ${esc(d.ref)}`,
-        'fail',
-        'MEL number was not found in the embedded MEL text. Verify the OFP number and MEL revision.'
-      );
-      continue;
-    }
-
-    const L=d.lookup;
-    const cond=d.conditionDetail;
-
+    if(d.type==='CDL'){h+=item(`CDL ${esc(d.ref)}`,'inop','',esc('CDL number detected. Full CDL dispatch effects require the applicable CDL source.'));continue;}
+    if(!d.lookup){h+=item(`MEL ${esc(d.ref)}`,'fail','NOT FOUND IN MEL');continue;}
+    const L=d.lookup,cond=d.conditionDetail;
     if(!cond){
-      const opts=L.conditions.map(c=>c.ref+(c.title?' — '+c.title:'')).join('<br>');
-      h+=block(
-        `MEL ${esc(d.ref)} — ${esc(L.title)}`,
-        'review',
-        `Multiple conditions found. Review applicable suffix.`+
-        (opts?`<br><br>${opts}`:''),
-        L.raw.slice(0,6500)
-      );
+      const opts=L.conditions.map(c=>esc(c.ref+(c.title?' — '+c.title:''))).join('<br>');
+      h+=item(`${esc(d.ref)} ${esc(L.title)}`,'inop','SELECT CONDITION',opts);
       continue;
     }
-
-    const flags=d.flags||[];
-    const effects=d.effects||[];
-    const impactState=(flags.length||effects.length||cond.hasO||cond.hasM)?'review':'info';
-
-    // No "MEL item" label and no "Dispatch condition" label.
-    // The resolved condition reference is shown directly in the heading.
-    let body=
-      (cond.repair?`<b>Repair interval:</b> ${esc(cond.repair)}`:'')+
-      (cond.installed||cond.required
-        ?`${cond.repair?'<br>':''}<b>Nbr installed / required:</b> ${esc(cond.installed||'—')} / ${esc(cond.required||'—')}`
-        :'')+
-      `${(cond.repair||cond.installed||cond.required)?'<br>':''}<b>Procedure:</b> ${cond.hasO?'(O) required':'No (O) identified'} • ${cond.hasM?'(M) required':'No (M) identified'}`;
-
-    if(flags.length)
-      body+=`<br><b>Operational areas affected:</b> ${flags.map(esc).join(', ')}`;
-
-    if(/performance/i.test(flags.join(' ')))
-      body+=`<br><b>Performance:</b> MEL/OpsProc contains a performance penalty/correction requirement.`;
-
-    if(effects.length)
-      body+=`<br><br><b>Key effects / limitations:</b><br>${effects.map(x=>'• '+esc(x)).join('<br>')}`;
-    else
-      body+=`<br><br><b>Key effect:</b> no specific operational restriction keyword was extracted beyond the provisos; review Details if needed.`;
-
-    const raw=[
-      cond.raw,
-      d.ops?'--- OPERATIONAL PROCEDURE (O) ---\n'+d.ops:''
-    ].filter(Boolean).join('\n\n');
-
-    h+=block(
-      `MEL ${esc(cond.ref)} — ${esc(L.title)}`,
-      impactState,
-      body,
-      raw.slice(0,10000)
-    );
+    const meta=[cond.repair?esc(cond.repair):'',(cond.installed||cond.required)?`${esc(cond.installed||'—')}/${esc(cond.required||'—')}`:'',[cond.hasO?'(O)':'',cond.hasM?'(M)':''].filter(Boolean).join(' ')].filter(Boolean).join(' · ');
+    const flags=d.flags||[],effects=d.effects||[];
+    let detail='';
+    if(cond.title)detail+=`<div class="melCondTitle">${esc(cond.title)}</div>`;
+    if(effects.length)detail+=`<div class="melInfo">${effects.map(x=>esc(x)).join('<br>')}</div>`;
+    if(flags.length)detail+=`<div class="melFlags">AFFECTED: ${flags.map(esc).join(', ')}</div>`;
+    if(cond.hasO)detail+=`<div class="melAct">OPS PROC ${esc(cond.ref)}<span class="melLead"></span>APPLY</div>`;
+    const raw=[cond.raw,d.ops?'--- OPERATIONAL PROCEDURE (O) ---\n'+d.ops:''].filter(Boolean).join('\n\n');
+    if(raw)detail+=`<details class="melSimpleDetails"><summary>MEL TEXT</summary><pre>${esc(raw.slice(0,10000))}</pre></details>`;
+    h+=item(`${esc(cond.ref)} ${esc(L.title)}`,'inop',meta,detail);
   }
-
   $('#melResults').innerHTML=h;
 }
 const NOTAM_GROUPS=['DEP ARPT','DEST ARPT','ENR ALT','EDTO ALT','DEST ALT','DEP FIR','ENR FIR','DEST FIR'];
+// Display labels follow FCOM abbreviations (ALT = altitude, ALTN = alternate); internal role keys unchanged.
+function ecamLabel(s){return String(s).replace(/\bALT\b/,'ALTN');}
 
 function renderNotam(){
   lastNotams=analysis.relevant;
@@ -4877,7 +4874,7 @@ function drawNotams(list){
     const isAirportGroup=['DEP ARPT','DEST ARPT','ENR ALT','EDTO ALT','DEST ALT'].includes(g);
     const isFirGroup=['DEP FIR','ENR FIR','DEST FIR'].includes(g);
 
-    h+=`<div class="notamGroup"><div class="notamGroupHead"><span>${esc(g)}</span></div>`;
+    h+=`<div class="notamGroup"><div class="notamGroupHead"><span>${esc(ecamLabel(g))}</span></div>`;
 
     if(isAirportGroup){
       if(!expectedAirports.length){
@@ -6043,6 +6040,16 @@ function showMinima(){
 }
 $('#minimaReview').onclick=showMinima;
 $('#minimaMenu').onclick=()=>{$('#nativeHomeMenu').open=false;showMinima();};
+// Day / night theme (V6.44), remembered on this device.
+function themeApply(t){
+  document.documentElement.dataset.theme=t;
+  try{localStorage.setItem('fb-theme',t);}catch{}
+  document.querySelectorAll('.themeToggle').forEach(b=>b.textContent=t==='night'?'Day mode':'Night mode');
+  // The iPad app colours the status bar / home indicator area to match.
+  try{window.webkit?.messageHandlers?.nativeHome?.postMessage({action:'theme',theme:t});}catch{}
+}
+document.querySelectorAll('.themeToggle').forEach(b=>b.onclick=()=>{$('#nativeHomeMenu').open=false;themeApply(document.documentElement.dataset.theme==='night'?'day':'night');});
+themeApply(document.documentElement.dataset.theme||'night');
 $('#minimaClose').onclick=()=>$('#minimaDialog').close();
 function showMinimaDetected(){
   const row=minimaFormRow(),name=$('#minimaName').value.trim();
