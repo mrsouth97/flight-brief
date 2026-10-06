@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.53">
-<title>Flight Brief V6.53</title>
+<meta name="flight-brief-version" content="6.54">
+<title>Flight Brief V6.54</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -1933,7 +1933,8 @@ function melFindItem(ref){
     const i=x.index+(x[0].startsWith('\n')?1:0);
     const around=txt.slice(Math.max(0,i-500),Math.min(txt.length,i+2300));
     let score=0;
-    if(/Ident\.\s*:\s*MI-/i.test(around))score+=8;
+    if(/Ident\.\s*:\s*(MI|MEL)-/i.test(around))score+=8;
+    if(/\.{8,}|Criteria\s*:/.test(txt.slice(i,i+300)))score-=12; // TOC / summary line
     if(/Repair interval/i.test(around))score+=6;
     if(/MEL ITEMS/i.test(around))score+=3;
     if(/TABLE OF CONTENTS|SUMMARY OF HIGHLIGHTS|LIST OF EFFECTIVE/i.test(around))score-=8;
@@ -1979,8 +1980,10 @@ function melFindItem(ref){
     const required=table?table[3]:'';
     const placard=table?table[4]:'';
 
-    const hasO=/\(\s*o\s*\)/i.test(cb);
-    const hasM=/\(\s*m\s*\)/i.test(cb);
+    // (o)/(m) markers belong to this condition's proviso only (not page footers or reference lines).
+    const provBody=cb.split(/Reference\(s\)|HVN A350 FLEET/i)[0];
+    const hasO=/\(\s*o\s*\)/i.test(provBody);
+    const hasM=/\(\s*m\s*\)/i.test(provBody);
 
     let proviso='';
     if(table){
@@ -2017,8 +2020,12 @@ function melFindOpsProc(condRef){
     const after=txt.slice(i,Math.min(txt.length,i+8500));
     let score=0;
     if(/MEL OPERATIONAL PROCEDURES/i.test(before))score+=6;
-    if(/Ident\.\s*:\s*MO-/i.test(after.slice(0,800)))score+=10;
+    if(/Ident\.\s*:\s*(?:TDU\s*\/\s*)?MO-/i.test(after.slice(0,800)))score+=10;
     if(/TABLE OF CONTENTS/i.test(before))score-=10;
+    // Not the MEL item itself (table follows) nor a summary table line.
+    if(/Repair interval/i.test(after.slice(0,400)))score-=20;
+    if(/\bMO-\d{2}-\d{2}\s+[A-D]\s+\d/i.test(after.slice(0,300)))score-=20;
+    if(/Ident\.\s*:\s*MI-/i.test(after.slice(0,400)))score-=20;
     candidates.push({i,score});
   }
   if(!candidates.length)return '';
@@ -2031,8 +2038,12 @@ function melFindOpsProc(condRef){
   nr.lastIndex=Math.min(chunk.length,condRef.length+20);
   let n;
   while((n=nr.exec(chunk))!==null){
-    if(n[1].toUpperCase()!==condRef.toUpperCase()){chunk=chunk.slice(0,n.index);break}
+    if(n[1].toUpperCase()===condRef.toUpperCase())continue;
+    // A second ref before "Ident.:" is a shared header (one procedure for two conditions): keep going.
+    if(!/Ident\.\s*:/i.test(chunk.slice(0,n.index)))continue;
+    chunk=chunk.slice(0,n.index);break;
   }
+  if(!/Ident\.\s*:\s*(?:TDU\s*\/\s*)?MO-/i.test(chunk))return '';
   return chunk.replace(/\n{3,}/g,'\n\n').trim();
 }
 function melImpactSummary(condition,ops){
@@ -4656,9 +4667,9 @@ function renderMEL(){
     return c?c[1].trim():(d?d[1].trim():'');
   };
   const row=(sys,title,cls,link,body)=>
-    `<details class="melRow"><summary><div class="melRowSys">${sys||'&nbsp;'}</div><div class="melRowMain"><span class="melRowTitle ${cls}">&gt; ${title}</span><span class="melRowLink">${link||''}</span></div></summary>`+
+    `<details class="melRow"><summary><div class="melRowSys">${sys||'&nbsp;'}</div><div class="melRowMain"><span class="melRowTitle ${cls}">${cls==='inop'?'&gt; ':''}${title}</span><span class="melRowLink">${link||''}</span></div></summary>`+
     (body?`<div class="melRowBody">${body}</div>`:'')+`</details>`;
-  let h='<div class="melPanelHead"><span>MEL / CDL ITEMS</span><span>MEL</span></div>';
+  let h='';
 
   if(!tc?.found){h+=row('','MEL/CDL NOT EXTRACTED','review','');$('#melResults').innerHTML=h;return;}
   if(tc.applicable===false){h+=row('','NOT APPLICABLE','pass','');$('#melResults').innerHTML=h;return;}
@@ -4703,8 +4714,12 @@ function renderMEL(){
 function melProvisoHtml(cond){
   const raw=String(cond?.raw||'');
   let lines=raw.split('\n').map(l=>l.replace(/\s+$/,''));
-  const st=lines.findIndex(l=>/^\s*\((o|m)\)|^\s*(One|Two|Three|Any|All|May be|Both)\b/i.test(l));
-  if(st<0)return '';
+  // Provisos start after the "Repair interval …" header row and its values row.
+  const hdr=lines.findIndex(l=>/Repair interval/i.test(l));
+  let st=-1;
+  if(hdr>=0){st=hdr+1;while(st<lines.length&&!lines[st].trim())st++;st++;}
+  else st=lines.findIndex(l=>/^\s*\((o|m)\)|^\s*(One|Two|Three|Any|All|May be|Both)\b/i.test(l));
+  if(st<0||st>=lines.length)return '';
   lines=lines.slice(st);
   const en=lines.findIndex(l=>/Reference\(s\)|^\s*\((o|m)\)\s+Refer to|HVN A350 FLEET/i.test(l));
   if(en>0)lines=lines.slice(0,en);
@@ -4721,9 +4736,12 @@ function melProvisoHtml(cond){
 // (O) procedure as printed in the MEL OPERATIONAL PROCEDURES: phase titles, one line per dash bullet.
 function melOpsHtml(ops){
   if(!ops)return '';
-  let lines=String(ops).split('\n');
-  const st=lines.findIndex(l=>/^\s*Applicable to\s*:/i.test(l));
+  // Revision marks ("1 Ident.: …", "2 Applicable to: …") and the TDU "Impacted DU" line are dropped.
+  let lines=String(ops).split('\n').map(l=>l.replace(/^\s*\d\s+(?=(Ident\.|Applicable to|Impacted DU))/i,''));
+  let st=lines.findIndex(l=>/^\s*Applicable to\s*:/i.test(l));
+  if(st<0)st=lines.findIndex(l=>/^\s*Ident\.\s*:/i.test(l));
   if(st>=0)lines=lines.slice(st+1);
+  lines=lines.filter(l=>!/^\s*Impacted DU\s*:/i.test(l));
   lines=lines.filter(l=>!/HVN A350 FLEET|MEL OPERATIONAL PROCEDURES|MINIMUM EQUIPMENT LIST|^\s*MEL\s{2,}|^\s*A350\s*$|^\s*Ident\.\s*:|^\s*\d{2}\s*-\s*[A-Z]|^\s*\d{2}-\d{2}\s+-\s/.test(l));
   const out=[];
   for(const l of lines){
