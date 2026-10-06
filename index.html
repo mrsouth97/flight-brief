@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.45">
-<title>Flight Brief V6.45</title>
+<meta name="flight-brief-version" content="6.46">
+<title>Flight Brief V6.46</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -346,6 +346,38 @@ header,footer{background:var(--bar)!important;backdrop-filter:none!important;bor
 .melFlags{color:#FFB000;font-size:13px;margin-bottom:8px}
 .melAct{color:#19D6F0;font-size:13px;display:flex;align-items:center;gap:6px}
 .melSimpleDetails summary{color:#8E949B;font-size:12px;cursor:pointer;margin-top:8px}
+
+/* V6.46: every tab inside the MFD bezel (as INIT / WIND); phone-width fixes; sun/moon theme button. */
+.card{padding:0!important;border:0!important;background:transparent!important}
+#tab-wx,#tab-enr,#tab-notam,#tab-dgr{background:#000!important;border:10px solid #6B7280!important;border-radius:2px!important;padding:12px 14px 14px!important}
+#tab-wind{padding:0!important}
+#tab-ofp .initPage{border-width:10px}
+.wxCard,.notamPaper,.notamPaperFlush{border:0!important;background:transparent!important}
+.themeToggle{font-size:18px!important;line-height:1;padding:6px 12px!important;min-width:44px}
+.resultActions{flex-wrap:nowrap!important;gap:6px!important}
+.resultActions button,.resultActions label.upload{white-space:nowrap;padding:8px 10px!important;font-size:13px!important}
+.windSheet{overflow:hidden!important}
+.windTable{overflow-x:auto!important}
+@media(max-width:640px){
+  .resultTopbar{gap:8px}
+  .resultHomeLogo{font-size:15px!important;letter-spacing:.08em!important}
+  .initBody{padding:10px 8px 8px}
+  .initRow{gap:8px 12px;margin-bottom:8px}
+  .initFld{flex-wrap:nowrap;gap:8px;min-height:34px}
+  .initLbl{min-width:72px;font-size:12px}
+  .initLbl.initIn{margin-left:6px}
+  .initBox{min-width:0;padding:5px 8px;font-size:14px;flex:0 1 auto}
+  .initWind,.initPlain{font-size:14px;white-space:nowrap}
+  #tab-wx,#tab-enr,#tab-notam,#tab-dgr{padding:10px 8px 10px!important;border-width:8px!important}
+  .initPage,.windSheet{border-width:8px!important}
+  .windTable{grid-template-columns:64px repeat(4,minmax(88px,1fr))!important}
+  .windCell{padding:8px 4px!important}
+  .windVector{font-size:12px;white-space:nowrap}
+  .windWptLabel{font-size:12px}
+  .windWptTemp{display:block;margin-left:0!important;font-size:11px!important}
+  .windFlBtn{padding:8px 10px!important;font-size:12px!important}
+  main{padding-left:6px;padding-right:6px}
+}
 </style>
 </head>
 <body>
@@ -6044,7 +6076,7 @@ $('#minimaMenu').onclick=()=>{$('#nativeHomeMenu').open=false;showMinima();};
 function themeApply(t){
   document.documentElement.dataset.theme=t;
   try{localStorage.setItem('fb-theme',t);}catch{}
-  document.querySelectorAll('.themeToggle').forEach(b=>b.textContent=t==='night'?'Day mode':'Night mode');
+  document.querySelectorAll('.themeToggle').forEach(b=>{b.textContent=t==='night'?'☀':'☾';b.title=t==='night'?'Day mode':'Night mode';b.setAttribute('aria-label',b.title);});
   // The iPad app colours the status bar / home indicator area to match.
   try{window.webkit?.messageHandlers?.nativeHome?.postMessage({action:'theme',theme:t});}catch{}
 }
