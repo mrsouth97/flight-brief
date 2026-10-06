@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.56">
-<title>Flight Brief V6.56</title>
+<meta name="flight-brief-version" content="6.57">
+<title>Flight Brief V6.57</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -423,6 +423,22 @@ header,footer{background:var(--bar)!important;backdrop-filter:none!important;bor
 .subTab{border:0!important;border-right:2px solid #000!important;border-radius:0!important;background:#9CA3AF!important;color:#111!important;padding:8px 18px!important;font-size:13px!important;font-weight:500!important;text-transform:uppercase}
 .subTab.active{background:#000!important;color:#FFF!important}
 @media(max-width:640px){.subTabs{margin:-10px -8px 10px}}
+
+/* V6.57 tabs after the MFD FCU BKUP page (AFS CP | EFIS CP): dark-grey tabs on black, the selected
+   tab's label inside a thin white box; a light-grey title bar with the page name underneath. */
+.tabs{gap:0!important;background:#000;padding-bottom:0!important;border-bottom:0!important}
+.tab,.subTab,.windFlBtn{background:#3A3F46!important;color:#E5E7EB!important;border:0!important;border-right:2px solid #000!important;border-radius:0!important;padding:11px 20px!important;font-size:14px!important;font-weight:500!important;text-transform:uppercase;outline:0}
+.tab.active,.subTab.active,.windFlBtn.active{background:#3A3F46!important;color:#FFF!important;border-color:#000!important;outline:1px solid #FFF!important;outline-offset:-7px}
+.subTabs,.windPicker{background:#000!important;border-bottom:0!important}
+.subTabs{margin:-12px -14px 0!important}
+.subTitle{background:#C4C7CC;color:#111;font-size:15px;letter-spacing:.04em;padding:4px 10px;margin:0 -14px 12px}
+.windPickerButtons{background:#000}
+@media(max-width:640px){
+  .tab,.subTab,.windFlBtn{padding:10px 12px!important;font-size:12px!important}
+  .tab.active,.subTab.active,.windFlBtn.active{outline-offset:-5px}
+  .subTabs{margin:-10px -8px 0!important}
+  .subTitle{margin:0 -8px 10px;font-size:13px}
+}
 </style>
 </head>
 <body>
@@ -475,9 +491,9 @@ header,footer{background:var(--bar)!important;backdrop-filter:none!important;bor
 <div class="resultTopbar"><button id="homeLogoButton" class="resultHomeLogo" type="button">Flight Brief</button><div class="resultMeta hidden"><h2 id="flightTitle">Flight review</h2><div id="flightSub" class="muted"></div><div id="overview" class="overview"></div></div><div class="row wrap resultActions"><button id="themeReview" type="button" class="themeToggle">Day mode</button><button id="minimaReview" type="button">Minima</button><label class="upload">+ Add Docs<input id="moreUpload" type="file" accept=".pdf,application/pdf" multiple hidden></label></div></div>
 <div class="tabs"><button class="tab active" data-tab="ofp">OFP DETAIL</button><button class="tab" data-tab="wx">WEATHER</button><button class="tab" data-tab="notam">NOTAM</button><button class="tab" data-tab="wind">WIND</button><button class="tab" data-tab="dgr">DGR</button></div>
 <section id="tab-ofp" class="card"><div id="ofpResults" class="section"></div><div class="ofpMelMerged"><h3 id="melHeading">MEL / CDL</h3><div id="melResults" class="section" style="margin-top:8px"></div></div></section>
-<section id="tab-wx" class="card hidden"><div class="subTabs"><button type="button" class="subTab active" data-sub="minima">MINIMA</button><button type="button" class="subTab" data-sub="enr">ENR WX</button></div><div id="wxResults" class="section" data-pane="minima"></div><div id="enrResults" class="section hidden" data-pane="enr"></div></section>
+<section id="tab-wx" class="card hidden"><div class="subTabs"><button type="button" class="subTab active" data-sub="minima" data-title="WEATHER MINIMA">MINIMA</button><button type="button" class="subTab" data-sub="enr" data-title="ENROUTE WEATHER">ENR WX</button></div><div class="subTitle">WEATHER MINIMA</div><div id="wxResults" class="section" data-pane="minima"></div><div id="enrResults" class="section hidden" data-pane="enr"></div></section>
 
-<section id="tab-notam" class="card hidden"><div class="subTabs"><button type="button" class="subTab active" data-sub="aprt">APRT</button><button type="button" class="subTab" data-sub="fir">FIR</button></div><div class="notamPaper notamPaperFlush"><div id="notamResults" class="notamResults"></div></div></section>
+<section id="tab-notam" class="card hidden"><div class="subTabs"><button type="button" class="subTab active" data-sub="aprt" data-title="AIRPORT NOTAM">APRT</button><button type="button" class="subTab" data-sub="fir" data-title="FIR NOTAM">FIR</button></div><div class="subTitle">AIRPORT NOTAM</div><div class="notamPaper notamPaperFlush"><div id="notamResults" class="notamResults"></div></div></section>
 
 <section id="tab-wind" class="card hidden"><div id="windResults" class="section"></div></section>
 <section id="tab-dgr" class="card hidden"><div id="dgrItems" class="section"></div><button id="dgrAdd" type="button" style="margin-top:10px">+ Add item</button><div id="dgrPositions" class="section" style="margin-top:10px"></div><div id="dgrLoadsheet" class="section" style="margin-top:10px"></div><div id="dgrResults" class="section" style="margin-top:12px"></div></section>
@@ -5538,6 +5554,7 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('.subTab');if(!b)return;
   b.parentElement.querySelectorAll('.subTab').forEach(x=>x.classList.toggle('active',x===b));
   const scope=b.closest('section')||document;
+  const ttl=scope.querySelector('.subTitle');if(ttl)ttl.textContent=b.dataset.title||b.textContent;
   scope.querySelectorAll('[data-pane]').forEach(p=>p.classList.toggle('hidden',p.dataset.pane!==b.dataset.sub));
 });
 document.querySelectorAll('.tab').forEach(b=>{
