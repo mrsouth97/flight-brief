@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.48">
-<title>Flight Brief V6.48</title>
+<meta name="flight-brief-version" content="6.49">
+<title>Flight Brief V6.49</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -392,6 +392,19 @@ header,footer{background:var(--bar)!important;backdrop-filter:none!important;bor
 .melTblVal{color:#F2F3F4;font-size:15px;font-weight:700;text-align:center;padding:4px;border-right:1px solid #4B5563}
 .melTblHead:last-child,.melTblVal:last-child{border-right:0}
 .melPlacard{display:inline-block;background:#4B5563;color:#D1D5DB;font-size:11px;padding:2px 8px;margin-bottom:6px}
+
+/* MEL/CDL rows like the OLB ECAM EVENTS panel (V6.49). */
+.melPanelHead{display:flex;justify-content:space-between;background:#1F2937;color:#F2F3F4;font-size:13px;padding:5px 10px;border-bottom:1px solid #4B5563;margin-top:4px}
+.melRow{border-bottom:1px solid #374151}
+.melRow summary{list-style:none;cursor:pointer;padding:8px 10px}
+.melRow summary::-webkit-details-marker{display:none}
+.melRowSys{color:#9CA3AF;font-size:12px;min-height:14px}
+.melRowMain{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.melRowTitle{color:#F2F3F4;font-size:15px}
+.melRowTitle.pass{color:#1FE51F}.melRowTitle.fail{color:#FF2E2E}.melRowTitle.review{color:#FF4FD8}
+.melRow[open] .melRowTitle{color:#19D6F0}
+.melRowLink{color:#19D6F0;font-size:13px;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.melRowBody{padding:4px 10px 12px 24px}
 </style>
 </head>
 <body>
@@ -1914,7 +1927,11 @@ function melFindItem(ref){
     if(/Repair interval/i.test(around))score+=6;
     if(/MEL ITEMS/i.test(around))score+=3;
     if(/TABLE OF CONTENTS|SUMMARY OF HIGHLIGHTS|LIST OF EFFECTIVE/i.test(around))score-=8;
-    cand.push({i,title:x[1].trim(),score});
+    // Titles may wrap onto a second, indented line (e.g. "Cabin Sign (No Smoking, ... / No Mobile, ...)").
+    let title=x[1].trim();
+    const nx=txt.slice(x.index+x[0].length).match(/^\n( {10,})([^\n]{2,140})/);
+    if(nx&&!/^(Ident\.|Applicable|Repair|\d{2}-\d{2}-\d{2})/i.test(nx[2].trim()))title+=' '+nx[2].trim();
+    cand.push({i,title,score});
   }
   if(!cand.length)return null;
   cand.sort((a,b)=>b.score-a.score);
@@ -4611,46 +4628,54 @@ function renderWX(){
   $('#wxResults').innerHTML=h;
 }
 function renderMEL(){
-  // MEL/CDL in the style of the ECAM STATUS page: inoperative item in amber, one summary line in
-  // white, a cyan CONDITIONS action line that opens the provisos / (O) procedure on tap.
+  // MEL/CDL in the style of the OLB "ACTIVE ECAM ALERTS & DISPATCH MESSAGES" panel: one row per item —
+  // grey system line (ATA chapter / section from the MEL), white "> ITEM TITLE" line — tap to open the MEL item.
   const m=analysis.mel,o=analysis.o,tc=o.techConditions;
   const melHeading=$('#melHeading');
   if(melHeading)melHeading.textContent='MEL/CDL';
-  let h='';
-  const item=(title,cls,meta='',detail='')=>
-    `<div class="melItem"><div class="melLine ${cls}">${title}${meta?`<span class="melMeta">${meta}</span>`:''}</div>`+
-    (detail?`<details class="melCond"><summary>CONDITIONS<span class="melLead"></span>▸</summary><div class="melCondBody">${detail}</div></details>`:'')+
-    `</div>`;
+  const chap=(L,ref)=>{
+    const nn=String(ref||'').slice(0,2),sec=String(ref||'').slice(0,5);
+    const cre=new RegExp('(?:^|\\n)\\s*'+nn+'\\s+-\\s+([A-Z][A-Z0-9 /&(),.-]{2,60})\\s*(?:\\n|$)');
+    const dre=new RegExp('(?:^|\\n)\\s*'+sec+'\\s+-\\s+([^\\n]{2,60})');
+    // Chapter / section names come from the MEL page headers; fall back to the whole MEL text.
+    const raw=String(L?.raw||''),all=inflateMel();
+    const c=raw.match(cre)||all.match(cre);
+    const d=raw.match(dre)||all.match(dre);
+    return [c?nn+' - '+c[1].trim():'',d?sec+' - '+d[1].trim():''].filter(Boolean).join(' · ');
+  };
+  const row=(sys,title,cls,link,body)=>
+    `<details class="melRow"><summary><div class="melRowSys">${sys||'&nbsp;'}</div><div class="melRowMain"><span class="melRowTitle ${cls}">&gt; ${title}</span><span class="melRowLink">${link||''}</span></div></summary>`+
+    (body?`<div class="melRowBody">${body}</div>`:'')+`</details>`;
+  let h='<div class="melPanelHead"><span>MEL / CDL ITEMS</span><span>MEL</span></div>';
 
-  if(!tc?.found){h+=item('MEL/CDL NOT EXTRACTED','review');$('#melResults').innerHTML=h;return;}
-  if(tc.applicable===false){h+=item('NOT APPLICABLE','pass');$('#melResults').innerHTML=h;return;}
-  if(!m.refs.length)h+=item('REFERENCE NOT RESOLVED','review',esc(tc.raw||''));
+  if(!tc?.found){h+=row('','MEL/CDL NOT EXTRACTED','review','');$('#melResults').innerHTML=h;return;}
+  if(tc.applicable===false){h+=row('','NOT APPLICABLE','pass','');$('#melResults').innerHTML=h;return;}
+  if(!m.refs.length)h+=row('','REFERENCE NOT RESOLVED','review','',esc(tc.raw||''));
 
   for(const d of m.details||[]){
-    if(d.type==='CDL'){h+=item(`CDL ${esc(d.ref)}`,'inop','',esc('CDL number detected. Full CDL dispatch effects require the applicable CDL source.'));continue;}
-    if(!d.lookup){h+=item(`MEL ${esc(d.ref)}`,'fail','NOT FOUND IN MEL');continue;}
+    if(d.type==='CDL'){h+=row('CDL',`CDL ${esc(d.ref)}`,'inop','',esc('CDL number detected. Full CDL dispatch effects require the applicable CDL source.'));continue;}
+    if(!d.lookup){h+=row('',`MEL ${esc(d.ref)}`,'fail','NOT FOUND');continue;}
     const L=d.lookup,cond=d.conditionDetail;
     if(!cond){
       const opts=L.conditions.map(c=>esc(c.ref+(c.title?' — '+c.title:''))).join('<br>');
-      h+=item(`${esc(d.ref)} ${esc(L.title)}`,'inop','SELECT CONDITION',opts);
+      h+=row(chap(L,d.ref),`${esc(d.ref)} ${esc(L.title)}`,'inop','SELECT CONDITION',`<div class="melInfo">${opts}</div>`);
       continue;
     }
-    // Repair interval / Nbr installed / Nbr required as a 3-column table, like the OLB MEL item.
     const tbl=`<div class="melTbl"><div class="melTblHead">REPAIR INTERVAL</div><div class="melTblHead">NBR INSTALLED</div><div class="melTblHead">NBR REQUIRED</div>`+
       `<div class="melTblVal">${esc(cond.repair||'—')}</div><div class="melTblVal">${esc(cond.installed||'—')}</div><div class="melTblVal">${esc(cond.required||'—')}</div></div>`+
       (cond.placard&&!/^no$/i.test(cond.placard)?`<div class="melPlacard">PLACARD</div>`:'');
-    const meta=[cond.hasO?'(O)':'',cond.hasM?'(M)':''].filter(Boolean).join(' ');
+    const link=[cond.hasO?'(O)':'',cond.hasM?'(M)':''].filter(Boolean).join(' ');
     const flags=d.flags||[],effects=d.effects||[];
-    let detail='';
-    if(cond.title)detail+=`<div class="melCondTitle">${esc(cond.title)}</div>`;
+    let body=tbl;
+    if(cond.title)body+=`<div class="melCondTitle">${esc(cond.title)}</div>`;
     const prov=melProvisoHtml(cond);
-    if(prov)detail+=`<div class="melInfo">${prov}</div>`;
-    else if(effects.length)detail+=`<div class="melInfo">${effects.map(x=>esc(x)).join('<br>')}</div>`;
-    if(flags.length)detail+=`<div class="melFlags">AFFECTED: ${flags.map(esc).join(', ')}</div>`;
-    if(cond.hasO)detail+=`<details class="melOps"><summary class="melAct">OPS PROC ${esc(cond.ref)}<span class="melLead"></span>APPLY</summary><div class="melOpsBody">${melOpsHtml(d.ops)||'NOT FOUND IN MEL OPERATIONAL PROCEDURES'}</div></details>`;
+    if(prov)body+=`<div class="melInfo">${prov}</div>`;
+    else if(effects.length)body+=`<div class="melInfo">${effects.map(x=>esc(x)).join('<br>')}</div>`;
+    if(flags.length)body+=`<div class="melFlags">AFFECTED: ${flags.map(esc).join(', ')}</div>`;
+    if(cond.hasO)body+=`<details class="melOps"><summary class="melAct">OPS PROC ${esc(cond.ref)}<span class="melLead"></span>APPLY</summary><div class="melOpsBody">${melOpsHtml(d.ops)||'NOT FOUND IN MEL OPERATIONAL PROCEDURES'}</div></details>`;
     const raw=[cond.raw,d.ops?'--- OPERATIONAL PROCEDURE (O) ---\n'+d.ops:''].filter(Boolean).join('\n\n');
-    if(raw)detail+=`<details class="melSimpleDetails"><summary>MEL TEXT</summary><pre>${esc(raw.slice(0,10000))}</pre></details>`;
-    h+=item(`${esc(cond.ref)} ${esc(L.title)}`,'inop',meta,detail).replace('<details class="melCond">',tbl+'<details class="melCond">');
+    if(raw)body+=`<details class="melSimpleDetails"><summary>MEL TEXT</summary><pre>${esc(raw.slice(0,10000))}</pre></details>`;
+    h+=row(chap(L,cond.ref),`${esc(cond.ref)} ${esc(L.title)}`,'inop',link,body);
   }
   $('#melResults').innerHTML=h;
 }
