@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.63">
-<title>Flight Brief V6.63</title>
+<meta name="flight-brief-version" content="6.64">
+<title>Flight Brief V6.64</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -514,6 +514,24 @@ body.homeFixed .homeView{min-height:0}
    capped at the pane height and .wxCard (overflow:hidden) clipped the rest, so nothing could scroll. */
 body.panelScroll #tab-wx>[data-pane]{display:block}
 body.panelScroll #tab-wx .wxCard{overflow:visible!important}
+
+/* V6.64 WIND: FL row fixed (one line on phones), only the wind table scrolls; column header stays on top. */
+body.panelScroll #tab-wind{display:flex;flex-direction:column;overflow:hidden!important}
+body.panelScroll #windResults{display:flex;flex-direction:column;flex:1;min-height:0}
+body.panelScroll .windSheet{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden!important}
+body.panelScroll .windPicker{flex:none;position:static}
+body.panelScroll .windTable{flex:1;min-height:0;overflow:auto!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;align-content:start}
+.windHead{position:sticky;top:0;z-index:2}
+@media(max-width:640px){
+  .windPickerButtons{flex-wrap:nowrap!important;overflow:hidden}
+  .windFlBtn{flex:1 1 0;min-width:0;padding:7px 0!important;font-size:12px!important;letter-spacing:0;text-align:center;white-space:nowrap}
+  .windFlBtn:last-child{border-right:0!important}
+  .windFlBtn.active::before{inset:4px 2px}
+}
+
+/* WIND column header as a title bar (same grey bar as WEATHER MINIMA / F-PLN). */
+.windHead{background:var(--mfBar)!important;color:var(--mfBarTxt)!important;border-color:var(--mfBar)!important;font-size:15px!important;padding:5px 7px!important;letter-spacing:.04em}
+@media(max-width:640px){.windHead{font-size:13px!important;padding:4px 4px!important}}
 </style>
 </head>
 <body>
