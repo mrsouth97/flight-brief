@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.68">
-<title>Flight Brief V6.68</title>
+<meta name="flight-brief-version" content="6.69">
+<title>Flight Brief V6.69</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -243,8 +243,8 @@ input,select,textarea{background:var(--card);color:var(--text);border-color:var(
 
 
 /* MFD display palette: night = black ECAM display; Day mode (mockup option 2) = pale display, dark text, deep colours. */
-:root{--mfBarSub:#4B5563;--mfTab:#3B3B3B;--mfMuted:#8E949B;--mfLine2:#4B5563;--mfMuted2:#4B5563;--mfDisp:#000;--mfTxt:#FFF;--mfCyan:#19D6F0;--mfGreen:#1FE51F;--mfAmber:#FFB000;--mfRed:#FF2E2E;--mfMag:#FF4FD8;--mfBezel:#6B7280;--mfLine:#374151;--mfTabTxt:#D1D5DB;--mfBar:#C4C7CC;--mfPanel:#0E1012;--mfBarTxt:#111}
-:root:not([data-theme="night"]){--mfBarSub:#4B5563;--mfTab:#D9DCE1;--mfMuted:#5C6269;--mfLine2:#B5BAC1;--mfMuted2:#5C6269;--mfDisp:#F4F5F7;--mfTxt:#14171A;--mfCyan:#0A6F8F;--mfGreen:#0F7A2A;--mfAmber:#9A5A00;--mfRed:#C01A1A;--mfMag:#A0128F;--mfBezel:#9AA0A8;--mfLine:#C9CDD3;--mfTabTxt:#14171A;--mfBar:#C4C7CC;--mfPanel:#E3E6EA;--mfBarTxt:#111}
+:root{--mfBarSub:#1F2329;--mfTab:#3B3B3B;--mfMuted:#8E949B;--mfLine2:#4B5563;--mfMuted2:#4B5563;--mfDisp:#000;--mfTxt:#FFF;--mfCyan:#19D6F0;--mfGreen:#1FE51F;--mfAmber:#FFB000;--mfRed:#FF2E2E;--mfMag:#FF4FD8;--mfBezel:#6B7280;--mfLine:#374151;--mfTabTxt:#D1D5DB;--mfBar:#C4C7CC;--mfPanel:#0E1012;--mfBarTxt:#111}
+:root:not([data-theme="night"]){--mfBarSub:#1F2329;--mfTab:#D9DCE1;--mfMuted:#5C6269;--mfLine2:#B5BAC1;--mfMuted2:#5C6269;--mfDisp:#F4F5F7;--mfTxt:#14171A;--mfCyan:#0A6F8F;--mfGreen:#0F7A2A;--mfAmber:#9A5A00;--mfRed:#C01A1A;--mfMag:#A0128F;--mfBezel:#9AA0A8;--mfLine:#C9CDD3;--mfTabTxt:#14171A;--mfBar:#C4C7CC;--mfPanel:#E3E6EA;--mfBarTxt:#111}
 /* ECAM look (V6.45): one monospaced display face, black ground, thin lines, no boxes-in-boxes,
    colours carry meaning only: white data, green normal, amber caution, red warning, cyan titles/actions. */
 body,button,input,select,textarea,label.upload{font-family:"SF Mono",ui-monospace,Menlo,monospace!important;letter-spacing:0}
@@ -556,6 +556,26 @@ body.panelScroll .windBody{overflow:visible!important;flex:none}
 .windDesTitle{margin:0!important}
 .windDes{border-top:0!important}
 .windDes .windHead{position:static}
+/* V6.69 after the break-UI pass: long unbroken text wraps in the DISPATCH box; secondary lines 12 px;
+   phone: DGR card stacks (name, then status + buttons, class line, 4-column table), WIND shows ddd°/sss so 4 FL fit. */
+.initBox.wide{overflow-wrap:anywhere;word-break:break-word;min-width:0}
+.wxUseTime,.notamTypeCount,.windTemp,.windWptSub,.windWptTemp{font-size:12px!important}
+.dgrClsLine{display:none}
+@media(max-width:640px){
+  .dgrEntry .itemhead{flex-direction:column;align-items:stretch;gap:8px}
+  .dgrEntryAct{white-space:normal!important;align-items:center!important;flex-wrap:wrap}
+  .dgrEntryAct>span:first-child{margin-right:auto}
+  .dgrClsLine{display:block;font-size:13px;margin-top:8px}
+  .dgrEntry .dgrColCls{display:none}
+  .dgrEntry .dgrTable{display:table;white-space:normal;overflow:visible}
+  .dgrEntry .dgrTable th{font-size:11px;white-space:nowrap}
+  .windGap,.windKt{display:none}
+  .windVector{font-size:13px!important}
+  .windCell{padding:8px 2px!important}
+  .windWptSub{font-size:11px!important}
+  .windHeadRow,.windBody{grid-template-columns:78px repeat(var(--windN),minmax(68px,1fr))!important}
+  .windDes{grid-template-columns:repeat(var(--windN),minmax(66px,1fr))!important}
+}
 </style>
 </head>
 <body>
@@ -3404,11 +3424,11 @@ function renderWind(){
   }
 
   h+=
-      `<div class="windTable windHeadRow" style="grid-template-columns:minmax(70px,.8fr) repeat(${chosen.length},minmax(82px,1fr))">`+
+      `<div class="windTable windHeadRow" style="--windN:${chosen.length};grid-template-columns:minmax(70px,.8fr) repeat(${chosen.length},minmax(82px,1fr))">`+
         `<div class="windHead windWpt">WPT</div>`+
         chosen.map(fl=>`<div class="windHead">FL${esc(fl)}</div>`).join('')+
       `</div>`+
-      `<div class="windScroll"><div class="windTable windBody" style="grid-template-columns:minmax(70px,.8fr) repeat(${chosen.length},minmax(82px,1fr))">`;
+      `<div class="windScroll"><div class="windTable windBody" style="--windN:${chosen.length};grid-template-columns:minmax(70px,.8fr) repeat(${chosen.length},minmax(82px,1fr))">`;
 
   const initialFlMatch=String(analysis?.o?.initialFltLvl||'').match(/(\d{3})/);
   const initialFl=initialFlMatch?Number(initialFlMatch[1]):(w.levelChanges?.[0]?.fl||null);
@@ -3442,7 +3462,7 @@ function renderWind(){
       if(tempOnly){h+='<div class="windCell windMissing">–</div>';continue;}
       h+=
         `<div class="windCell">`+
-          `<div class="windVector ${windChanged?'changed':''}">${String(x.dir).padStart(3,'0')}<span class="windUnit">°</span> /${String(x.spd).padStart(3,'0')}<span class="windUnit">KT</span></div>`+
+          `<div class="windVector ${windChanged?'changed':''}">${String(x.dir).padStart(3,'0')}<span class="windUnit">°</span><span class="windGap"> </span>/${String(x.spd).padStart(3,'0')}<span class="windUnit windKt">KT</span></div>`+
         `</div>`;
     }
   }
@@ -3452,9 +3472,9 @@ function renderWind(){
   if(w.descent){
     const d=w.descent,lv=d.levels.filter(fl=>d.byFl[fl]);
     h+=`<div class="windDesTitle subTitle">DES WIND</div>`+
-       `<div class="windTable windDes" style="grid-template-columns:repeat(${lv.length},minmax(82px,1fr))">`+
+       `<div class="windTable windDes" style="--windN:${lv.length};grid-template-columns:repeat(${lv.length},minmax(82px,1fr))">`+
        lv.map(fl=>`<div class="windHead">FL${esc(fl)}</div>`).join('')+
-       lv.map(fl=>{const x=d.byFl[fl];return `<div class="windCell"><div class="windVector">${String(x.dir).padStart(3,'0')}<span class="windUnit">°</span> /${String(x.spd).padStart(3,'0')}<span class="windUnit">KT</span></div><div class="windTemp">${x.temp>0?'+':''}${esc(x.temp)}°C</div></div>`;}).join('')+
+       lv.map(fl=>{const x=d.byFl[fl];return `<div class="windCell"><div class="windVector">${String(x.dir).padStart(3,'0')}<span class="windUnit">°</span><span class="windGap"> </span>/${String(x.spd).padStart(3,'0')}<span class="windUnit windKt">KT</span></div><div class="windTemp">${x.temp>0?'+':''}${esc(x.temp)}°C</div></div>`;}).join('')+
        `</div>`;
   }
   h+='</div>'; // .windScroll
@@ -5863,10 +5883,10 @@ function dgrEntryHtml(e,key,pg,selected,only){
   const status=st==='forbidden'?'<span class="dgrBad">FORBIDDEN</span>':st==='bad'?`<span class="dgrBad">NOT ACCEPTED ON VNA${paxForbidden&&!bad.length?' — CAO only':''}</span>`:st==='pgwarn'?'<span class="dgrWarn">Select PG</span>':'<span class="dgrOk">No DGM 2.5.8 restriction</span>';
   const sps=e.sp.map(c=>`<button type="button" class="ghost dgrSpBtn" data-sp="${esc(c)}" style="padding:4px 9px;margin:2px">${esc(c)}</button>`).join('')||'None';
   return `<div class="dgrEntry"><div class="itemhead"><div style="flex:1;min-width:0"><strong>UN ${esc(e.un)} · ${esc(e.name||'(name not read)')}</strong>`+
-    `<div class="body muted">DGR p.${e.page}</div></div><div style="display:flex;gap:8px;align-items:flex-start;flex-shrink:0;white-space:nowrap">${status}${only?'':selected?`<button type="button" class="primary" data-unsel style="padding:4px 10px">✓ Selected</button>`:`<button type="button" data-pick="${esc(key)}" style="padding:4px 10px">Select</button><button type="button" class="ghost" data-hide="${esc(key)}" title="Not relevant" style="padding:4px 10px">✕</button>`}</div></div>`+
+    `<div class="body muted">DGR p.${e.page}</div></div><div class="dgrEntryAct" style="display:flex;gap:8px;align-items:flex-start;flex-shrink:0;white-space:nowrap">${status}${only?'':selected?`<button type="button" class="primary" data-unsel style="padding:4px 10px">✓ Selected</button>`:`<button type="button" data-pick="${esc(key)}" style="padding:4px 10px">Select</button><button type="button" class="ghost" data-hide="${esc(key)}" title="Not relevant" style="padding:4px 10px">✕</button>`}</div></div>`+
     (e.warn?`<div class="dgrWarn">⚠ Some fields could not be read reliably — check DGR p.${e.page}.</div>`:'')+
-    `<table class="dgrTable"><tr><th>Class/Div (sub risk) (C)</th><th>Hazard label (D)</th><th>PG (E)</th><th>Ltd Qty (G/H)</th><th>PAX &amp; Cargo (I/J)</th><th>ERG (N)</th></tr>`+
-    rows.map((r,k)=>`<tr>${k?'':`<td rowspan="${rows.length}"><b>${esc(e.cls||'—')}</b></td><td rowspan="${rows.length}">${esc(e.labels||'—')}</td>`}<td>${esc(r.pg||'—')}</td><td>${dgrCell(r.lq_pi,r.lq_max)}</td><td>${dgrCell(r.pax_pi,r.pax_max)}</td><td>${esc(r.erg||'—')}</td></tr>`).join('')+
+    `<div class="dgrClsLine"><b>${esc(e.cls||'—')}</b> · ${esc(e.labels||'—')}</div><table class="dgrTable"><tr><th class="dgrColCls">Class/Div (sub risk) (C)</th><th class="dgrColCls">Hazard label (D)</th><th>PG (E)</th><th>Ltd Qty (G/H)</th><th>PAX &amp; Cargo (I/J)</th><th>ERG (N)</th></tr>`+
+    rows.map((r,k)=>`<tr>${k?'':`<td class="dgrColCls" rowspan="${rows.length}"><b>${esc(e.cls||'—')}</b></td><td class="dgrColCls" rowspan="${rows.length}">${esc(e.labels||'—')}</td>`}<td>${esc(r.pg||'—')}</td><td>${dgrCell(r.lq_pi,r.lq_max)}</td><td>${dgrCell(r.pax_pi,r.pax_max)}</td><td>${esc(r.erg||'—')}</td></tr>`).join('')+
     `</table><div class="body"><b>Special provisions (M):</b> ${sps}</div><div class="dgrSpText body" hidden></div>`+
     (checks.length?`<div class="body">${checks.map(x=>`<span class="${x[0]==='bad'?'dgrBad':'dgrWarn'}">${esc(x[1])}</span> ${esc(x[2])}`).join('<br>')}</div>`:'')+
     `</div>`;
