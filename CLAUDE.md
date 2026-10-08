@@ -95,6 +95,7 @@ Bối cảnh project cho Claude Code (chuyển từ ChatGPT/Codex ngày 23/09/20
 ## V6.69 (08/10/2026) — sửa sau khi thử break UI
 - Cách thử (skill `break-ui` của emilkowalski/skills, chỉ clone vào scratch, không cài vào repo): bơm dữ liệu xấu nhưng có thật vào `analysis` qua web harness rồi đo tràn/cắt ở 375 px và 820 px, Day và Night. Bản mẫu `tmp/mock-breakui.html`.
 - Đã sửa: (1) ô DISPATCH ngắt chuỗi dài không dấu cách (`.initBox.wide{overflow-wrap:anywhere}`), trước đó cả trang OFP trượt ngang; (2) **DGR trên iPhone**: tên chiếm cả dòng, trạng thái + nút SELECT/✕ xuống dòng (`.dgrEntryAct`), Class + hazard label thành một dòng `.dgrClsLine`, bảng còn 4 cột PG · LTD QTY · PAX & CARGO · ERG (`.dgrColCls` ẩn); iPad giữ bảng 6 cột; (3) **WIND trên iPhone**: gió viết `174°/044` (ẩn `.windGap`, `.windKt`), lưới `78px + n×minmax(68px,1fr)` qua biến `--windN` nên 4 FL vừa màn hình, DES WIND 5 cột vừa khung; iPad giữ `174° /044KT`; (4) dòng phụ 10 → 12 px (`.wxUseTime`, `.notamTypeCount`, `.windTemp`, `.windWptSub`, `.windWptTemp`); (5) `--mfBarSub` đậm hơn (#1F2329).
+- **V6.70:** bảng DES WIND chỉ còn gió, bỏ nhiệt độ (người dùng yêu cầu).
 - **Chưa sửa, chờ chốt logic:** `parseMelRefs` — OFP ghi một dòng `CDL 30-04` trước thì các mục MEL sau đó bị coi là CDL (hiện NOT FOUND IN MCDL). Chưa gặp trong OFP thật.
 
 ## DGR (V6.04)
