@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.66">
-<title>Flight Brief V6.66</title>
+<meta name="flight-brief-version" content="6.68">
+<title>Flight Brief V6.68</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -520,7 +520,7 @@ body.panelScroll #tab-wind{display:flex;flex-direction:column;overflow:hidden!im
 body.panelScroll #windResults{display:flex;flex-direction:column;flex:1;min-height:0}
 body.panelScroll .windSheet{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden!important}
 body.panelScroll .windPicker{flex:none;position:static}
-body.panelScroll .windTable{flex:1;min-height:0;overflow:auto!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;align-content:start}
+body.panelScroll .windTable{overflow:visible;align-content:start}
 .windHead{position:sticky;top:0;z-index:2}
 @media(max-width:640px){
   .windPickerButtons{flex-wrap:nowrap!important;overflow:hidden}
@@ -535,7 +535,8 @@ body.panelScroll .windTable{flex:1;min-height:0;overflow:auto!important;-webkit-
 
 /* V6.65 WIND: header row outside the scroller (cannot be dragged), same type as other title bars; FL box hugs the text. */
 body.panelScroll .windHeadRow{flex:none!important;overflow:hidden!important;min-height:0}
-body.panelScroll .windBody{overscroll-behavior:none}
+body.panelScroll .windScroll{flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:none}
+body.panelScroll .windBody{overflow:visible!important;flex:none}
 .windHead{position:static;font-size:20px!important;padding:3px 7px!important;letter-spacing:.04em;font-weight:400!important}
 .windFlBtn.active::before{display:none!important}
 .windFlBtn.active span{outline:1px solid var(--mfTabTxt);outline-offset:2px}
@@ -544,11 +545,17 @@ body.panelScroll .windBody{overscroll-behavior:none}
 /* V6.66 home: the round upload button is not used in the app (flights come from the Briefings folder);
    the update button is a cyan repeat icon. */
 .native-home .homeUploadBtn{display:none!important}
-.native-home .homeView{padding-top:calc(36px + env(safe-area-inset-top))}
-.native-home .briefingSearch{margin-top:22px}
+.native-home .homeView{padding-top:calc(14px + env(safe-area-inset-top))}
+.native-home .briefingSearch{margin-top:14px}
 #nativeUpdate{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px!important;color:var(--blue)!important;line-height:0}
 #nativeUpdate.busy svg{animation:fbSpin 1s linear infinite}
 @keyframes fbSpin{to{transform:rotate(360deg)}}
+/* V6.67: flight list 16 rows high (shrinks to fit smaller screens). */
+.briefingFlights.hasFlights{height:836px}
+.nativeMenuVersion{padding:8px 12px 4px;font-size:12px;color:var(--muted);text-align:center;border-top:1px solid var(--line);margin-top:4px}
+.windDesTitle{margin:0!important}
+.windDes{border-top:0!important}
+.windDes .windHead{position:static}
 </style>
 </head>
 <body>
@@ -564,10 +571,10 @@ body.panelScroll .windBody{overscroll-behavior:none}
   <button id="themeMenu" type="button" class="themeToggle">Day mode</button>
   <button type="button" data-native-action="update">Update Flight Brief</button>
   <button id="nativeRestore" type="button" data-native-action="restore">Restore Bundled Version</button>
+  <div id="nativeHomeVersion" class="nativeHomeVersion nativeMenuVersion"></div>
 </details>
 <div class="homeCenter">
   <div class="homeLogo">Flight Brief</div>
-  <div id="nativeHomeVersion" class="nativeHomeOnly nativeHomeVersion"></div>
   <label class="homeUploadBtn" aria-label="Upload documents">
     <span aria-hidden="true">↑</span>
     <input id="fileUpload" type="file" accept=".pdf,application/pdf" multiple hidden>
@@ -746,11 +753,12 @@ function extractInitialFltLvl(routeInfo,dep='',fpl=''){
     if(m)return 'FL'+m[1];
   }
 
-  let m=sec.match(/\b[A-Z]{4}\s*\/\s*F\s*(\d{3})\b/i);
+  // FLT LVL line is a profile (ZSPD/F276 AKDIM/F301 … XEREN/F140): the initial level is the FIRST entry,
+  // not the last one. User decision 07/10/2026.
+  const fl=sec.match(/FLT\s*LVL\s*:\s*([\s\S]*?)(?=-{5,}|\(FPL-|$)/i);
+  let m=(fl?fl[1]:sec).match(/\b[A-Z]{2,5}\s*\/\s*F\s*(\d{3})\b/i);
   if(m)return 'FL'+m[1];
-
-  // Accept a flattened list where only /Fxxx survived.
-  m=sec.match(/\/\s*F\s*(\d{3})\b/i);
+  m=(fl?fl[1]:sec).match(/\/\s*F\s*(\d{3})\b/i);
   if(m)return 'FL'+m[1];
 
   // Last-resort fallback: initial cruise FL in the ATC FPL speed/level group.
@@ -1034,6 +1042,12 @@ function extractRouteInfo(t,dep,dest,fpl=''){
     const p=t.search(/ROUTE\s*\/?\s*FLT\s*LVL/i);
     if(p>=0)sec=t.slice(p,Math.min(t.length,p+6500));
   }
+  if(!sec){
+    // Lido layout with "ROUTE:" and "FLT LVL:" on separate lines, ending at the dashed rule / ATC FPL.
+    // pdf.js text has no line breaks, so accept "ROUTE:" anywhere; the block ends at the dashed rule / ATC FPL.
+    const p=t.search(/\bROUTE\s*:/i);
+    if(p>=0){const rest=t.slice(p,Math.min(t.length,p+6500));const e=rest.search(/-{5,}|\(FPL-/);sec=e>0?rest.slice(0,e):rest;}
+  }
   const flat=(sec||'').replace(/\s+/g,' ').trim();
 
   const rwyPattern='(?:0[1-9]|[12][0-9]|3[0-6])[LRC]?';
@@ -1099,20 +1113,14 @@ function extractRouteInfo(t,dep,dest,fpl=''){
   const starExplicitNA=new RegExp('(?:^|\\s)'+naDots+'\\s*$').test(basis);
 
   if(pcs.length){
-    const tokenCount=basis.split(/\s+/).filter(Boolean).length || 1;
+    // User decision 07/10/2026: SID = the coded procedure that is the first route token (right after the
+    // departure runway); STAR = the coded procedure that is the last route token (right before the
+    // destination airport). Anything in between is not a SID/STAR.
+    const toks=basis.split(/\s+/).map(x=>x.toUpperCase().replace(/^[^A-Z0-9]+|[^A-Z0-9]+$/g,'')).filter(Boolean);
+    const lastIdx=toks.length-1;
     const first=pcs[0], last=pcs[pcs.length-1];
-
-    // A coded procedure close to the beginning is the SID candidate.
-    if(first.i <= Math.max(5,Math.floor(tokenCount*0.30)))sid=first.x;
-
-    // A coded procedure close to the end is the STAR candidate.
-    if(last.i >= Math.floor(tokenCount*0.60))star=last.x;
-
-    // If there is only one coded procedure, classify by its location.
-    if(pcs.length===1){
-      if(first.i <= Math.floor(tokenCount*0.40)){sid=first.x;star='';}
-      else {star=first.x;sid='';}
-    }
+    if(first.i===0)sid=first.x;
+    if(last.i===lastIdx && lastIdx>0)star=last.x;
   }
 
   // Explicit ".." in the OFP takes precedence over an inferred procedure.
@@ -2997,6 +3005,17 @@ function parseCfpWindProfile(input,o){
   }
   finalizePending();
 
+  // Descent wind (V6.68): "DSC  39000 35000 31000 20000 10000" + one line of tokens.
+  let descent=null;
+  const dm=sec.match(/\bDSC\s+((?:\d{5}\s+){2,}\d{5})\s*\n\s*((?:\d{6}[MP]\d{2}\s*){2,})/i);
+  if(dm){
+    const lv=(dm[1].match(/\d{5}/g)||[]).map(x=>Number(x)/100);
+    const tk=dm[2].match(/\d{6}[MP]\d{2}/g)||[];
+    const byFl={};
+    lv.forEach((fl,i)=>{const p=parseCfpWindToken(tk[i]);if(p)byFl[fl]=p;});
+    if(Object.keys(byFl).length)descent={levels:lv,byFl};
+  }
+
   // Remove accidental duplicates while preserving CFP order.
   const unique=[];
   const seen=new Set();
@@ -3078,7 +3097,8 @@ function parseCfpWindProfile(input,o){
     selectedPoints,
     plannedLevels,
     levelChanges,
-    stepEvents
+    stepEvents,
+    descent
   };
 }
 
@@ -3388,7 +3408,7 @@ function renderWind(){
         `<div class="windHead windWpt">WPT</div>`+
         chosen.map(fl=>`<div class="windHead">FL${esc(fl)}</div>`).join('')+
       `</div>`+
-      `<div class="windTable windBody" style="grid-template-columns:minmax(70px,.8fr) repeat(${chosen.length},minmax(82px,1fr))">`;
+      `<div class="windScroll"><div class="windTable windBody" style="grid-template-columns:minmax(70px,.8fr) repeat(${chosen.length},minmax(82px,1fr))">`;
 
   const initialFlMatch=String(analysis?.o?.initialFltLvl||'').match(/(\d{3})/);
   const initialFl=initialFlMatch?Number(initialFlMatch[1]):(w.levelChanges?.[0]?.fl||null);
@@ -3416,6 +3436,10 @@ function renderWind(){
         continue;
       }
       const windChanged=!!p.windChanges?.[fl];
+      // V6.68 (user decision 07/10/2026): a point shown only for a temperature change keeps the wind
+      // columns blank ("–") so the eye lands on the points where the wind itself must be re-entered.
+      const tempOnly=p.reason==='THRESHOLD'&&p.trigger?.type==='TEMP'&&!(p.stepEvents&&p.stepEvents.length);
+      if(tempOnly){h+='<div class="windCell windMissing">–</div>';continue;}
       h+=
         `<div class="windCell">`+
           `<div class="windVector ${windChanged?'changed':''}">${String(x.dir).padStart(3,'0')}<span class="windUnit">°</span> /${String(x.spd).padStart(3,'0')}<span class="windUnit">KT</span></div>`+
@@ -3425,7 +3449,15 @@ function renderWind(){
 
   h+='</div>';
 
-
+  if(w.descent){
+    const d=w.descent,lv=d.levels.filter(fl=>d.byFl[fl]);
+    h+=`<div class="windDesTitle subTitle">DES WIND</div>`+
+       `<div class="windTable windDes" style="grid-template-columns:repeat(${lv.length},minmax(82px,1fr))">`+
+       lv.map(fl=>`<div class="windHead">FL${esc(fl)}</div>`).join('')+
+       lv.map(fl=>{const x=d.byFl[fl];return `<div class="windCell"><div class="windVector">${String(x.dir).padStart(3,'0')}<span class="windUnit">°</span> /${String(x.spd).padStart(3,'0')}<span class="windUnit">KT</span></div><div class="windTemp">${x.temp>0?'+':''}${esc(x.temp)}°C</div></div>`;}).join('')+
+       `</div>`;
+  }
+  h+='</div>'; // .windScroll
 
   h+='</div>';
   host.innerHTML=h;
@@ -3433,7 +3465,7 @@ function renderWind(){
 }
 
 function bindWindLevelButtons(){
-  {const b=document.querySelector('.windBody'),h=document.querySelector('.windHeadRow');if(b&&h)b.onscroll=()=>{h.scrollLeft=b.scrollLeft;};}
+  {const b=document.querySelector('.windScroll'),h=document.querySelector('.windHeadRow');if(b&&h)b.onscroll=()=>{h.scrollLeft=b.scrollLeft;};}
   const w=analysis?.windProfile;
   if(!w)return;
 
@@ -3560,10 +3592,11 @@ function analyse(){
     return {...r,lookup,conditionDetail:cond,ops,flags:melImpactSummary(cond,ops),effects:melKeyEffects(cond,ops)};
   });
 
-  const notamSourceText=latestDocs
-    .filter(d=>d.kind==='NOTAM'||/LIDO[\s-]*NOTAM[\s-]*BULLETIN/i.test(d.text||''))
-    .map(d=>d.layoutText||d.text||'')
-    .join('\n') || (allLayoutText||all);
+  // User decision 07/10/2026: NOTAMs come from the Lido NOTAM bulletin only. The OCC Dispatch Briefing
+  // reprints Vietnamese NOTAMs in ICAO format with blocks that split badly and were mis-filed under
+  // the wrong airport/FIR, so it is no longer a NOTAM source.
+  const lidoNotamDocs=latestDocs.filter(d=>/LIDO[\s-]*NOTAM[\s-]*BULLETIN/i.test(d.text||'')||/LIDO_NOTAM/i.test(d.name||''));
+  const notamSourceText=lidoNotamDocs.map(d=>d.layoutText||d.text||'').join('\n');
 
   const notams=parseNotams(
     notamSourceText,
@@ -4564,6 +4597,11 @@ function renderEnr(){
   if(!a.wpts.length)html+='<div class="wxValue review">Nav log not found in OFP</div>';
   else if(!a.sigs.length)html+='<div class="wxValue">No SIGMET in WX briefing</div>';
   else{
+    // User decision 07/10/2026: a SIGMET that has expired before (or starts after) the ETO of the
+    // affected leg does not apply to this flight → listed under Other SIGMET, no ON ROUTE tag.
+    const stale=r=>{const s=r.sig,sp=r.spans||[];if(!(s.from&&s.to&&a.takeoff&&sp.length))return false;
+      const t0=addMins(a.takeoff,Math.min(...sp.map(p=>p.t0))),t1=addMins(a.takeoff,Math.max(...sp.map(p=>p.t1)));return s.to<t0||s.from>t1;};
+    for(const r of a.sigs)if(r.status!=='off'&&stale(r)){r.status='off';r.note=`Not valid at ETO (${r.sig.validText})`;}
     const hit=a.sigs.filter(r=>r.status!=='off'),off=a.sigs.filter(r=>r.status==='off');
     if(!hit.length)html+=`<div class="wxValue">No SIGMET within ${ENR_NEAR_NM} NM of route</div>`;
     html+=hit.map(r=>enrSigHtml(r,a)).join('');
@@ -5210,6 +5248,7 @@ function drawNotams(list){
   }
 
   for(const g of NOTAM_GROUPS){
+    if(g==='EDTO ALT' && analysis.o.edto!=='YES')continue;
     const allGroup=list.filter(n=>n.group===g);
     const expectedAirports=airportsByGroup.get(g)||[];
     const expectedFirs=firsByGroup.get(g)||[];
@@ -5416,6 +5455,8 @@ function fitBriefingFlights(){
   if(!host.classList.contains('hasFlights')||!atHome)return;
   const overflow=document.documentElement.scrollHeight-innerHeight;
   if(overflow>0)host.style.height=Math.max(160,host.offsetHeight-overflow-2)+'px';
+  // Taller list: keep loading pages until the frame is full (otherwise there is nothing to scroll to load more).
+  let guard=0;while(host.scrollHeight<=host.clientHeight+4&&visibleBriefingCount<briefingShown().length&&guard++<10)appendBriefingFlights();
 }
 addEventListener('resize',()=>{fitBriefingFlights();setTimeout(fitBriefingFlights,300);});
 
