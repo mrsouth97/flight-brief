@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.70">
-<title>Flight Brief V6.70</title>
+<meta name="flight-brief-version" content="6.71">
+<title>Flight Brief V6.71</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -2114,9 +2114,9 @@ function parseMelRefs(note){
   // OFP normally has one MEL/CDL field. Item numbers can be printed without repeating the word MEL.
   const r=/\b(\d{2}-\d{2}-\d{2})([A-Z])?\b/g;
   while((m=r.exec(text))!==null){
-    const before=text.slice(Math.max(0,m.index-45),m.index);
-    const type=/\bCDL\b/.test(before)&&!/\bMEL\b/.test(before.slice(-20))?'CDL':'MEL';
-    refs.push({type,ref:m[1]+(m[2]||''),base:m[1],condition:m[2]||''});
+    // V6.71 (user decision 08/10/2026): a three-group number (25-35-01B) is always an MEL item, even when
+    // a CDL line is printed before it; only two-group numbers (30-04) are CDL.
+    refs.push({type:'MEL',ref:m[1]+(m[2]||''),base:m[1],condition:m[2]||''});
   }
   const c=/\b(?:M?CDL[-\s]*)?(\d{2}-\d{2})\b(?!-\d)/g;
   while((m=c.exec(text))!==null)refs.push({type:'CDL',ref:m[1],base:m[1],condition:''});
