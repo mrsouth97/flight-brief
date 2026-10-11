@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.71">
-<title>Flight Brief V6.71</title>
+<meta name="flight-brief-version" content="6.72">
+<title>Flight Brief V6.72</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -4643,10 +4643,131 @@ function renderEnr(){
     else html+='<div class="wxValue">Nil</div>';
     // V6.39: tropopause section removed (user); the TP data still feeds the JET colour.
     html+='</div>';
+    // V6.72: SIGWX from the raw WAFC fixed-area charts of the Lido WX PDF, read by the native app (no AI, no network).
+    const wxDoc=wxDocs.find(d=>/LIDO.?WX/i.test(d.name))||wxDocs[0];
+    if(window.FLIGHT_BRIEF_SIGWX_VERSION===1&&wxDoc){
+      sigwxLoad(a,wxDoc);
+      html+='<div class="wxGroup"><div class="wxGroupTitle">SIGWX:</div>'+sigwxHtml(a)+'</div>';
+    }
   }
   html+='</div>';
   // V6.38: chart pages are no longer shown here (user: plain copies of the PDF add nothing).
   box.innerHTML=html;
+}
+// ---- SIGWX (V6.72): the WAFC fixed-area charts (ICAO AREA E / D / MID) in the Lido WX PDF are rendered and read in the
+// native app (Swift port of tools/sigwx: outlines, call-outs, turbulence key, icing, jets - Vision OCR, no AI). The app returns
+// one record per chart; this side applies the flight rules (final.py): a chart applies ±3 h around its validity (ICAO Doc 8896
+// 5.3), items are clipped to that window, where no chart is valid the nearest one is used, the same phenomenon at the same
+// place on two charts of one validity is one item, and only items concerning the planned level (CLB/DSC legs count) are shown.
+const SIGWX_WINDOW_MIN=180;
+const SIGWX_AREAS={E:{x0:1022.5,lon0:90,kx:13.485,y0:818,ky:13.41,wrap:true},D:{x0:1211.3,lon0:60,kx:14.243,y0:1302.2,ky:14.156,wrap:false},MID:{x0:657.9,lon0:30,kx:39.45,y0:2072.7,ky:39.33,wrap:false}};
+let sigwxState={key:null,charts:null,busy:false,error:''};
+const sigwxPending=new Map();
+window.flightBriefSigwxReply=(id,result,error)=>{const p=sigwxPending.get(id);if(!p)return;sigwxPending.delete(id);error?p.reject(new Error(error)):p.resolve(result);};
+function sigwxLoad(a,wxDoc){
+  if(!window.webkit?.messageHandlers?.nativeHome||!a.wpts.length)return;
+  const key=wxDoc.name+'|'+(analysis?.selectedOfp?.name||'')+'|'+a.wpts.length;
+  if(sigwxState.key===key)return;
+  // route for the reader: nav-log points with level as text (CLB / DSC / 370); ETP, ENTRY/EXIT, REV, TOC/TOD are not named on paper
+  const route=a.wpts.map(w=>({name:w.name,lat:w.lat,lon:w.lon,fl:String(w.fl??''),eltm:w.eltm,label:!/^(?:S?ETP\d*(?:-\d)?|ENTRY\d*|EXIT\d*|REV\d*|T-O-C|T-O-D|TOC|TOD)$/.test(w.name)}));
+  sigwxState={key,charts:null,busy:true,error:''};
+  new Promise((resolve,reject)=>{
+    const id=crypto.randomUUID();sigwxPending.set(id,{resolve,reject});
+    window.webkit.messageHandlers.nativeHome.postMessage({action:'sigwxRead',id,wx:wxDoc.name,route});
+  }).then(ch=>{if(sigwxState.key!==key)return;sigwxState.charts=Array.isArray(ch)?ch:[];sigwxState.busy=false;if(analysis)renderEnr();})
+    .catch(e=>{if(sigwxState.key!==key)return;sigwxState.busy=false;sigwxState.error=e.message||'error';if(analysis)renderEnr();});
+}
+function sigwxValidDate(v){
+  const m=String(v||'').match(/^(\d{2})Z (\d{1,2})\s*([A-Z]{3})\s*(\d{4})$/);if(!m)return null;
+  const mon=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'].indexOf(m[3]);if(mon<0)return null;
+  return new Date(Date.UTC(Number(m[4]),mon,Number(m[2]),Number(m[1])));
+}
+function sigwxCovers(area,p){
+  const A=SIGWX_AREAS[area];if(!A)return false;
+  const lon=A.wrap&&p.lon<0?p.lon+360:p.lon,x=A.x0+(lon-A.lon0)*A.kx,y=A.y0-A.ky*(Math.log(Math.tan((45+p.lat/2)*Math.PI/180))*180/Math.PI);
+  return x>=150&&x<=2230&&y>=150&&y<=1670;
+}
+// one list for the flight from the per-chart records (final.py)
+function sigwxFinal(a){
+  const charts=(sigwxState.charts||[]).map(c=>({...c,T:a.takeoff&&sigwxValidDate(c.valid)?(sigwxValidDate(c.valid)-a.takeoff)/60000:null})).filter(c=>c.result);
+  const route=a.wpts,named=route.filter(w=>!/^(?:S?ETP\d*(?:-\d)?|ENTRY\d*|EXIT\d*|REV\d*|T-O-C|T-O-D|TOC|TOD)$/.test(w.name));
+  const at=tm=>route.reduce((m,p)=>m==null||Math.abs(p.eltm-tm)<Math.abs(m.eltm-tm)?p:m,null);
+  const before=tm=>[...named].reverse().find(p=>p.eltm<=tm)||named[0],after=tm=>named.find(p=>p.eltm>=tm)||named[named.length-1];
+  const n=(v,d)=>v!=null&&/^\d+$/.test(String(v))?Number(v):d;
+  const W=SIGWX_WINDOW_MIN,items=[];
+  for(const c of charts){
+    for(const kind of ['cb','turb','ice','jet']){
+      for(const x0 of (c.result[kind]||[])){
+        if(x0.t0==null)continue;
+        const x={...x0};let t0=x.t0,t1=x.t1;
+        if(c.T!=null){
+          const lo=c.T-W,hi=c.T+W;
+          if(t1<lo||t0>hi){
+            // outside this chart's window: keep only if no chart covering the place is valid then and this one is nearest
+            const tm=(t0+t1)/2,p=at(tm),cov=charts.filter(d=>d.T!=null&&sigwxCovers(d.area,p));
+            if(cov.some(d=>Math.abs(tm-d.T)<=W)||!cov.length||cov.reduce((m,d)=>Math.abs(tm-d.T)<Math.abs(tm-m.T)?d:m)!==c)continue;
+          }else{
+            if(t0<lo){t0=lo;x.from=before(lo).name;}
+            if(t1>hi){t1=hi;x.to=after(hi).name;}
+          }
+        }
+        const inWin=route.filter(p=>p.eltm!=null&&t0-1<=p.eltm&&p.eltm<=t1+1);
+        const fls=[...new Set(inWin.map(p=>String(p.fl)).filter(v=>/^\d+$/.test(v)))].sort();
+        const planned=fls.length?fls:(x.planned_fl||[]).map(String).filter(v=>/^\d+$/.test(v));
+        const cd=inWin.some(p=>!/^\d+$/.test(String(p.fl)))||(!!x.cd&&!fls.length);
+        let band=null;
+        if(kind==='cb')band=x.label?[0,n(x.top,999)]:null;
+        else if(kind==='turb')band=x.key?[n(x.base,0),n(x.top,999)]:null;
+        else if(kind==='ice')band=x.top?[n(x.base,0),n(x.top,999)]:null;
+        else if(x.core_fl){
+          if(x.band){const [p,q]=String(x.band).split('/');band=[n(p,0),n(q,999)];}
+          else if(x.kt==null||(x.kt_is_minimum&&x.kt<110))band=null;
+          else band=x.kt>=110?[Number(x.core_fl)-40,Number(x.core_fl)+40]:[1,0];
+        }
+        const affects=band==null?null:(band[0]<=band[1]&&(cd||planned.some(v=>band[0]<=Number(v)&&Number(v)<=band[1])));
+        items.push({...x,t0,t1,kind,valid:c.valid,chart:c.area+' '+c.page,planned_fl:planned,cd,affects});
+      }
+    }
+  }
+  const lab=x=>x.kind==='cb'?(x.label?[x.cov,x.top,x.base].join('|'):null):x.kind==='jet'?(x.core_fl?String(x.core_fl):null):(x.top?[x.sev,x.top,x.base].join('|'):null);
+  items.sort((p,q)=>(lab(p)==null)-(lab(q)==null)||p.t0-q.t0);
+  const out=[];
+  for(const x of items){
+    const g=out.find(o=>o.kind===x.kind&&o.valid===x.valid&&!o.charts.includes(x.chart)&&x.t0<=o.t1&&o.t0<=x.t1&&(lab(x)==null||lab(o)==null||lab(x)===lab(o)));
+    if(g){
+      if(x.t0<g.t0){g.t0=x.t0;g.from=x.from;}
+      if(x.t1>g.t1){g.t1=x.t1;g.to=x.to;}
+      g.charts.push(x.chart);g.planned_fl=[...new Set([...g.planned_fl,...x.planned_fl])].sort();g.cd=g.cd||x.cd;
+      if(g.affects==null||x.affects)g.affects=(g.affects==null||g.affects===false)?x.affects:g.affects;
+    }else out.push({...x,charts:[x.chart]});
+  }
+  out.sort((p,q)=>p.t0-q.t0);
+  return out.map(x=>{
+    const k=x.kind;let text;
+    if(k==='cb')text=x.label||'CB';
+    else if(k==='turb')text=(x.sev?'SEV':'MOD')+' TURB'+(x.key?` ${x.top}/${x.base}`:'');
+    else if(k==='ice')text=(x.sev?'SEV':'MOD')+' ICE'+(x.top?` ${x.top}/${x.base}`:'');
+    else text='JET'+(x.kt!=null?` ${x.kt_is_minimum?'≥ ':''}${x.kt} KT`:'')+(x.core_fl?` FL${x.core_fl}`:'')+(x.band?` ${x.band}`:'');
+    const colour=x.affects?((k==='cb'&&x.cov==='FRQ')||((k==='turb'||k==='ice')&&x.sev)?'red':'amber'):null;
+    return {kind:k,text,from:x.from,to:x.to,t0:x.t0,t1:x.t1,fl:x.planned_fl,cd:x.cd,affects:x.affects,colour};
+  });
+}
+function sigwxHtml(a){
+  const st=sigwxState;
+  if(st.busy)return '<div class="wxValue">Reading charts…</div>';
+  if(st.error)return `<div class="wxValue review">${esc(st.error)}</div>`;
+  if(!st.charts)return '<div class="wxValue">Reading charts…</div>';
+  if(!st.charts.length)return '<div class="wxValue">No WAFC SIGWX chart in WX briefing</div>';
+  // shown: items concerning the planned level (coloured), and items the reader could not finish (CHECK CHART); items outside
+  // the level band are not listed (user decision 11/10/2026)
+  const rows=sigwxFinal(a).filter(r=>r.affects!==false);
+  if(!rows.length)return '<div class="wxValue">Nil</div>';
+  return rows.map(r=>{
+    const fl=r.fl.length?(r.fl.length>1?`FL${r.fl[0]}–${r.fl[r.fl.length-1]}`:`FL${r.fl[0]}`):'';
+    const sub=[fl,r.cd?'CLB/DSC':''].filter(Boolean).join(' · ');
+    const val=r.affects==null?`<span class="wxVisLow">${esc(r.kind==='cb'?'CB':r.kind==='turb'?'TURB':r.kind==='ice'?'ICE':'JET')} · CHECK CHART</span>`:`<span class="${r.colour==='red'?'wxVisBad':'wxVisLow'}">${esc(r.text)}</span>`;
+    return `<div class="wxGroupItem"><div class="wxGroupCode">${esc(r.from)} → ${esc(r.to)}<div class="wxUseTime"><i>${esc(sub)}</i>${sub?' · ':''}${enrClock(r.t0,a.takeoff)}–${enrClock(r.t1,a.takeoff)}</div></div><div class="wxValue">${val}</div></div>`;
+  }).join('');
 }
 let enrViewIdx=-1,enrZoom=1;
 function enrSetZoom(z,cx,cy){
