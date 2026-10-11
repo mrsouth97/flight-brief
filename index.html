@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.74">
-<title>Flight Brief V6.74</title>
+<meta name="flight-brief-version" content="6.75">
+<title>Flight Brief V6.75</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -220,6 +220,7 @@
 .enrTag.off{background:var(--panel2);color:var(--sub)}
 .enrTime{font-weight:650;color:var(--muted);font-variant-numeric:tabular-nums;margin-left:4px}
 .enrSub{font-size:12px;font-weight:600;color:var(--muted);margin-top:3px}
+.enrRaw b{font-weight:700!important}
 .enrBad{color:var(--red)}
 .enrRaw{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;font-weight:500;line-height:1.4;color:var(--sub);margin-top:5px;word-break:break-word}
 .enrMore{margin-top:8px}
@@ -612,6 +613,69 @@ body>#sigwxViewer{display:none}
 .wxEntMin{margin-left:auto;color:var(--mfCyan);font-size:12px;line-height:1.3;text-align:right}
 .wxEntMin.none{color:var(--mfMuted)}
 .wxEnt .wxValue{flex:1 1 260px;min-width:0}
+/* ==== MOTION + DEPTH (V6.75, mock tmp/mock-motion.html approved 11/10/2026) ====
+   Timings are tokens; only transform / opacity / filter are animated. prefers-reduced-motion switches everything off. */
+:root{--fbT1:80ms;--fbT2:140ms;--fbT3:180ms;--fbT4:260ms;--fbEase:cubic-bezier(.2,.7,.2,1);
+  --mfKeyA:#3A3D42;--mfKeyB:#33363B;--mfKeyHi:rgba(255,255,255,.50);--mfKeyLo:rgba(0,0,0,.8);
+  --mfTabA:#1B1D21;--mfTabB:#000;--mfTabHi:rgba(255,255,255,.56);--mfTabLo:rgba(255,255,255,.09);
+  --mfBezelHi:rgba(255,255,255,.14);--mfBezelLo:rgba(0,0,0,.6);--mfScan:rgba(255,255,255,.025);--mfBarA:#D3D6DA;--mfBarB:#B3B7BC;--mfGlowA:35%}
+:root:not([data-theme="night"]){--mfKeyA:#DDE0E4;--mfKeyB:#D5D8DD;--mfKeyHi:rgba(255,255,255,.95);--mfKeyLo:rgba(0,0,0,.34);
+  --mfTabA:#FBFCFD;--mfTabB:#E9ECEF;--mfTabHi:#fff;--mfTabLo:rgba(0,0,0,.26);--mfBezelHi:rgba(255,255,255,.55);--mfBezelLo:rgba(0,0,0,.18);--mfScan:rgba(0,0,0,.018);--mfGlowA:0%}
+/* (the ECAM look removes every shadow with *{box-shadow:none!important}: the few edges wanted here are set !important) */
+/* frame: thin dark bezel, a faint light line on top, very faint scanlines over the display */
+.mfdFrame{position:relative;overflow:clip;box-shadow:inset 0 1px 0 var(--mfBezelHi),inset 0 -1px 0 var(--mfBezelLo),0 0 0 1px var(--mfBezelLo)!important}
+.mfdFrame::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;background:repeating-linear-gradient(0deg,transparent 0 2px,var(--mfScan) 2px 3px)}
+.mfdFrame::after{content:"";position:absolute;left:0;right:0;top:0;height:1px;pointer-events:none;z-index:7;background:linear-gradient(90deg,transparent,var(--mfBezelHi),transparent)}
+/* night only: a very light glow on cyan / green text */
+.mfdFrame :is(.tab,.initBox,.wxEntApt,.wxEntMin:not(.none),.wxVisGood,.notamEntityName.nilName,.sigwxLoadBar i){text-shadow:0 0 6px color-mix(in srgb,currentColor var(--mfGlowA),transparent)!important}
+/* title bars: a slight vertical shade */
+.subTitle,.sigwxBar{background:linear-gradient(180deg,var(--mfBarA),var(--mfBar) 55%,var(--mfBarB))}
+/* tabs as slightly raised keys (MFD INIT page buttons): bright top/left edge, faint bottom/right edge; rows touch each other and
+   the frame; the selected tab stays raised, only its frame marks it; the edges reverse while a finger is on it */
+.mfdFrame .tabs{border-bottom:0!important}
+/* user 11/10: the light sits only in the top-left corner of each key (it fades out along the top and the left edge) */
+.mfdFrame .tab{border:0!important;background:linear-gradient(90deg,var(--mfTabHi),transparent 45%) top left/100% 1px no-repeat,linear-gradient(180deg,var(--mfTabHi),transparent 60%) top left/1px 100% no-repeat,linear-gradient(180deg,var(--mfTabA),var(--mfTabB) 70%)!important;box-shadow:inset -1px -1px 0 var(--mfTabLo)!important}
+.mfdFrame .tab:last-child{border-right:0!important}
+.mfdFrame .tab:active{background:linear-gradient(270deg,var(--mfTabHi),transparent 45%) bottom right/100% 1px no-repeat,linear-gradient(0deg,var(--mfTabHi),transparent 60%) bottom right/1px 100% no-repeat,linear-gradient(180deg,var(--mfTabB),var(--mfTabA))!important;box-shadow:inset 1px 1px 0 var(--mfTabLo)!important;transform:translateY(1px)}
+.mfdFrame .subTab,.mfdFrame .subTab.active,.mfdFrame .windFlBtn,.mfdFrame .windFlBtn.active{border-right:0!important;background:linear-gradient(90deg,var(--mfKeyHi),transparent 45%) top left/100% 1px no-repeat,linear-gradient(180deg,var(--mfKeyHi),transparent 60%) top left/1px 100% no-repeat,linear-gradient(180deg,var(--mfKeyA),var(--mfKeyB))!important;box-shadow:inset -1px -1px 0 var(--mfKeyLo)!important}
+.mfdFrame .subTab:active,.mfdFrame .windFlBtn:active{background:linear-gradient(270deg,var(--mfKeyHi),transparent 45%) bottom right/100% 1px no-repeat,linear-gradient(0deg,var(--mfKeyHi),transparent 60%) bottom right/1px 100% no-repeat,linear-gradient(180deg,var(--mfKeyB),var(--mfKeyA))!important;box-shadow:inset 1px 1px 0 var(--mfKeyLo)!important;transform:translateY(1px)}
+.mfdFrame .tab.active::before,.subTab.active::before,.windFlBtn.active::before{animation:fbKeyIn var(--fbT2) var(--fbEase) both}
+.fbPress{animation:fbKeyPress var(--fbT3) var(--fbEase) 1}
+@keyframes fbKeyIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+@keyframes fbKeyPress{35%{transform:translateY(2px) scale(.98);filter:brightness(1.4)}}
+/* tap feedback on every button (zero specificity: any button's own rule wins) */
+:where(button,label.upload,summary){transition:transform var(--fbT1) var(--fbEase),filter var(--fbT1)}
+:where(button,label.upload):active{transform:scale(.97);filter:brightness(1.25)}
+/* home list: rows come in one after the other; the chosen row lifts before the flight opens */
+.briefingFlight{animation:fbRowIn var(--fbT3) var(--fbEase) both;animation-delay:216ms;transition:transform var(--fbT3) var(--fbEase),background var(--fbT2)}
+.briefingFlight:active{transform:scale(.995)}
+.briefingFlight.lift{transform:translateY(-4px) scale(1.012);background:color-mix(in srgb,var(--blue) 9%,transparent)!important}
+#resultView:not(.hidden),.homeView:not(.hidden){animation:fbFade var(--fbT3) var(--fbEase) backwards}
+/* tab change: the new page slides in a little (from the left when going back); sub-pages fade */
+.mfdFrame section.card:not(.hidden){animation:fbPaneIn var(--fbT3) var(--fbEase) backwards}
+.mfdFrame[data-dir="back"] section.card:not(.hidden){animation-name:fbPaneInL}
+.mfdFrame [data-pane]:not(.hidden){animation:fbFade var(--fbT3) var(--fbEase) backwards}
+@keyframes fbPaneIn{from{opacity:0;transform:translateX(12px)}}
+@keyframes fbPaneInL{from{opacity:0;transform:translateX(-12px)}}
+@keyframes fbFade{from{opacity:0}}
+@keyframes fbRowIn{from{opacity:0;transform:translateY(6px)}}
+/* lists: the first rows appear one after the other */
+:where(.initPage .initRow,.wxCard>.wxGroup,.sigwxTap,#notamResults .notamGroup,.melRow){animation:fbRowIn var(--fbT3) var(--fbEase) both;animation-delay:216ms}
+:is(.initRow,.wxGroup,.sigwxTap,.notamGroup,.melRow,.briefingFlight):nth-child(1){--fbN:1;animation-delay:0ms}:is(.initRow,.wxGroup,.sigwxTap,.notamGroup,.melRow,.briefingFlight):nth-child(2){--fbN:2;animation-delay:24ms}:is(.initRow,.wxGroup,.sigwxTap,.notamGroup,.melRow,.briefingFlight):nth-child(3){--fbN:3;animation-delay:48ms}:is(.initRow,.wxGroup,.sigwxTap,.notamGroup,.melRow,.briefingFlight):nth-child(4){--fbN:4;animation-delay:72ms}:is(.initRow,.wxGroup,.sigwxTap,.notamGroup,.melRow,.briefingFlight):nth-child(5){--fbN:5;animation-delay:96ms}:is(.initRow,.wxGroup,.sigwxTap,.notamGroup,.melRow,.briefingFlight):nth-child(6){--fbN:6;animation-delay:120ms}:is(.initRow,.wxGroup,.sigwxTap,.notamGroup,.melRow,.briefingFlight):nth-child(7){--fbN:7;animation-delay:144ms}:is(.initRow,.wxGroup,.sigwxTap,.notamGroup,.melRow,.briefingFlight):nth-child(8){--fbN:8;animation-delay:168ms}:is(.initRow,.wxGroup,.sigwxTap,.notamGroup,.melRow,.briefingFlight):nth-child(9){--fbN:9;animation-delay:192ms}
+/* the chart panel comes in; airports, type groups, NOTAM records, MEL items and Other SIGMET slide open by height (fbSlide in the script) */
+#sigwxViewer:not(.hidden){animation:fbRowIn var(--fbT4) var(--fbEase) backwards}
+.sigwxCanvas{transform-origin:0 0}
+/* SIGWX loading bar leaves before the result comes in */
+.sigwxLoad.done{animation:fbLdOut var(--fbT4) var(--fbEase) forwards;transform-origin:50% 0}
+@keyframes fbLdOut{to{opacity:0;transform:scaleY(.2)}}
+/* attention as on ECAM: red keeps flashing, amber flashes twice and then stays steady */
+.wxMinFail,.enrTag.on,.dgrBad,#enrResults .wxVisBad,#wxResults :is(.wxVisBad,.wxTs){animation:fbBlinkOn 1s steps(1,end) infinite}
+.wxMinima .wxVisLow,#enrResults .wxVisLow,.enrTag.near,.dgrWarn,#wxResults :is(.wxVisLow,.wxSh){animation:fbBlink2 1.2s steps(1,end) 1 both}
+@keyframes fbBlinkOn{0%,55%{opacity:1}56%,100%{opacity:.25}}
+@keyframes fbBlink2{0%,100%{opacity:1}20%,60%{opacity:.15}40%,80%{opacity:1}}
+.themeGlyph{display:inline-block;animation:fbFlip var(--fbT4) var(--fbEase) backwards}
+@keyframes fbFlip{from{opacity:0;transform:rotate(-120deg) scale(.6)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -1668,11 +1732,18 @@ function weatherAirportUses(o,allDestAlts=false){
     if(!at)at=midpointDate(window[0],window[1])||fallbackTime;
     // period/periodTime keep the OFP WX period for NOTAM; Weather uses the single time.
     // EDTO ALT keeps the whole OFP WX period (earliest to latest diversion arrival).
-    arr.push({role,icao,sourceRole,time:at||fallbackTime,periodTime:fallbackTime,period:window,window:(role==='EDTO ALT'&&window[0]&&window[1])?window:(at?[at,at]:window),windowSource,asc});
+    // FOM 8.1.2.3.1–8.1.2.3.3 / Table 8.1.2-6 (user, 11/10/2026): the minima are checked over ETA ± 1 h (the page shows the
+    // one hour); DEP at the take-off time only; EDTO ALTN over the whole OFP WX PERIOD; T/O ALTN over ETD ± 1 h.
+    const t1=at||fallbackTime;
+    const win=(role==='EDTO ALT'&&window[0]&&window[1])?window:role==='DEP'?(at?[at,at]:window):(t1?[addMins(t1,-60),addMins(t1,60)]:window);
+    arr.push({role,icao,sourceRole,time:t1,periodTime:fallbackTime,period:window,window:win,windowSource,asc});
   }
 
   add('DEP',o.dep,o.etd,'DEP');
   add('DEST',o.dest,o.eta,'DEST');
+  // T/O ALTN named by the OFP (FOM 8.1.2.3.1): landing minima over ETD ± 1 h. Weather page only.
+  const toa=String(o.takeoffAltn||'').toUpperCase().match(/\b[A-Z]{4}\b/);
+  if(!allDestAlts&&toa&&!/NOT\s*REQ/i.test(o.takeoffAltn))add('TO ALT',toa[0],o.etd,'TO ALTN');
 
   // Specific FUEL ERA timing wins for an airport that is also in ENROUTE ALTN.
   for(const a of (o.alts||[]).filter(x=>x.role==='FUEL ERA'))add('ENR ALT',a.icao,null,'FUEL ERA');
@@ -3864,6 +3935,7 @@ function tafEventToken(ev){
 }
 function fomRoleClass(w){
   if(w.role==='DEST')return 'DEST';
+  if(w.role==='TO ALT')return 'TO_ALT';
   if(w.role==='DEST ALT')return 'DEST_ALT';
   if(w.role==='EDTO ALT')return 'EDTO_ERA';
   if(w.role==='ENR ALT'&&w.sourceRole==='FUEL ERA')return 'FUEL_ERA';
@@ -3902,7 +3974,7 @@ function fomEventApplicable(w,ev,baseline){
   const persistent=tafPersistentPhenomenon(ev.state);
   const probTempo=/^PROB\d{2}\s+TEMPO/.test(token);
 
-  if(role==='DEST'||role==='DEST_ALT'||role==='FUEL_ERA'||role==='ENR_ALT'||role==='DEP'){
+  if(role==='DEST'||role==='TO_ALT'||role==='DEST_ALT'||role==='FUEL_ERA'||role==='ENR_ALT'||role==='DEP'){
     // FOM 8.1.2-6 (DEST / DEST ALTN / FUEL ERA, also used for ENR ALTN and DEP):
     // transient/shower deterioration (e.g. TS/SH) may be disregarded;
     // persistent deterioration is applicable. PROB TEMPO deterioration
@@ -4559,7 +4631,7 @@ function enrSigHtml(r,a){
   const tag=r.status==='on'?'<span class="enrTag on">ON ROUTE</span>'
     :r.status==='near'?`<span class="enrTag near">${r.portions.length?'CHECK':Math.round(r.dist)+' NM'}</span>`
     :r.status==='unknown'?'<span class="enrTag near">CHECK AREA</span>'
-    :'<span class="enrTag off">CLEAR</span>';
+    :`<span class="enrTag off">${r.stale||'CLEAR'}</span>`;
   const where=(r.spans||[]).map(p=>{
     const leg=p.from===p.to?esc(p.to):`${esc(p.from)} → ${esc(p.to)}`;
     const tm=Math.round(p.t0)===Math.round(p.t1)?enrClock(p.t0,a.takeoff):`${enrClock(p.t0,a.takeoff)}–${enrClock(p.t1,a.takeoff)}`;
@@ -4568,6 +4640,7 @@ function enrSigHtml(r,a){
   let line='';
   if(hit)line=where.join('<br>');
   else if(r.status==='unknown')line='Area not decoded — read the SIGMET text';
+  else if(r.stale)line='';
   else line=r.note||(r.dist!=null?`${Math.round(r.dist)} NM from route, abeam ${where[0]||''}`:'Not near route');
   const subs=[];
   if(hit){
@@ -4577,16 +4650,17 @@ function enrSigHtml(r,a){
       const inside=!(hi<s.lo||lo>s.hi);
       subs.push(inside?`<b class="enrBad">${enrFlText(lo,hi)} inside ${esc(s.band)}</b>`:`${enrFlText(lo,hi)} outside ${esc(s.band)}`);
     }else subs.push(s.band?esc(s.band):'No level in SIGMET');
-    if(s.from&&s.to&&a.takeoff&&sp.length){
-      const t0=addMins(a.takeoff,Math.min(...sp.map(p=>p.t0))),t1=addMins(a.takeoff,Math.max(...sp.map(p=>p.t1)));
-      if(s.to<t0)subs.push(`Expires ${hhmmZ(s.to)} before ETO`);
-      else if(s.from>t1)subs.push(`Valid from ${hhmmZ(s.from)}, after ETO`);
-      else subs.push(`<b class="enrBad">Valid at ETO</b> (${hhmmZ(s.from)}–${hhmmZ(s.to)})`);
-    }
     if(r.note)subs.push(esc(r.note));
   }
-  const raw=`<div class="enrRaw">${esc(s.raw)}</div>`;
-  return `<div class="wxGroupItem"><div class="wxGroupCode">${esc(s.fir)} ${esc(s.id)}<div class="wxUseTime">${esc(s.phen||'SIGMET')}${s.mov?' · '+esc(s.mov):''}</div></div><div class="wxValue">${tag}${line}${subs.length?`<div class="enrSub">${subs.join(' · ')}</div>`:''}${hit||r.status==='unknown'?raw:''}</div></div>`;
+  // V6.75 (user 11/10/2026): under the SIGMET name its validity, then its level. The grey text is the information only (the
+  // header with name and validity and the FIR name are on the left already); phenomenon, movement and trend in bold.
+  let info=esc(s.raw.replace(/^[A-Z]{4}\s+SIGMET\s+\S+\s+VALID\s+\d{6}\/\d{6}\s+[A-Z]{4}\s*-\s*/,'').replace(/^[A-Z]{4}\s+[A-Z][A-Z .\/-]*?\b(?:FIR\/UIR|UIR\/FIR|FIR\/CTA|FIR|UIR|CTA)\b\s*/,''));
+  const bold=m=>`<b>${m}</b>`;
+  if(s.phen)info=info.replace(esc(s.phen),bold);
+  info=info.replace(/\bMOV\s+[NSEW]{1,3}\s+\d+\s*(?:KT|KMH)\b|\bSTNR\b/,bold).replace(/\b(?:NC|WKN|INTSF)\b(?!.*\b(?:NC|WKN|INTSF)\b)/,bold);
+  const raw=`<div class="enrRaw">${info}</div>`;
+  const valid=s.from&&s.to?`${hhmmZ(s.from)}–${hhmmZ(s.to)}`:s.validText;
+  return `<div class="wxGroupItem"><div class="wxGroupCode">${esc(s.fir)} ${esc(s.id)}<div class="wxUseTime">${esc(valid)}</div>${s.band?`<div class="wxUseTime">${esc(s.band)}</div>`:''}</div><div class="wxValue">${tag}${line}${subs.length?`<div class="enrSub">${subs.join(' · ')}</div>`:''}${hit||r.status==='unknown'?raw:''}</div></div>`;
 }
 function enrGroupRow(g,a,value){
   const x=g.items[0],y=g.items[g.items.length-1];
@@ -4657,13 +4731,16 @@ function renderEnr(){
   else{
     // User decision 07/10/2026: a SIGMET that has expired before (or starts after) the ETO of the
     // affected leg does not apply to this flight → listed under Other SIGMET, no ON ROUTE tag.
-    const stale=r=>{const s=r.sig,sp=r.spans||[];if(!(s.from&&s.to&&a.takeoff&&sp.length))return false;
-      const t0=addMins(a.takeoff,Math.min(...sp.map(p=>p.t0))),t1=addMins(a.takeoff,Math.max(...sp.map(p=>p.t1)));return s.to<t0||s.from>t1;};
-    for(const r of a.sigs)if(r.status!=='off'&&stale(r)){r.status='off';r.note=`Not valid at ETO (${r.sig.validText})`;}
+    const stale=r=>{const s=r.sig,sp=r.spans||[];if(!(s.from&&s.to&&a.takeoff&&sp.length))return '';
+      const t0=addMins(a.takeoff,Math.min(...sp.map(p=>p.t0))),t1=addMins(a.takeoff,Math.max(...sp.map(p=>p.t1)));return s.to<t0?'EXPIRED':s.from>t1?'NOT YET VALID':'';};
+    // V6.75 (user 11/10/2026): no validity wording. A SIGMET that applies is listed on top in red; one that is not valid when
+    // the aircraft is there goes to Other SIGMET tagged EXPIRED (NOT YET VALID if it only starts later); CLEAR is kept for a
+    // SIGMET that is valid but not on the route.
+    for(const r of a.sigs){const st=stale(r);if(st){r.status='off';r.stale=st;r.note='';}}
     const hit=a.sigs.filter(r=>r.status!=='off'),off=a.sigs.filter(r=>r.status==='off');
     if(!hit.length)html+='<span class="wxValue enrNil">Nil</span>';
     html+=hit.map(r=>enrSigHtml(r,a)).join('');
-    if(off.length)html+=`<details class="enrMore"><summary>Other SIGMET (${off.length})</summary>${off.map(r=>enrSigHtml(r,a)).join('')}</details>`;
+    if(off.length)html+=`<details class="enrMore"><summary>Other SIGMET (${off.length})</summary><div class="enrMoreBody">${off.map(r=>enrSigHtml(r,a)).join('')}</div></details>`;
   }
   html+='</div>';
   if(a.wpts.length){
@@ -4714,20 +4791,33 @@ window.flightBriefSigwxProgress=(id,f,label)=>{
   if(!sigwxPending.has(id)||!sigwxState.busy)return;
   sigwxState.progress={f:Math.max(0,Math.min(1,Number(f)||0)),label:String(label||'')};
   const fill=$('#sigwxLoadFill'),pc=Math.round(sigwxState.progress.f*100);
-  if(fill){fill.style.width=pc+'%';$('#sigwxLoadTxt').textContent=sigwxState.progress.label;$('#sigwxLoadPct').textContent=pc+'%';}
+  if(fill){fill.style.width=pc+'%';$('#sigwxLoadTxt').textContent=sigwxState.progress.label;sigwxCount($('#sigwxLoadPct'),pc);}
 };
+let sigwxPctShown=0,sigwxPctRaf=0;
+function sigwxCount(el,to){
+  cancelAnimationFrame(sigwxPctRaf);
+  const from=sigwxPctShown,t0=performance.now(),d=fbMs(300);
+  const step=n=>{const k=d?Math.min(1,(n-t0)/d):1;sigwxPctShown=Math.round(from+(to-from)*k);if(el&&el.isConnected)el.textContent=sigwxPctShown+'%';if(k<1)sigwxPctRaf=requestAnimationFrame(step);};
+  sigwxPctRaf=requestAnimationFrame(step);
+}
 function sigwxLoad(a,wxDoc){
   if(!window.webkit?.messageHandlers?.nativeHome||!a.wpts.length)return;
   const key=wxDoc.name+'|'+(analysis?.selectedOfp?.name||'')+'|'+a.wpts.length;
   if(sigwxState.key===key)return;
   // route for the reader: nav-log points with level as text (CLB / DSC / 370); ETP, ENTRY/EXIT, REV, TOC/TOD are not named on paper
   const route=a.wpts.map(w=>({name:w.name,lat:w.lat,lon:w.lon,fl:String(w.fl??''),eltm:w.eltm,label:!/^(?:S?ETP\d*(?:-\d)?|ENTRY\d*|EXIT\d*|REV\d*|T-O-C|T-O-D|TOC|TOD)$/.test(w.name)}));
-  sigwxState={key,wx:wxDoc.name,charts:null,busy:true,error:'',progress:null};
+  sigwxState={key,wx:wxDoc.name,charts:null,busy:true,error:'',progress:null};sigwxPctShown=0;
   sigwxImages.clear();
   new Promise((resolve,reject)=>{
     const id=crypto.randomUUID();sigwxPending.set(id,{resolve,reject});
     window.webkit.messageHandlers.nativeHome.postMessage({action:'sigwxRead',id,wx:wxDoc.name,route});
-  }).then(ch=>{if(sigwxState.key!==key)return;sigwxState.charts=Array.isArray(ch)?ch:[];sigwxState.busy=false;if(analysis)renderEnr();})
+  }).then(ch=>{
+    if(sigwxState.key!==key)return;
+    sigwxState.charts=Array.isArray(ch)?ch:[];sigwxState.busy=false;
+    const ld=document.querySelector('#enrResults .sigwxLoad'),wait=fbMs(260);
+    if(ld&&wait){ld.classList.add('done');setTimeout(()=>{if(sigwxState.key===key&&analysis)renderEnr();},wait);}
+    else if(analysis)renderEnr();
+  })
     .catch(e=>{if(sigwxState.key!==key)return;sigwxState.busy=false;sigwxState.error=e.message||'error';if(analysis)renderEnr();});
 }
 function sigwxValidDate(v){
@@ -4768,6 +4858,9 @@ function sigwxFinal(a){
         const fls=[...new Set(inWin.map(p=>String(p.fl)).filter(v=>/^\d+$/.test(v)))].sort();
         const planned=fls.length?fls:(x.planned_fl||[]).map(String).filter(v=>/^\d+$/.test(v));
         const cd=inWin.some(p=>!/^\d+$/.test(String(p.fl)))||(!!x.cd&&!fls.length);
+        // climb or descent, as the OFP nav log has it for the points of this stretch (else for the nearest such point)
+        const isCd=p=>/^(?:CLB|DSC)$/.test(String(p.fl)),ph=[...new Set(inWin.filter(isCd).map(p=>String(p.fl)))];
+        if(cd&&!ph.length){const tm=(t0+t1)/2,nr=route.filter(p=>isCd(p)&&p.eltm!=null).reduce((m,p)=>m==null||Math.abs(p.eltm-tm)<Math.abs(m.eltm-tm)?p:m,null);if(nr)ph.push(String(nr.fl));}
         let band=null;
         if(kind==='cb')band=x.label?[0,n(x.top,999)]:null;
         else if(kind==='turb')band=x.key?[n(x.base,0),n(x.top,999)]:null;
@@ -4778,7 +4871,7 @@ function sigwxFinal(a){
           else band=x.kt>=110?[Number(x.core_fl)-40,Number(x.core_fl)+40]:[1,0];
         }
         const affects=band==null?null:(band[0]<=band[1]&&(cd||planned.some(v=>band[0]<=Number(v)&&Number(v)<=band[1])));
-        items.push({...x,t0,t1,kind,valid:c.valid,chart:c.area+' '+c.page,planned_fl:planned,cd,affects});
+        items.push({...x,t0,t1,kind,valid:c.valid,chart:c.area+' '+c.page,planned_fl:planned,cd,ph,affects});
       }
     }
   }
@@ -4790,7 +4883,7 @@ function sigwxFinal(a){
     if(g){
       if(x.t0<g.t0){g.t0=x.t0;g.from=x.from;}
       if(x.t1>g.t1){g.t1=x.t1;g.to=x.to;}
-      g.charts.push(x.chart);g.planned_fl=[...new Set([...g.planned_fl,...x.planned_fl])].sort();g.cd=g.cd||x.cd;
+      g.charts.push(x.chart);g.planned_fl=[...new Set([...g.planned_fl,...x.planned_fl])].sort();g.cd=g.cd||x.cd;g.ph=[...new Set([...g.ph,...x.ph])];
       if(g.affects==null||x.affects)g.affects=(g.affects==null||g.affects===false)?x.affects:g.affects;
     }else out.push({...x,charts:[x.chart]});
   }
@@ -4802,7 +4895,7 @@ function sigwxFinal(a){
     else if(k==='ice')text=(x.sev?'SEV':'MOD')+' ICE'+(x.top?` ${x.top}/${x.base}`:'');
     else text='JET'+(x.kt!=null?` ${x.kt_is_minimum?'≥ ':''}${x.kt} KT`:'')+(x.core_fl?` FL${x.core_fl}`:'')+(x.band?` ${x.band}`:'');
     const colour=x.affects?((k==='cb'&&x.cov==='FRQ')||((k==='turb'||k==='ice')&&x.sev)?'red':'amber'):null;
-    return {kind:k,text,from:x.from,to:x.to,t0:x.t0,t1:x.t1,fl:x.planned_fl,cd:x.cd,affects:x.affects,colour,charts:x.charts};
+    return {kind:k,text,from:x.from,to:x.to,t0:x.t0,t1:x.t1,fl:x.planned_fl,cd:x.cd,ph:['CLB','DSC'].filter(v=>(x.ph||[]).includes(v)).map(v=>v==='DSC'?'DES':v),affects:x.affects,colour,charts:x.charts};
   });
 }
 function sigwxHtml(a){
@@ -4821,7 +4914,7 @@ function sigwxHtml(a){
   const tap=window.FLIGHT_BRIEF_SIGWX_VERSION>=2;
   return rows.map((r,i)=>{
     const fl=r.fl.length?(r.fl.length>1?`FL${r.fl[0]}–${r.fl[r.fl.length-1]}`:`FL${r.fl[0]}`):'';
-    const sub=[fl,r.cd?'CLB/DSC':''].filter(Boolean).join(' · ');
+    const sub=[fl,r.cd?(r.ph.length?r.ph.join('/'):'CLB/DES'):''].filter(Boolean).join(' · ');
     const val=r.affects==null?`<span class="wxVisLow">${esc(r.kind==='cb'?'CB':r.kind==='turb'?'TURB':r.kind==='ice'?'ICE':'JET')} · CHECK CHART</span>`:`<span class="${r.colour==='red'?'wxVisBad':'wxVisLow'}">${esc(r.text)}</span>`;
     return `<div class="wxGroupItem${tap?' sigwxTap':''}" data-sigwx="${i}"><div class="wxGroupCode">${esc(r.from)} → ${esc(r.to)}<div class="wxUseTime"><i>${esc(sub)}</i>${sub?' · ':''}${enrClock(r.t0,a.takeoff)}–${enrClock(r.t1,a.takeoff)}</div></div><div class="wxValue${tap?' sigwxVal':''}">${val}${tap?'<span class="sigwxMore">...... &gt;&gt;&gt;</span>':''}</div></div>`;
   }).join('');
@@ -4894,7 +4987,17 @@ function sigwxOpen(i){
   sigwxViewport.content=sigwxViewport0+',maximum-scale=1,user-scalable=no';      // pinch zooms the chart, never the whole page
   sigwxPanesState=[...document.querySelectorAll('#sigwxPanes .sigwxPane')].map((el,k)=>{
     const p={sc:el.querySelector('.sigwxScroll'),cv:el.querySelector('.sigwxCanvas'),box:ovs[k].box,z:1};
-    sigwxImage(charts[k].page).then(src=>{if(p.cv.isConnected)p.cv.querySelector('img').src=src;}).catch(e=>{if(el.isConnected)el.querySelector('.sigwxCap').textContent+=' · '+(e.message||'chart not available');});
+    // V6.75: the chart is shown whole first and then zooms into the segment (transform only; the layout is already the final one)
+    const go=()=>{
+      if(!p.cv.isConnected||!p.full)return;
+      const from=p.full;p.full=null;p.cv.style.transform='';
+      if(fbMs(1)&&p.cv.animate)p.cv.animate([{transform:from},{transform:from,offset:.3},{transform:'none'}],{duration:950,easing:'cubic-bezier(.3,.1,.2,1)'});
+    };
+    sigwxImage(charts[k].page).then(src=>{
+      if(!p.cv.isConnected)return;
+      const img=p.cv.querySelector('img');img.src=src;
+      (img.decode?img.decode():Promise.resolve()).then(go,go);
+    }).catch(e=>{go();if(el.isConnected)el.querySelector('.sigwxCap').textContent+=' · '+(e.message||'chart not available');});
     let pinch=null,lastTap=0;
     const gap=e=>Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
     p.sc.addEventListener('touchstart',e=>{if(e.touches.length===2)pinch={d:gap(e),z:p.z};},{passive:true});
@@ -4912,6 +5015,13 @@ function sigwxOpen(i){
     return p;
   });
   sigwxShow(false);
+  // start picture for the zoom: the whole chart fitted in the pane, expressed as a transform of the final (segment) layout
+  for(const p of sigwxPanesState){
+    const sc=p.sc,z0=Math.min(sc.clientWidth/SIGWX_IMG.w,sc.clientHeight/SIGWX_IMG.h);
+    if(!(z0>0)||!(p.z>z0*1.02))continue;
+    const tx=sc.scrollLeft+(sc.clientWidth-SIGWX_IMG.w*z0)/2,ty=sc.scrollTop+(sc.clientHeight-SIGWX_IMG.h*z0)/2;
+    p.full=`translate(${tx.toFixed(1)}px,${ty.toFixed(1)}px) scale(${(z0/p.z).toFixed(4)})`;p.cv.style.transform=p.full;
+  }
   $('#sigwxViewer').scrollIntoView({block:'nearest',behavior:'smooth'});
 }
 function sigwxClose(){$('#sigwxViewer').classList.add('hidden');$('#sigwxPanes').innerHTML='';sigwxPanesState=[];sigwxViewport.content=sigwxViewport0;}
@@ -5065,7 +5175,7 @@ function renderWX(){
       if(!edtoMap.has(key))edtoMap.set(key,{...w});
     }else if(w.role==='DEST ALT'){
       if(!destAltMap.has(key))destAltMap.set(key,{...w});
-    }else if(w.role==='DEP'||w.role==='DEST'){
+    }else if(w.role==='DEP'||w.role==='DEST'||w.role==='TO ALT'){
       depDest.push({...w});
     }
   }
@@ -5077,7 +5187,7 @@ function renderWX(){
   }
 
   depDest.sort((a,b)=>{
-    const order={'DEP':0,'DEST':1};
+    const order={'DEP':0,'DEST':1,'TO ALT':2};
     const d=(order[a.role]??9)-(order[b.role]??9);
     return d||String(a.icao).localeCompare(String(b.icao));
   });
@@ -5111,10 +5221,15 @@ function renderWX(){
     let line=formatWxVisibility(selected.text,mc.status);
     // EDTO ALT: a TEMPO/PROB group that still meets the EDTO minima is shown with a green group name.
     if(w.role==='EDTO ALT'&&mc.status==='ok')line=line.replace(/^((?:PROB\d{2}\s+)?TEMPO\s+\d{4}\/\d{4}|PROB\d{2}\s+\d{4}\/\d{4})/,'<span class="wxVisGood">$1</span>');
+    // Wind on the runway end of the check (every airport, user 11/10/2026): the wind of the TAF line goes amber with a
+    // tailwind of 1–5 kt, red above 5 kt or with a crosswind over the limit; the XWIND label follows.
+    const wl=windLimits(w),wt=windGroups(selected.text)[0];
+    if(wl&&wt&&(wl.tail>=1||wl.xwind))line=line.replace(esc(String(wt.token).toUpperCase()),m=>`<span class="${wl.tail>5||wl.xwind?'wxVisBad':'wxVisLow'}">${m}</span>`);
     return {cls:'',html:line+mc.html+fonExtraFuelHtml(w)+edtoXwindHtml(w)};
   }
 
   function wxUseTime(w){
+    if(w?.role!=='EDTO ALT'&&w?.time)return hhmmZ(w.time);
     if(w?.window?.[0]&&w?.window?.[1]){
       return w.window[0].getTime()===w.window[1].getTime()?hhmmZ(w.window[0]):`${hhmmZ(w.window[0])}–${hhmmZ(w.window[1])}`;
     }
@@ -5267,7 +5382,7 @@ function melOpsHtml(ops){
 }
 const NOTAM_GROUPS=['DEP ARPT','DEST ARPT','ENR ALT','EDTO ALT','DEST ALT','DEP FIR','ENR FIR','DEST FIR'];
 // Display labels follow FCOM abbreviations (ALT = altitude, ALTN = alternate); internal role keys unchanged.
-function ecamLabel(s){return String(s).replace(/\bALT\b/,'ALTN');}
+function ecamLabel(s){return String(s).replace(/^TO ALT$/,'T/O ALTN').replace(/\bALT\b/,'ALTN');}
 
 function renderNotam(){
   lastNotams=analysis.relevant;
@@ -5407,7 +5522,18 @@ function plainNotamInfo(n){
 
 function drawNotams(list){
   let h='';
-  if(!drawNotams.tapBound){drawNotams.tapBound=true;$('#notamResults').addEventListener('click',e=>{const r=e.target.closest('.notamTypeRecord');if(r)r.classList.toggle('open');});
+  if(!drawNotams.tapBound){drawNotams.tapBound=true;$('#notamResults').addEventListener('click',e=>{
+      const r=e.target.closest('.notamTypeRecord');if(!r)return;
+      if(r._fbSlide){const a0=r._fbSlide;r._fbSlide=null;a0.cancel();r.style.overflow='';if(r._fbClosing){r._fbClosing=false;r.classList.remove('open');}}
+      const h0=r.offsetHeight,opening=!r.classList.contains('open');
+      r.classList.toggle('open');
+      const h1=r.offsetHeight;
+      if(!fbMs(1)||!r.animate||h0===h1)return;
+      if(!opening){r.classList.add('open');r._fbClosing=true;}           // closing: the full text stays while the row shrinks
+      r.style.overflow='hidden';
+      const an=r._fbSlide=r.animate([{height:h0+'px'},{height:h1+'px'}],{duration:opening?260:200,easing:'cubic-bezier(.2,.7,.2,1)',fill:opening?'none':'forwards'});
+      an.onfinish=()=>{if(r._fbSlide!==an)return;r._fbSlide=null;r.style.overflow='';if(!opening){r._fbClosing=false;r.classList.remove('open');}an.cancel();};
+    });
     // V6.73: "...... >>>" marks what can be opened. A record gets it only when its text is cut at four lines; that can be
     // measured only once its type group is open (toggle does not bubble, hence the capture).
     $('#notamResults').addEventListener('toggle',e=>{
@@ -5770,6 +5896,9 @@ function appendBriefingFlights(){
       const i=Number(btn.dataset.briefingIndex);
       const b=briefingFlights[i];
       if(!b)return;
+      // the chosen row lifts, then the flight opens
+      btn.classList.add('lift');setTimeout(()=>btn.classList.remove('lift'),700);
+      if(fbMs(1))await new Promise(r=>setTimeout(r,170));
       if(b.nativeId){
         $('#scan').classList.remove('hidden','scanError');
         $('#scanBar').style.width='10%';
@@ -6025,8 +6154,31 @@ function fitPanels(){
   });
 }
 window.addEventListener('resize',fitPanels);
+// V6.75 motion helpers: no waiting when the system asks for reduced motion
+const fbReduce=window.matchMedia?matchMedia('(prefers-reduced-motion: reduce)'):{matches:false};
+function fbMs(n){return fbReduce.matches?0:n;}
+function fbPress(b){b.classList.remove('fbPress');void b.offsetWidth;b.classList.add('fbPress');}
+// V6.75 (user 11/10/2026, as in the approved mock): what opens on a tap slides open downwards and slides shut, pushing the rows
+// below - NOTAM airport / FIR, NOTAM type group, MEL/CDL row and its OPS PROC line, Other SIGMET. The one place where height
+// is animated: nothing else can show the rows below moving down.
+document.addEventListener('click',e=>{
+  const sm=e.target.closest('summary'),d=sm&&sm.parentElement;
+  if(!d||!d.matches('.melRow,.melOps,.notamEntity,.notamType,.enrMore')||!fbMs(1))return;
+  const body=[...d.children].find(c=>c!==sm);
+  if(!body||!body.animate)return;
+  e.preventDefault();
+  if(d._fbSlide)d._fbSlide.cancel();
+  const opening=!d.open||d._fbClosing;d._fbClosing=!opening;
+  d.open=true;
+  const cs=getComputedStyle(body),shut={height:'0px',paddingTop:'0px',paddingBottom:'0px',marginTop:'0px',marginBottom:'0px',opacity:0},
+    full={height:body.offsetHeight+'px',paddingTop:cs.paddingTop,paddingBottom:cs.paddingBottom,marginTop:cs.marginTop,marginBottom:cs.marginBottom,opacity:1};
+  body.style.overflow='hidden';
+  const an=d._fbSlide=body.animate(opening?[shut,full]:[full,shut],{duration:opening?260:200,easing:'cubic-bezier(.2,.7,.2,1)',fill:opening?'none':'forwards'});
+  an.onfinish=an.oncancel=()=>{if(d._fbSlide!==an)return;d._fbSlide=null;body.style.overflow='';if(!opening){d.open=false;d._fbClosing=false;an.cancel();}};
+});
 document.addEventListener('click',e=>{
   const b=e.target.closest('.subTab');if(!b)return;
+  fbPress(b);
   b.parentElement.querySelectorAll('.subTab').forEach(x=>x.classList.toggle('active',x===b));
   const scope=b.closest('section')||document;
   const ttl=scope.querySelector('.subTitle');if(ttl)ttl.textContent=b.dataset.title||b.textContent;
@@ -6035,6 +6187,8 @@ document.addEventListener('click',e=>{
 document.querySelectorAll('.tab').forEach(b=>{
   b.onclick=()=>{
     const target=b.dataset.tab;
+    {const order=['ofp','wx','notam','wind','dgr'],prev=document.querySelector('.tab.active')?.dataset.tab,fr=b.closest('.mfdFrame');
+     fbPress(b);if(fr)fr.dataset.dir=order.indexOf(target)<order.indexOf(prev)?'back':'fwd';}
     document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
     ['ofp','wx','notam','wind','dgr'].forEach(t=>{
@@ -6486,6 +6640,23 @@ function minimaDestAltPos(icao){
 function minimaTwoAltnWarn(){
   return (analysis?.o?.destAlts||[]).length<2?' · <span class="wxMinFail">2 DEST ALTN REQ</span>':'';
 }
+// No destination alternate in the OFP / FPL: FOM 8.1.2.2.4.2 c) 1) - flight ≤ 6 h, two separate runways (not checked here),
+// ceiling ≥ 2000 ft (or circling height + 500 ft) and visibility ≥ 5 km over ETA ± 1 h.
+// Shown only when every condition holds (user 11/10/2026: every flight carries an alternate, so no red label). Two separate
+// runways = at least two different runways among the destination's entered minima (opposite ends are one runway; L/C/R are
+// separate runways).
+function minimaNoAltnWarn(events){
+  const o=analysis?.o;
+  if(!o||(o.destAlts||[]).length||(o.destAltsOfp||[]).length)return '';
+  const ft=String(o.flightTime||'').match(/^(\d{1,2}):(\d{2})/),mins=ft?Number(ft[1])*60+Number(ft[2]):null;
+  const rows=minimaRows.filter(r=>r.icao===String(o.dest||'').toUpperCase()&&minimaVis(r)>0);
+  const circ=rows.find(r=>r.type==='Circling');
+  const needCeil=Math.max(2000,circ?circ.height+500:0);
+  const rwyKey=r=>{const m=String(r.rwy||'').match(/^(\d{2})([LRC]?)$/);if(!m)return '';let n=Number(m[1]),sfx=m[2];if(n>18){n-=18;sfx=sfx==='L'?'R':sfx==='R'?'L':sfx;}return String(n).padStart(2,'0')+sfx;};
+  const runways=new Set(rows.map(rwyKey).filter(Boolean));
+  const ok=mins!=null&&mins<=360&&runways.size>=2&&(events||[]).length&&events.every(ev=>visMetersFromState(ev.state)>=5000&&ceilingFtFromState(ev.state)>=needCeil);
+  return ok?' · <span class="wxVisGood">DEST ALTN NOT REQ</span>':'';
+}
 // EDTO Dispatch Weather Minima Supplement tables: bundled with the iPad app only (company
 // document, never in this public repo). Without them EDTO minima are computed from Table 5.1.
 let edtoSupp=null;
@@ -6521,13 +6692,21 @@ function edtoSuppRow(sup,rwy,kind){
   row=lowest(on.filter(r=>/^ILS\b/.test(r[0])))||lowest(on.filter(r=>/^(?:LNAV|LPV|LP|RNAV|RNP)/.test(r[0])))||lowest(on);
   return row?{row,how:'OFP approach not listed, '+row[0]+' used'}:null;
 }
-// Crosswind on the OFP runway over the EDTO period: SOP A350 1.3.1, 35 kt including gust (dry/wet runway).
-const EDTO_XWIND_LIMIT=35;
-function edtoXwindHtml(w){
-  const rwy=String(w?.asc?.rwy||'').toUpperCase(),s=w?.window?.[0],e=w?.window?.[1];
-  if(w?.role!=='EDTO ALT'||!rwy||!w.raw||!s||!e)return '';
+// Tailwind component (kt, rounded; 0 when none or not computable) of a TAF wind on a runway.
+function destTailwind(rwy,wg){
+  const n=Number(String(rwy||'').slice(0,2));
+  if(!n||!wg||wg.dir==='VRB'||!wg.spd)return 0;
+  const hdg=n===36?360:n*10;
+  return Math.max(0,Math.round(-wg.spd*Math.cos((Number(wg.dir)-hdg)*Math.PI/180)));
+}
+// TAF wind groups that apply to the airport's use window: the prevailing wind (initial part / FM / BECMG completed),
+// both winds of a BECMG under way, and every TEMPO / PROB group touching the window (user decision 11/10/2026: TEMPO and
+// PROB winds count too). One instant for most roles, the whole OFP WX PERIOD for EDTO ALTN.
+function tafWindsApplicable(w){
+  const s=w?.window?.[0],e=w?.window?.[1];
+  if(!w?.raw||!s||!e)return [];
   const p=parseTafStructure(w.raw,w.time||s);
-  if(!p)return '';
+  if(!p)return [];
   let src=[{token:'',raw:p.baseRaw||''}];
   for(const g of p.groups){
     if(!g.start||!windGroups(g.raw).length)continue;
@@ -6535,34 +6714,104 @@ function edtoXwindHtml(w){
     else if(g.type==='BECMG'){if(g.finish&&g.finish<=s)src=[g];else if(g.start<=e)src.push(g);}
     else if(overlapWindow(g.start,g.finish,s,e))src.push(g);
   }
-  let worst=null;
-  for(const g of src)for(const wg of windGroups(g.raw)){
-    const c=componentsForRunway(rwy,wg);
-    if(c&&(!worst||c.cross>worst.cross))worst={cross:c.cross,token:[g.token,String(wg.token||'').toUpperCase()].filter(Boolean).join(' ')};
+  const out=[];
+  for(const g of src)for(const wg of windGroups(g.raw))out.push({...wg,token:[g.token,String(wg.token||'').toUpperCase()].filter(Boolean).join(' ')});
+  return out;
+}
+// Runway ends the forecast wind points to (user decision 11/10/2026, FOM Table 8.1.2-7 remark (1): the planning minimum is
+// the one "available in the prevailing wind"). For each applicable wind the end(s) with the largest headwind component
+// (mean wind, runway number × 10°); several winds pointing to different ends → all of them. A wind of 5 kt or less, VRB,
+// or within 10° of across the runway cannot tell the end → null, and the caller keeps every end (the most limiting one).
+const MINIMA_WIND_MIN_KT=5,MINIMA_WIND_ACROSS_DEG=10;
+function minimaWindRunways(w,rwys){
+  rwys=[...new Set(rwys.filter(r=>/^\d{2}[LRC]?$/.test(r)))];
+  if(rwys.length<2)return null;
+  const winds=tafWindsApplicable(w);
+  if(!winds.length)return null;
+  const head=(rwy,wg)=>{const n=Number(rwy.slice(0,2)),hdg=n===36?360:n*10;let a=Math.abs(Number(wg.dir)-hdg)%360;if(a>180)a=360-a;return {a,h:wg.spd*Math.cos(a*Math.PI/180)};};
+  const chosen=new Set();
+  for(const wg of winds){
+    if(wg.dir==='VRB'||!(wg.spd>MINIMA_WIND_MIN_KT))return null;
+    const hs=rwys.map(r=>({r,...head(r,wg)})),best=Math.max(...hs.map(x=>x.h));
+    const top=hs.filter(x=>x.h>=best-0.5);
+    if(top.some(x=>Math.abs(x.a-90)<=MINIMA_WIND_ACROSS_DEG))return null;
+    for(const x of top)chosen.add(x.r);
   }
-  if(!worst||worst.cross<=EDTO_XWIND_LIMIT)return '';
-  return `<div class="wxMinima"><span class="wxMinFail">XWIND ${Math.round(worst.cross)} kt RWY ${esc(rwy)}</span> · limit ${EDTO_XWIND_LIMIT} kt · ${esc(worst.token)}</div>`;
+  return chosen.size?chosen:null;
+}
+// Wind limits on the runway end the check is based on (FOM Table 8.1.2-6: mean wind within limits, gusts exceeding the
+// crosswind limit fully applied; EDTO Table 5.1 note 1), over the airport's use window. Crosswind including gust > 35 kt
+// (SOP A350 1.3.1, dry/wet) → red XWIND label; tailwind of the mean wind 1–5 kt → wind amber, > 5 kt → red (user, 11/10/2026).
+const EDTO_XWIND_LIMIT=35;
+function windLimits(w){
+  const role=fomRoleClass(w),o=analysis?.o;
+  let rwy='';
+  if(role==='DEP')rwy=String(o?.expectedDepRunway||'').toUpperCase();
+  else if(role==='DEST')rwy=String(o?.expectedDestRunway||'').toUpperCase();
+  else if(role==='EDTO_ERA')rwy=String(w?.asc?.rwy||'').toUpperCase();
+  else rwy=String(minimaRequirement(w)?.approach?.rwy||'').toUpperCase();
+  if(!rwy||!w?.raw)return null;
+  let worst=null,tail=0;
+  for(const wg of tafWindsApplicable(w)){
+    const c=componentsForRunway(rwy,wg);
+    if(c&&(!worst||c.cross>worst.cross))worst={cross:c.cross,token:wg.token};
+    tail=Math.max(tail,destTailwind(rwy,wg));
+  }
+  return {rwy,xwind:worst&&worst.cross>EDTO_XWIND_LIMIT?worst:null,tail};
+}
+function edtoXwindHtml(w){return '';}   // user 11/10/2026: no XWIND label, the red wind in the TAF line is enough
+// MEL / CDL items of the flight that take away CAT II / CAT III (or autoland) capability: FOM 8.1.3.11, EDTO Table 5.1 note 3.
+// Read from the item title and the proviso of the dispatch condition; CAT III lost whenever autoland or CAT II is lost.
+function melApproachLimit(){
+  const out={cat2:false,cat3:false,refs:[]};
+  for(const d of (analysis?.mel?.details||[])){
+    const t=[d.lookup?.title,d.conditionDetail?.title,d.conditionDetail?.proviso,d.cdl?.title].filter(Boolean).join(' ').toUpperCase();
+    if(!t)continue;
+    const no=/\b(?:NOT|NO|PROHIBITED|INOP|UNAVAILABLE|NOT AVAILABLE|LIMITED|ONLY|DOWNGRADE|RESTRICT)/;
+    const c3=/\bCAT\s*(?:III|3)\b|\bCAT\s*(?:II|2)\s*(?:\/|AND|OR)\s*(?:III|3)\b|AUTOLAND|AUTOMATIC LANDING|\bLVO\b|LOW VISIBILITY/.test(t)&&no.test(t);
+    const c2=/\bCAT\s*(?:II|2)\b/.test(t)&&no.test(t)&&!/\bCAT\s*(?:II|2)\s*(?:APPROACH|OPERATIONS?|CAPABILITY)?\s*(?:IS|ARE|REMAINS?)\s*(?:STILL\s*)?(?:AVAILABLE|PERMITTED|ALLOWED)/.test(t);
+    if(c3||c2){out.cat3=true;if(c2)out.cat2=true;out.refs.push(d.ref);}
+  }
+  return out;
 }
 function minimaRequirement(w){
+  const r=minimaRequirement0(w);
+  // EDTO ALTN: the MEL label when a CAT II/III entry of the airport was set aside
+  if(r&&!r.missing&&fomRoleClass(w)==='EDTO_ERA'){const m=melApproachLimit(),ic=String(w.icao||'').toUpperCase();if(m.refs.length&&minimaRows.some(x=>x.icao===ic&&minimaVis(x)>0&&((x.type==='CAT III'&&m.cat3)||(x.type==='CAT II'&&m.cat2))))r.melHit=true;}
+  return r;
+}
+function minimaRequirement0(w){
   const role=fomRoleClass(w);
+  const mel=melApproachLimit(),melOk=r=>!(r.type==='CAT III'&&mel.cat3)&&!(r.type==='CAT II'&&mel.cat2);
   if(role==='DEP'){
     // All VNA departure airports have a CAT I landing: OFP take-off runway, ILS CAT I, RVR 550 m, no ceiling; nothing to enter.
     const rwy=String(analysis?.o?.expectedDepRunway||'').toUpperCase();
+    // User 11/10/2026: the T/O runway end has no ILS entered but other approaches → the next lower approach on that end.
+    const on=minimaRows.filter(r=>r.icao===String(w.icao||'').toUpperCase()&&r.rwy===rwy&&minimaVis(r)>0);
+    if(on.length&&!on.some(r=>/^CAT/.test(r.type))){const a=minimaLowest(on),land=minimaLanding(a);return {approach:a,basis:`DEP · no ILS on T/O RWY ${rwy}, ${a.name}`,...land,landing:land};}
     const a={name:`ILS CAT I ${rwy||'?'}`,type:'CAT I',rwy,height:0,rvr:550,vis:0};
     return {approach:a,basis:`DEP · CAT I landing on OFP T/O RWY ${rwy||'?'}`,vis:550,ceil:0,landing:{vis:550,ceil:0}};
   }
-  if(!['DEST','DEST_ALT','ENR_ALT','FUEL_ERA','EDTO_ERA'].includes(role))return null;
+  if(!['DEST','TO_ALT','DEST_ALT','ENR_ALT','FUEL_ERA','EDTO_ERA'].includes(role))return null;
   // Approaches saved without a value yet (templates waiting for the Lido minima) are ignored.
-  const icao=String(w.icao||'').toUpperCase(),list=minimaRows.filter(r=>r.icao===icao&&minimaVis(r)>0);
+  const icao=String(w.icao||'').toUpperCase();
+  let list=minimaRows.filter(r=>r.icao===icao&&minimaVis(r)>0&&melOk(r));
+  const melHit=mel.refs.length&&minimaRows.some(r=>r.icao===icao&&minimaVis(r)>0&&!melOk(r));
+  // V6.75 (user decision 11/10/2026): DEST ALTN, ENR ALTN and FUEL ERA are planned on the runway end(s) the TAF wind points to
+  // at the time of use; no minima entered for that end → every end as before. DEST keeps the OFP landing runway, and
+  // EDTO ALTN keeps its own rule (OFP runway and approach, EDTO Supplement / Table 5.1).
+  const windRwys=(role==='DEST'||role==='EDTO_ERA')?null:minimaWindRunways(w,minimaRows.filter(r=>r.icao===icao).map(r=>String(r.rwy||'').toUpperCase()));
+  if(windRwys&&list.some(r=>windRwys.has(r.rwy)))list=list.filter(r=>!r.rwy||windRwys.has(r.rwy));
   const straight=list.filter(r=>r.type!=='Circling'),pool=straight.length?straight:list;
   const ofpRwy=String(w.asc?.rwy||'').toUpperCase(),ofpApp=String(w.asc?.approach||'').replace(/\(.*$/,'').trim();
-  const kind=minimaOfpKind(ofpApp),onRwy=ofpRwy?list.filter(r=>r.rwy===ofpRwy):[];
+  let kind=minimaOfpKind(ofpApp);const onRwy=ofpRwy?list.filter(r=>r.rwy===ofpRwy):[];
   const ofpLabel=`OFP RWY ${ofpRwy}${ofpApp?' '+ofpApp:''}`;
   if(role==='EDTO_ERA'){
     // V6.37. EDTO Ops Manual 5.2.3 / Table 5.1 (= FOM Table 8.5.1). Values come from the
     // EDTO Dispatch Weather Minima Supplement when the airport is listed (iPad app data):
     // the "1 Serviceable Facility" row of the OFP approach (CAT III/II rows only when the OFP says CAT3/CAT2); the "2 Serviceable Facilities" rows are only an amber hint (minimaCheck).
     const ekind=edtoOfpKind(ofpApp),sup=edtoSupp?.airports?.[icao];
+    if((kind==='CAT III'&&mel.cat3)||(kind==='CAT II'&&mel.cat2))kind='ILS';
     if(sup){
       const src=`EDTO Supplement p${sup.p}${sup.check?' · verify page':''}`;
       // CAT III / CAT II only when the OFP itself names it for this alternate; otherwise the OFP approach (normally CAT I).
@@ -6597,25 +6846,32 @@ function minimaRequirement(w){
   }
   if(!list.length)return {missing:'Not Found'};
   if(role==='DEST'){
-    // FOM 8.1.2.3.2: lowest approach on the OFP runway (CAT II/III if entered).
+    // FOM 8.1.2.3.2: lowest approach on the OFP runway (CAT II/III if entered and not taken away by the MEL).
     const rwy=String(analysis?.o?.expectedDestRunway||'').toUpperCase();
     const onDestRwy=rwy?pool.filter(r=>r.rwy===rwy):[];
     const a=onDestRwy.length?minimaLowest(onDestRwy):minimaHighest(pool),land=minimaLanding(a);
-    return {approach:a,basis:onDestRwy.length?`Landing · RWY ${rwy}`:`Landing · RWY ${rwy||'?'} not entered, highest used`,...land,landing:land};
+    return {approach:a,basis:onDestRwy.length?`Landing · RWY ${rwy}`:`Landing · RWY ${rwy||'?'} not entered, highest used`,...land,landing:land,melHit};
+  }
+  if(role==='TO_ALT'){
+    // FOM 8.1.2.3.1: landing minima over ETD ± 1 h; runway end(s) by the TAF wind, the most limiting of them.
+    const by=new Map();for(const r of pool){const k=r.rwy||'-';if(!by.has(k))by.set(k,[]);by.get(k).push(r);}
+    const a=minimaHighest([...by.values()].map(minimaLowest)),land=minimaLanding(a);
+    return {approach:a,label:`${a.name} · landing minima`,basis:'FOM 8.1.2.3.1 · T/O ALTN at landing minima',...land,landing:land,melHit};
   }
   // DEST ALTN / ENR ALTN (V6.27): runway in use is not known in advance, so plan the most limiting runway.
   // Any runway with no ILS -> its best NPA +200 ft / +1000 m (highest across such runways);
   // every runway has ILS -> CAT I downgraded to the NPA on the same runway (8.1.2-7), highest across runways.
   if(role==='DEST_ALT'&&minimaDestAltPos(icao)===1){
     // FOM 8.1.2.2.4.2 d) 1: first of two destination alternates -> operating minima as a destination.
-    // Runway from the OFP ASC APRT when entered, else the most limiting runway (lowest approach per runway).
-    const onAsc=ofpRwy?pool.filter(r=>r.rwy===ofpRwy):[];
-    let a=onAsc.length?minimaLowest(onAsc):null;
-    if(!a){const by=new Map();for(const r of pool){const k=r.rwy||'-';if(!by.has(k))by.set(k,[]);by.get(k).push(r);}a=minimaHighest([...by.values()].map(minimaLowest));}
+    // Runway end(s) by the TAF wind (the list is already cut down to them); the most limiting end (lowest approach per runway).
+    const by=new Map();for(const r of pool){const k=r.rwy||'-';if(!by.has(k))by.set(k,[]);by.get(k).push(r);}
+    const a=minimaHighest([...by.values()].map(minimaLowest));
     const land=minimaLanding(a);
     return {approach:a,label:`${a.name} · 1st ALTN, as DEST`,basis:'FOM 8.1.2.2.4.2 d) · 1st DEST ALTN at destination minima',...land,landing:land};
   }
-  if(role==='ENR_ALT'||role==='DEST_ALT'){
+  // FUEL ERA (user, 11/10/2026): the runway and approach the OFP names are not relied on → planned like ENR ALTN, FOM Table
+  // 8.1.2-7 on the runway end(s) the TAF wind points to.
+  if(role==='ENR_ALT'||role==='DEST_ALT'||role==='FUEL_ERA'){
     const us=minimaIsUS(icao),addC=us?400:200,addV=us?1600:1000,tbl=us?'8.1.2-8':'8.1.2-7';
     const byRwy=new Map();for(const r of list.filter(r=>r.type!=='Circling'&&r.rwy)){if(!byRwy.has(r.rwy))byRwy.set(r.rwy,[]);byRwy.get(r.rwy).push(r);}
     const worst=c=>c.sort((x,y)=>(x.ceil-y.ceil)||(x.vis-y.vis)).pop();
@@ -6625,16 +6881,24 @@ function minimaRequirement(w){
       return {approach:c.a,label:`${c.a.name} · NPA +${addC} ft / +${addV} m`,basis:`Planning ${tbl} · NPA-only runway`,vis:c.vis,ceil:c.ceil,landing:minimaLanding(c.a)};
     }
     if(byRwy.size){
-      const cands=[...byRwy.values()].map(rs=>{const i=minimaLowest(rs.filter(r=>r.type==='CAT I'))||minimaLowest(rs.filter(ils)),n=minimaLowest(rs.filter(r=>r.type==='NPA'));
-        return n?{a:n,i,ceil:n.height+(us?addC:0),vis:minimaVis(n)+(us?addV:0)}:null;});
-      if(cands.some(c=>!c))return {missing:`Not Found (NPA on RWY ${[...byRwy.keys()].find((k,j)=>!cands[j])} needed for planning)`};
+      // FOM Table 8.1.2-7 row by row (user decision 11/10/2026): a runway end with CAT II/III is planned at the CAT I RVR
+      // (no ceiling); an end with CAT I only at the NPA visibility with the ceiling at or above the MDH. US airports keep 8.1.2-8.
+      const cands=[...byRwy.entries()].map(([rwy,rs])=>{
+        const hi=minimaLowest(rs.filter(r=>r.type==='CAT II'||r.type==='CAT III')),c1=minimaLowest(rs.filter(r=>r.type==='CAT I'));
+        // US (Table 8.1.2-8): 1 CAT III ILS 200 ft / 800 m, 1 CAT II ILS 300 ft / 1200 m
+        if(hi&&us)return hi.type==='CAT III'?{a:hi,i:hi,ceil:200,vis:800,step:'US CAT III 200 ft / 800 m'}:{a:hi,i:hi,ceil:300,vis:1200,step:'US CAT II 300 ft / 1200 m'};
+        if(hi)return c1?{a:c1,i:hi,ceil:0,vis:minimaVis(c1),step:`${hi.type} → CAT I`}:{need:`CAT I on RWY ${rwy}`};
+        const i=c1||minimaLowest(rs.filter(ils)),n=minimaLowest(rs.filter(r=>r.type==='NPA'));
+        return n?{a:n,i,ceil:n.height+(us?addC:0),vis:minimaVis(n)+(us?addV:0),step:`CAT I → NPA${us?' +400/+1600':''}`}:{need:`NPA on RWY ${rwy}`};});
+      const lack=cands.find(c=>c.need);
+      if(lack)return {missing:`Not Found (${lack.need} needed for planning)`};
       const c=worst(cands);
-      return {approach:c.a,label:`${c.i.name} → ${c.a.name} (CAT I → NPA${us?' +400/+1600':''})`,basis:`Planning ${tbl} · CAT I → NPA VIS, CIG ≥ MDH`,vis:c.vis,ceil:c.ceil,landing:minimaLanding(c.i)};
+      return {approach:c.a,label:c.i===c.a?`${c.a.name} · ${c.step}`:`${c.i.name} → ${c.a.name} (${c.step})`,basis:`Planning ${tbl} · ${c.step}`,vis:c.vis,ceil:c.ceil,landing:minimaLanding(c.i),melHit};
     }
     const circ=list.find(r=>r.type==='Circling');
     if(circ)return {approach:circ,label:`${circ.name} · circling`,basis:`Planning ${tbl} · Circling`,...minimaLanding(circ),landing:minimaLanding(circ)};
   }
-  // FUEL ERA: the OFP approach (already downgraded by dispatch) + FOM Table 8.1.2-7.
+  // Left over (entries without a runway): the OFP approach when named + FOM Table 8.1.2-7.
   let a,src;
   const byKind=kind?onRwy.filter(r=>minimaMatchesKind(r,kind)):[];
   if(byKind.length){a=minimaHighest(byKind);src=ofpLabel;}
@@ -6678,14 +6942,16 @@ function minimaCheck(w){
     }
     return null;
   };
+  const melLbl=req.melHit?` · <span class="wxMinFail">MEL · NO ${melApproachLimit().cat2?'CAT II/III':'CAT III'}</span>`:'';
   const f=firstFail(req);
-  if(!f)return {status:'ok',req,html:''};
+  if(!f)return {status:'ok',req,html:(melLbl||role==='DEST'&&minimaNoAltnWarn(applicable))?`<div class="wxMinima">${(melLbl+(role==='DEST'?minimaNoAltnWarn(applicable):'')).replace(/^ · /,'')}</div>`:''};
   // EDTO Supplement "2 Serviceable Facilities": lower values when two approaches to different runways are usable.
   const pair=(req.two||[]).find(t=>!firstFail({vis:t[3],ceil:t[2],landing:req.landing}));
   if(pair)return {status:'two',req,html:`<div class="wxMinima"><span class="wxVisLow">2 FACILITIES REQUIRED</span> · ${esc(pair[0])} + ${esc(pair[1].join(' / '))}: ${pair[2]} ft / ${pair[3]} m</div>`};
   const {ev}=f;
   let extra='';
-  if(role==='DEST')extra=minimaTwoAltnWarn();
+  if(role==='DEST')extra=minimaTwoAltnWarn()+minimaNoAltnWarn(applicable);
+  extra=melLbl+extra;
   if(role==='DEP'){const toa=String(analysis?.o?.takeoffAltn||'');extra=` · <span class="wxMinFail">T/O ALTN required</span> (${esc(toa&&!/NOT\s*REQ/i.test(toa)?'OFP T/O ALTN: '+toa:toa?'OFP: '+toa:'not in OFP')})`;}
   // V6.38: label only; the approach and values are already under the airport name.
   return {status:'below',req,html:`<div class="wxMinima"><span class="wxMinFail">BELOW MINIMA</span>${extra}</div>`};
@@ -6751,7 +7017,7 @@ $('#minimaMenu').onclick=()=>{$('#nativeHomeMenu').open=false;showMinima();};
 function themeApply(t){
   document.documentElement.dataset.theme=t;
   try{localStorage.setItem('fb-theme',t);}catch{}
-  document.querySelectorAll('.themeToggle').forEach(b=>{b.textContent=t==='night'?'☀':'☾';b.title=t==='night'?'Day mode':'Night mode';b.setAttribute('aria-label',b.title);});
+  document.querySelectorAll('.themeToggle').forEach(b=>{b.innerHTML='<span class="themeGlyph">'+(t==='night'?'☀':'☾')+'</span>';b.title=t==='night'?'Day mode':'Night mode';b.setAttribute('aria-label',b.title);});
   // The iPad app colours the status bar / home indicator area to match.
   try{window.webkit?.messageHandlers?.nativeHome?.postMessage({action:'theme',theme:t});}catch{}
 }
