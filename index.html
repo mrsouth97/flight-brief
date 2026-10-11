@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.72">
-<title>Flight Brief V6.72</title>
+<meta name="flight-brief-version" content="6.73">
+<title>Flight Brief V6.73</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -576,6 +576,40 @@ body.panelScroll .windBody{overflow:visible!important;flex:none}
   .windHeadRow,.windBody{grid-template-columns:78px repeat(var(--windN),minmax(68px,1fr))!important}
   .windDes{grid-template-columns:repeat(var(--windN),minmax(66px,1fr))!important}
 }
+/* SIGWX (V6.73): loading bar, rows that open the chart, chart viewer */
+.sigwxLoadBar{height:6px;border:1px solid var(--mfLine);position:relative}
+.sigwxLoadBar i{position:absolute;left:0;top:0;bottom:0;background:var(--mfCyan);transition:width .3s linear}
+.sigwxLoadCap{display:flex;justify-content:space-between;font-size:12px;color:var(--mfMuted);margin-top:6px}
+.enrNil{display:inline-block;margin-left:14px}
+.sigwxTap{cursor:pointer}
+.sigwxVal{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.sigwxMore{flex:none;color:var(--mfTxt);font-weight:400;letter-spacing:1px;white-space:nowrap}
+#sigwxViewer{touch-action:pan-x pan-y;position:fixed;inset:0;z-index:100;background:var(--mfDisp);color:var(--mfTxt);display:flex;flex-direction:column;text-transform:uppercase;font-family:"SF Mono",ui-monospace,Menlo,monospace}
+.sigwxBar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--mfBar);color:var(--mfBarTxt);padding:calc(8px + env(safe-area-inset-top)) 14px 8px;font-size:14px}
+.sigwxBtns{display:flex;gap:8px;flex:none}
+.sigwxBar button{background:transparent!important;border:1px solid var(--mfBarTxt);border-radius:2px;color:var(--mfBarTxt)!important;font:inherit;font-size:12px;font-weight:400;padding:5px 10px;text-transform:uppercase}
+#sigwxPanes{flex:1;min-height:0;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
+.sigwxPane{flex:1;min-height:0;display:flex;flex-direction:column;border-top:1px solid var(--mfLine)}
+.sigwxCap{font-size:12px;color:var(--mfMuted);padding:5px 14px}
+.sigwxScroll{flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y}
+.sigwxCanvas{position:relative;aspect-ratio:2140/1760}
+.sigwxCanvas img,.sigwxCanvas svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+@media(max-width:640px){.sigwxBar{font-size:12px}.sigwxBar button{padding:5px 7px}}
+/* NOTAM (V6.73): "...... >>>" where a tap opens more (airport or FIR with NOTAM, type group, record cut at four lines) */
+.notamEntity summary::after,.notamType>summary::after{content:'...... >>>';font-size:13px;font-weight:400;color:var(--mfTxt);letter-spacing:1px;white-space:nowrap;transform:none;transition:none;margin-left:10px}
+.notamEntity[open]>summary::after,.notamType[open]>summary::after{content:'';transform:none}
+.notamTypeRecord.more:not(.open)::after{content:'...... >>>';display:block;text-align:right;font-size:13px;color:var(--mfTxt);letter-spacing:1px}
+/* WEATHER MINIMA as the D-ATIS/LIST page of ATC COM (V6.73) */
+.wxEntList{padding:0 16px}
+.wxEnt{padding:10px 0;border-bottom:1px solid var(--mfLine)}
+.wxGroup .wxEnt:last-child{border-bottom:0;padding-bottom:2px}
+.wxEntHead{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.wxEntApt,.wxEntRole{color:var(--mfCyan);font-size:15px}
+.wxEntTime{color:var(--mfTxt);font-size:14px;font-family:ui-monospace,"SF Mono",SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+.wxEntMin{margin-left:auto;max-width:55%;background:var(--mfTab);border:1px solid var(--mfLine2);color:var(--mfCyan);padding:3px 9px;font-size:12px;line-height:1.3;text-align:center}
+.wxEntMin.none{color:var(--mfMuted)}
+.wxEnt .wxValue{margin-top:7px}
+@media(max-width:640px){.wxEntMin{font-size:11px;max-width:100%}}
 </style>
 </head>
 <body>
@@ -636,6 +670,7 @@ body.panelScroll .windBody{overflow:visible!important;flex:none}
 <section id="tab-dgr" class="card hidden"><div id="dgrItems" class="section"></div><button id="dgrAdd" type="button" style="margin-top:10px">+ Add item</button><div id="dgrPositions" class="section" style="margin-top:10px"></div><div id="dgrLoadsheet" class="section" style="margin-top:10px"></div><div id="dgrResults" class="section" style="margin-top:12px"></div></section></div>
 </section>
 </main>
+<div id="sigwxViewer" class="hidden"><div class="sigwxBar"><span id="sigwxTitle"></span><span class="sigwxBtns"><button id="sigwxFull" type="button">Full chart</button><button id="sigwxSeg" type="button">Segment</button><button id="sigwxClose" type="button">✕</button></span></div><div id="sigwxPanes"></div></div>
 <div id="enrViewer" class="hidden"><div class="enrViewerBar"><button id="enrPrev" type="button">‹</button><button id="enrNext" type="button">›</button><span id="enrViewerTitle"></span><button id="enrZoomOut" type="button">−</button><button id="enrZoomIn" type="button">+</button><button id="enrClose" type="button">Close</button></div><div id="enrViewerScroll" class="enrViewerScroll"><img id="enrViewerImg" alt=""></div></div>
 <dialog id="minimaDialog" class="minimaDialog">
   <div class="row between"><h2>Approach minima</h2><button id="minimaClose" type="button">Close</button></div>
@@ -4615,7 +4650,8 @@ function renderEnr(){
   let html='<div class="wxCard">';
   html+='<div class="wxGroup"><div class="wxGroupTitle">SIGMET:</div>';
   if(!a.wpts.length)html+='<div class="wxValue review">Nav log not found in OFP</div>';
-  else if(!a.sigs.length)html+='<div class="wxValue">No SIGMET in WX briefing</div>';
+  // V6.73 (user 11/10/2026): a group with nothing to show reads NIL on the line of its title (SIGMET: NIL)
+  else if(!a.sigs.length)html+='<span class="wxValue enrNil">Nil</span>';
   else{
     // User decision 07/10/2026: a SIGMET that has expired before (or starts after) the ETO of the
     // affected leg does not apply to this flight → listed under Other SIGMET, no ON ROUTE tag.
@@ -4623,7 +4659,7 @@ function renderEnr(){
       const t0=addMins(a.takeoff,Math.min(...sp.map(p=>p.t0))),t1=addMins(a.takeoff,Math.max(...sp.map(p=>p.t1)));return s.to<t0||s.from>t1;};
     for(const r of a.sigs)if(r.status!=='off'&&stale(r)){r.status='off';r.note=`Not valid at ETO (${r.sig.validText})`;}
     const hit=a.sigs.filter(r=>r.status!=='off'),off=a.sigs.filter(r=>r.status==='off');
-    if(!hit.length)html+=`<div class="wxValue">No SIGMET within ${ENR_NEAR_NM} NM of route</div>`;
+    if(!hit.length)html+='<span class="wxValue enrNil">Nil</span>';
     html+=hit.map(r=>enrSigHtml(r,a)).join('');
     if(off.length)html+=`<details class="enrMore"><summary>Other SIGMET (${off.length})</summary>${off.map(r=>enrSigHtml(r,a)).join('')}</details>`;
   }
@@ -4632,20 +4668,23 @@ function renderEnr(){
     html+='<div class="wxGroup"><div class="wxGroupTitle">SHEAR:</div>';
     // Shear 6–7 amber, 8 and above red (FAA AC 00-30C 6.7: moderate CAT likely from 5 kt/1000 ft; user thresholds).
     if(a.shear.length)html+=a.shear.map(g=>{const m=Math.max(...g.items.map(w=>w.ws));return enrGroupRow(g,a,`<span class="${m>=ENR_SHEAR_RED?'wxVisBad':'wxVisLow'}">SHEAR ${m}</span>`);}).join('');
-    else html+='<div class="wxValue">Nil</div>';
-    // JET (FAA AC 00-30C 6.7.2): wind ≥ 110 kt within ±4000 ft of the planned level amber;
-    // the same with the tropopause within 2000 ft red. Nothing below 110 kt (user decision).
-    html+='</div><div class="wxGroup"><div class="wxGroupTitle">JET:</div>';
-    if(a.jet.length)html+=a.jet.map(g=>{
-      const top=g.items.reduce((m,w)=>w.jet>m.jet?w:m),red=g.items.some(w=>w.jet>=ENR_JET_RED_KT&&w.tp!=null&&w.tp<=w.fl+ENR_TROP_MARGIN);
-      return enrGroupRow(g,a,`<span class="${red?'wxVisBad':'wxVisLow'}">JET ${top.jet} kt FL${top.jetFl}</span>`);
-    }).join('');
-    else html+='<div class="wxValue">Nil</div>';
-    // V6.39: tropopause section removed (user); the TP data still feeds the JET colour.
+    else html+='<span class="wxValue enrNil">Nil</span>';
     html+='</div>';
+    // V6.73 (user 11/10/2026): no JET group in the app - the SIGWX group reads the jets from the chart. The web page
+    // (no chart reader) keeps it. JET (FAA AC 00-30C 6.7.2): wind ≥ 110 kt within ±4000 ft of the planned level amber;
+    // the same with the tropopause within 2000 ft red. Nothing below 110 kt (user decision).
+    if(window.FLIGHT_BRIEF_SIGWX_VERSION==null){
+      html+='<div class="wxGroup"><div class="wxGroupTitle">JET:</div>';
+      if(a.jet.length)html+=a.jet.map(g=>{
+        const top=g.items.reduce((m,w)=>w.jet>m.jet?w:m),red=g.items.some(w=>w.jet>=ENR_JET_RED_KT&&w.tp!=null&&w.tp<=w.fl+ENR_TROP_MARGIN);
+        return enrGroupRow(g,a,`<span class="${red?'wxVisBad':'wxVisLow'}">JET ${top.jet} kt FL${top.jetFl}</span>`);
+      }).join('');
+      else html+='<span class="wxValue enrNil">Nil</span>';
+      html+='</div>';
+    }
     // V6.72: SIGWX from the raw WAFC fixed-area charts of the Lido WX PDF, read by the native app (no AI, no network).
     const wxDoc=wxDocs.find(d=>/LIDO.?WX/i.test(d.name))||wxDocs[0];
-    if(window.FLIGHT_BRIEF_SIGWX_VERSION===1&&wxDoc){
+    if(window.FLIGHT_BRIEF_SIGWX_VERSION>=1&&wxDoc){
       sigwxLoad(a,wxDoc);
       html+='<div class="wxGroup"><div class="wxGroupTitle">SIGWX:</div>'+sigwxHtml(a)+'</div>';
     }
@@ -4661,16 +4700,26 @@ function renderEnr(){
 // place on two charts of one validity is one item, and only items concerning the planned level (CLB/DSC legs count) are shown.
 const SIGWX_WINDOW_MIN=180;
 const SIGWX_AREAS={E:{x0:1022.5,lon0:90,kx:13.485,y0:818,ky:13.41,wrap:true},D:{x0:1211.3,lon0:60,kx:14.243,y0:1302.2,ky:14.156,wrap:false},MID:{x0:657.9,lon0:30,kx:39.45,y0:2072.7,ky:39.33,wrap:false}};
-let sigwxState={key:null,charts:null,busy:false,error:''};
+let sigwxState={key:null,wx:'',charts:null,busy:false,error:'',progress:null};
+let sigwxRows=[],sigwxWpts=[];
+const sigwxImages=new Map();
 const sigwxPending=new Map();
 window.flightBriefSigwxReply=(id,result,error)=>{const p=sigwxPending.get(id);if(!p)return;sigwxPending.delete(id);error?p.reject(new Error(error)):p.resolve(result);};
+// progress of the reading (0..1 and what is being done), sent by the app while it works
+window.flightBriefSigwxProgress=(id,f,label)=>{
+  if(!sigwxPending.has(id)||!sigwxState.busy)return;
+  sigwxState.progress={f:Math.max(0,Math.min(1,Number(f)||0)),label:String(label||'')};
+  const fill=$('#sigwxLoadFill'),pc=Math.round(sigwxState.progress.f*100);
+  if(fill){fill.style.width=pc+'%';$('#sigwxLoadTxt').textContent=sigwxState.progress.label;$('#sigwxLoadPct').textContent=pc+'%';}
+};
 function sigwxLoad(a,wxDoc){
   if(!window.webkit?.messageHandlers?.nativeHome||!a.wpts.length)return;
   const key=wxDoc.name+'|'+(analysis?.selectedOfp?.name||'')+'|'+a.wpts.length;
   if(sigwxState.key===key)return;
   // route for the reader: nav-log points with level as text (CLB / DSC / 370); ETP, ENTRY/EXIT, REV, TOC/TOD are not named on paper
   const route=a.wpts.map(w=>({name:w.name,lat:w.lat,lon:w.lon,fl:String(w.fl??''),eltm:w.eltm,label:!/^(?:S?ETP\d*(?:-\d)?|ENTRY\d*|EXIT\d*|REV\d*|T-O-C|T-O-D|TOC|TOD)$/.test(w.name)}));
-  sigwxState={key,charts:null,busy:true,error:''};
+  sigwxState={key,wx:wxDoc.name,charts:null,busy:true,error:'',progress:null};
+  sigwxImages.clear();
   new Promise((resolve,reject)=>{
     const id=crypto.randomUUID();sigwxPending.set(id,{resolve,reject});
     window.webkit.messageHandlers.nativeHome.postMessage({action:'sigwxRead',id,wx:wxDoc.name,route});
@@ -4749,26 +4798,126 @@ function sigwxFinal(a){
     else if(k==='ice')text=(x.sev?'SEV':'MOD')+' ICE'+(x.top?` ${x.top}/${x.base}`:'');
     else text='JET'+(x.kt!=null?` ${x.kt_is_minimum?'≥ ':''}${x.kt} KT`:'')+(x.core_fl?` FL${x.core_fl}`:'')+(x.band?` ${x.band}`:'');
     const colour=x.affects?((k==='cb'&&x.cov==='FRQ')||((k==='turb'||k==='ice')&&x.sev)?'red':'amber'):null;
-    return {kind:k,text,from:x.from,to:x.to,t0:x.t0,t1:x.t1,fl:x.planned_fl,cd:x.cd,affects:x.affects,colour};
+    return {kind:k,text,from:x.from,to:x.to,t0:x.t0,t1:x.t1,fl:x.planned_fl,cd:x.cd,affects:x.affects,colour,charts:x.charts};
   });
 }
 function sigwxHtml(a){
   const st=sigwxState;
-  if(st.busy)return '<div class="wxValue">Reading charts…</div>';
   if(st.error)return `<div class="wxValue review">${esc(st.error)}</div>`;
-  if(!st.charts)return '<div class="wxValue">Reading charts…</div>';
+  if(st.busy||!st.charts){
+    const p=st.progress||{f:0,label:'Reading charts'},pc=Math.round(p.f*100);
+    return `<div class="sigwxLoad"><div class="sigwxLoadBar"><i id="sigwxLoadFill" style="width:${pc}%"></i></div><div class="sigwxLoadCap"><span id="sigwxLoadTxt">${esc(p.label)}</span><span id="sigwxLoadPct">${pc}%</span></div></div>`;
+  }
   if(!st.charts.length)return '<div class="wxValue">No WAFC SIGWX chart in WX briefing</div>';
   // shown: items concerning the planned level (coloured), and items the reader could not finish (CHECK CHART); items outside
   // the level band are not listed (user decision 11/10/2026)
   const rows=sigwxFinal(a).filter(r=>r.affects!==false);
-  if(!rows.length)return '<div class="wxValue">Nil</div>';
-  return rows.map(r=>{
+  sigwxRows=rows;sigwxWpts=a.wpts;
+  if(!rows.length)return '<span class="wxValue enrNil">Nil</span>';
+  const tap=window.FLIGHT_BRIEF_SIGWX_VERSION>=2;
+  return rows.map((r,i)=>{
     const fl=r.fl.length?(r.fl.length>1?`FL${r.fl[0]}–${r.fl[r.fl.length-1]}`:`FL${r.fl[0]}`):'';
     const sub=[fl,r.cd?'CLB/DSC':''].filter(Boolean).join(' · ');
     const val=r.affects==null?`<span class="wxVisLow">${esc(r.kind==='cb'?'CB':r.kind==='turb'?'TURB':r.kind==='ice'?'ICE':'JET')} · CHECK CHART</span>`:`<span class="${r.colour==='red'?'wxVisBad':'wxVisLow'}">${esc(r.text)}</span>`;
-    return `<div class="wxGroupItem"><div class="wxGroupCode">${esc(r.from)} → ${esc(r.to)}<div class="wxUseTime"><i>${esc(sub)}</i>${sub?' · ':''}${enrClock(r.t0,a.takeoff)}–${enrClock(r.t1,a.takeoff)}</div></div><div class="wxValue">${val}</div></div>`;
+    return `<div class="wxGroupItem${tap?' sigwxTap':''}" data-sigwx="${i}"><div class="wxGroupCode">${esc(r.from)} → ${esc(r.to)}<div class="wxUseTime"><i>${esc(sub)}</i>${sub?' · ':''}${enrClock(r.t0,a.takeoff)}–${enrClock(r.t1,a.takeoff)}</div></div><div class="wxValue${tap?' sigwxVal':''}">${val}${tap?'<span class="sigwxMore">...... &gt;&gt;&gt;</span>':''}</div></div>`;
   }).join('');
 }
+// ---- SIGWX chart viewer (V6.73): a tap on a row opens the chart(s) the item was read from - the page is rendered by the app
+// on demand, the route and the affected stretch are drawn here from the nav log (same Mercator constants as the reader).
+const SIGWX_IMG={x:125,y:135,w:2140,h:1760};          // part of the 2380 px page the app sends: map frame + turbulence key
+function sigwxPx(area,p){
+  const A=SIGWX_AREAS[area],lon=A.wrap&&p.lon<0?p.lon+360:p.lon;
+  return [A.x0+(lon-A.lon0)*A.kx-SIGWX_IMG.x,A.y0-A.ky*(Math.log(Math.tan((45+p.lat/2)*Math.PI/180))*180/Math.PI)-SIGWX_IMG.y];
+}
+function sigwxImage(page){
+  const key=sigwxState.key+'|'+page;
+  if(sigwxImages.has(key))return sigwxImages.get(key);
+  const p=new Promise((resolve,reject)=>{
+    const id=crypto.randomUUID();sigwxPending.set(id,{resolve,reject});
+    window.webkit.messageHandlers.nativeHome.postMessage({action:'sigwxChart',id,wx:sigwxState.wx,page});
+  }).then(r=>'data:image/jpeg;base64,'+r.image);
+  sigwxImages.set(key,p);p.catch(()=>sigwxImages.delete(key));
+  return p;
+}
+// route, affected stretch (frame + thicker line) and the names of its two end points, in image pixels.
+// Colours are fixed: they lie on the chart image, which is the same light paper in Day and Night.
+function sigwxOverlay(area,r){
+  const pts=sigwxWpts.filter(w=>w.eltm!=null).map(w=>({w,p:sigwxPx(area,w)}));
+  if(pts.length<2)return {svg:'',box:[0,0,SIGWX_IMG.w,SIGWX_IMG.h]};
+  const at=t=>{
+    for(let i=0;i+1<pts.length;i++){
+      const u=pts[i],v=pts[i+1];
+      if(u.w.eltm<=t&&t<=v.w.eltm){const f=v.w.eltm>u.w.eltm?(t-u.w.eltm)/(v.w.eltm-u.w.eltm):0;return [u.p[0]+(v.p[0]-u.p[0])*f,u.p[1]+(v.p[1]-u.p[1])*f];}
+    }
+    return (t<=pts[0].w.eltm?pts[0]:pts[pts.length-1]).p;
+  };
+  const seg=[at(r.t0),...pts.filter(q=>q.w.eltm>r.t0&&q.w.eltm<r.t1).map(q=>q.p),at(r.t1)];
+  const xs=seg.map(p=>p[0]),ys=seg.map(p=>p[1]),cx=(Math.min(...xs)+Math.max(...xs))/2,cy=(Math.min(...ys)+Math.max(...ys))/2;
+  const bw=Math.max(420,Math.max(...xs)-Math.min(...xs)+160),bh=Math.max(340,Math.max(...ys)-Math.min(...ys)+160);
+  const box=[cx-bw/2,cy-bh/2,bw,bh],line=q=>q.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+  const end=(name,t)=>pts.filter(q=>q.w.name===name).sort((u,v)=>Math.abs(u.w.eltm-t)-Math.abs(v.w.eltm-t))[0];
+  const ends=[end(r.from,r.t0),end(r.to,r.t1)].filter(Boolean).map((q,k)=>`<circle cx="${q.p[0].toFixed(1)}" cy="${q.p[1].toFixed(1)}" r="6" fill="#A0128F"/><text x="${q.p[0].toFixed(1)}" y="${(q.p[1]+(k?34:-16)).toFixed(1)}" text-anchor="middle" font-size="24" font-family="ui-monospace,Menlo,monospace" fill="#14171A" stroke="#fff" stroke-width="6" paint-order="stroke">${esc(q.w.name)}</text>`).join('');
+  const W=SIGWX_IMG.w,H=SIGWX_IMG.h,[x,y,w,h]=box.map(v=>v.toFixed(1));
+  return {box,svg:`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><path d="M0 0H${W}V${H}H0Z M${x} ${y}h${w}v${h}h-${w}Z" fill="rgba(0,0,0,.14)" fill-rule="evenodd"/><polyline points="${line(pts.map(q=>q.p))}" fill="none" stroke="#A0128F" stroke-width="3" stroke-linejoin="round"/><polyline points="${line(seg)}" fill="none" stroke="#A0128F" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="#0A6F8F" stroke-width="4"/>${ends}</svg>`};
+}
+let sigwxPanesState=[];
+function sigwxZoom(p,z,cx,cy){
+  const sc=p.sc,r=sc.getBoundingClientRect(),fit=Math.min(sc.clientWidth/SIGWX_IMG.w,sc.clientHeight/SIGWX_IMG.h);
+  z=Math.max(fit,Math.min(3,z));
+  if(cx==null){cx=r.left+r.width/2;cy=r.top+r.height/2;}
+  const fx=(cx-r.left+sc.scrollLeft)/(SIGWX_IMG.w*p.z),fy=(cy-r.top+sc.scrollTop)/(SIGWX_IMG.h*p.z);
+  p.z=z;p.cv.style.width=(SIGWX_IMG.w*z)+'px';
+  sc.scrollLeft=fx*SIGWX_IMG.w*z-(cx-r.left);sc.scrollTop=fy*SIGWX_IMG.h*z-(cy-r.top);
+}
+function sigwxShow(full){
+  for(const p of sigwxPanesState){
+    const sc=p.sc,[x,y,w,h]=p.box;
+    if(full){p.z=1;sigwxZoom(p,0);sc.scrollLeft=0;sc.scrollTop=0;continue;}
+    p.z=1;sigwxZoom(p,Math.min(sc.clientWidth/(w*1.25),sc.clientHeight/(h*1.25),1.1));          // not beyond the sharpness of the page image
+    sc.scrollLeft=(x+w/2)*p.z-sc.clientWidth/2;sc.scrollTop=(y+h/2)*p.z-sc.clientHeight/2;
+  }
+}
+function sigwxOpen(i){
+  const r=sigwxRows[i];
+  if(!r||!sigwxState.charts)return;
+  const charts=(r.charts||[]).map(k=>sigwxState.charts.find(c=>c.area+' '+c.page===k)).filter(c=>c&&SIGWX_AREAS[c.area]);
+  if(!charts.length)return;
+  $('#sigwxTitle').textContent=`${r.from} → ${r.to} · ${r.affects==null?'CHECK CHART':r.text}`;
+  const ovs=charts.map(c=>sigwxOverlay(c.area,r));
+  $('#sigwxPanes').innerHTML=charts.map((c,k)=>`<div class="sigwxPane"><div class="sigwxCap">AREA ${esc(c.area)} · ${esc(c.valid||'')}</div><div class="sigwxScroll"><div class="sigwxCanvas"><img alt="">${ovs[k].svg}</div></div></div>`).join('');
+  $('#sigwxViewer').classList.remove('hidden');
+  sigwxViewport.content=sigwxViewport0+',maximum-scale=1,user-scalable=no';      // pinch zooms the chart, never the whole page
+  sigwxPanesState=[...document.querySelectorAll('#sigwxPanes .sigwxPane')].map((el,k)=>{
+    const p={sc:el.querySelector('.sigwxScroll'),cv:el.querySelector('.sigwxCanvas'),box:ovs[k].box,z:1};
+    sigwxImage(charts[k].page).then(src=>{if(p.cv.isConnected)p.cv.querySelector('img').src=src;}).catch(e=>{if(el.isConnected)el.querySelector('.sigwxCap').textContent+=' · '+(e.message||'chart not available');});
+    let pinch=null,lastTap=0;
+    const gap=e=>Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+    p.sc.addEventListener('touchstart',e=>{if(e.touches.length===2)pinch={d:gap(e),z:p.z};},{passive:true});
+    p.sc.addEventListener('touchmove',e=>{
+      if(e.touches.length!==2||!pinch)return;
+      e.preventDefault();
+      sigwxZoom(p,pinch.z*gap(e)/pinch.d,(e.touches[0].clientX+e.touches[1].clientX)/2,(e.touches[0].clientY+e.touches[1].clientY)/2);
+    },{passive:false});
+    p.sc.addEventListener('touchend',e=>{
+      if(e.touches.length<2)pinch=null;
+      if(e.touches.length||e.changedTouches.length!==1)return;
+      const now=Date.now(),t=e.changedTouches[0];
+      if(now-lastTap<300){sigwxZoom(p,p.z*1.8,t.clientX,t.clientY);lastTap=0;}else lastTap=now;
+    });
+    return p;
+  });
+  sigwxShow(false);
+}
+function sigwxClose(){$('#sigwxViewer').classList.add('hidden');$('#sigwxPanes').innerHTML='';sigwxPanesState=[];sigwxViewport.content=sigwxViewport0;}
+const sigwxViewport=document.querySelector('meta[name="viewport"]'),sigwxViewport0=sigwxViewport.content;
+for(const ev of ['gesturestart','gesturechange'])document.addEventListener(ev,e=>{if(sigwxPanesState.length)e.preventDefault();},{passive:false});
+$('#sigwxClose').onclick=sigwxClose;
+$('#sigwxFull').onclick=()=>sigwxShow(true);
+$('#sigwxSeg').onclick=()=>sigwxShow(false);
+$('#enrResults').addEventListener('click',e=>{
+  const el=e.target.closest('[data-sigwx]');
+  if(el&&window.FLIGHT_BRIEF_SIGWX_VERSION>=2)sigwxOpen(Number(el.dataset.sigwx));
+});
 let enrViewIdx=-1,enrZoom=1;
 function enrSetZoom(z,cx,cy){
   const sc=$('#enrViewerScroll'),img=$('#enrViewerImg');
@@ -4959,9 +5108,6 @@ function renderWX(){
     return {cls:'',html:line+mc.html+fonExtraFuelHtml(w)+edtoXwindHtml(w)};
   }
 
-  function depDestTitle(w){
-    return `${w.role}: ${wxAirportDisplay(w.icao)}`;
-  }
   function wxUseTime(w){
     if(w?.window?.[0]&&w?.window?.[1]){
       return w.window[0].getTime()===w.window[1].getTime()?hhmmZ(w.window[0]):`${hhmmZ(w.window[0])}–${hhmmZ(w.window[1])}`;
@@ -4970,20 +5116,18 @@ function renderWX(){
     return '';
   }
 
+  // V6.73: one entry per airport in the manner of the D-ATIS/LIST page of ATC COM - ICAO, role (DEP / DEST; the alternates
+  // carry theirs in the group title), time of use, the approach / minima applied in a box on the right, the TAF line below.
+  function wxEntry(w,role,includeWind){
+    const v=wxText(w,includeWind),useTime=wxUseTime(w),mu=minimaUsed(w);
+    return `<div class="wxEnt"><div class="wxEntHead"><span class="wxEntApt">${esc(w.icao)}</span>`+
+      `${role?`<span class="wxEntRole">${esc(ecamLabel(role))}</span>`:''}${useTime?`<span class="wxEntTime">${esc(useTime)}</span>`:''}`+
+      `${mu?`<span class="wxEntMin${/not found/i.test(mu)?' none':''}">${esc(mu)}</span>`:''}</div>`+
+      `<div class="wxValue ${v.cls}">${v.html}</div></div>`;
+  }
   function wxGroup(title,rows){
     if(!rows.length)return '';
-    let out=`<div class="wxGroup"><div class="wxGroupTitle">${esc(ecamLabel(title))}:</div>`;
-    for(const w of rows){
-      const v=wxText(w);
-      const useTime=wxUseTime(w);
-      out+=
-        `<div class="wxGroupItem">`+
-          `<div class="wxGroupCode">- ${esc(wxAirportDisplay(w.icao))}${useTime?`<div class="wxUseTime">${esc(useTime)}</div>`:''}${minimaUsed(w)?`<div class="wxUseTime wxMinimaUsed">${esc(minimaUsed(w))}</div>`:''}</div>`+
-          `<div class="wxValue ${v.cls}">${v.html}</div>`+
-        `</div>`;
-    }
-    out+='</div>';
-    return out;
+    return `<div class="wxGroup"><div class="wxGroupTitle">${esc(ecamLabel(title))}:</div>${rows.map(w=>wxEntry(w,'',false)).join('')}</div>`;
   }
 
   let h='<div class="wxCard">';
@@ -4992,15 +5136,7 @@ function renderWX(){
     h+='<div class="wxRow"><div class="wxAirport">Weather</div><div class="wxValue warn">No weather airport data extracted.</div></div>';
   }else{
     // DEP / DEST.
-    for(const w of depDest){
-      const v=wxText(w,true);
-      const useTime=wxUseTime(w);
-      h+=
-        `<div class="wxRow">`+
-          `<div class="wxAirport">${esc(depDestTitle(w))}${useTime?`<div class="wxUseTime">${esc(useTime)}</div>`:''}${minimaUsed(w)?`<div class="wxUseTime wxMinimaUsed">${esc(minimaUsed(w))}</div>`:''}</div>`+
-          `<div class="wxValue ${v.cls}">${v.html}</div>`+
-        `</div>`;
-    }
+    if(depDest.length)h+=`<div class="wxEntList">${depDest.map(w=>wxEntry(w,w.role,true)).join('')}</div>`;
 
     // Separate alternate groups.
     h+=wxGroup('ENR ALT',enrRows);
@@ -5265,7 +5401,14 @@ function plainNotamInfo(n){
 
 function drawNotams(list){
   let h='';
-  if(!drawNotams.tapBound){drawNotams.tapBound=true;$('#notamResults').addEventListener('click',e=>{const r=e.target.closest('.notamTypeRecord');if(r)r.classList.toggle('open');});}
+  if(!drawNotams.tapBound){drawNotams.tapBound=true;$('#notamResults').addEventListener('click',e=>{const r=e.target.closest('.notamTypeRecord');if(r)r.classList.toggle('open');});
+    // V6.73: "...... >>>" marks what can be opened. A record gets it only when its text is cut at four lines; that can be
+    // measured only once its type group is open (toggle does not bubble, hence the capture).
+    $('#notamResults').addEventListener('toggle',e=>{
+      if(!e.target.matches?.('details')||!e.target.open)return;
+      for(const r of e.target.querySelectorAll('.notamTypeRecord')){const t=r.querySelector('.notamRaw');if(t&&t.clientHeight)r.classList.toggle('more',t.scrollHeight>t.clientHeight+1);}
+    },true);
+  }
 
   if(!analysis.notams.length && !String(analysis.notamSourceText||'').trim()){
     $('#notamResults').innerHTML=
