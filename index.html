@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.73">
-<title>Flight Brief V6.73</title>
+<meta name="flight-brief-version" content="6.74">
+<title>Flight Brief V6.74</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -584,11 +584,14 @@ body.panelScroll .windBody{overflow:visible!important;flex:none}
 .sigwxTap{cursor:pointer}
 .sigwxVal{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .sigwxMore{flex:none;color:var(--mfTxt);font-weight:400;letter-spacing:1px;white-space:nowrap}
-#sigwxViewer{touch-action:pan-x pan-y;position:fixed;inset:0;z-index:100;background:var(--mfDisp);color:var(--mfTxt);display:flex;flex-direction:column;text-transform:uppercase;font-family:"SF Mono",ui-monospace,Menlo,monospace}
-.sigwxBar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--mfBar);color:var(--mfBarTxt);padding:calc(8px + env(safe-area-inset-top)) 14px 8px;font-size:14px}
+#sigwxViewer{touch-action:pan-x pan-y;position:relative;height:min(70vh,760px);margin:4px 16px 14px;border:1px solid var(--mfLine2);background:var(--mfDisp);color:var(--mfTxt);display:flex;flex-direction:column;text-transform:uppercase;font-family:"SF Mono",ui-monospace,Menlo,monospace}
+body>#sigwxViewer{display:none}
+#reloadFlight{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px!important;color:var(--blue)!important;line-height:0}
+#reloadFlight.busy svg{animation:fbSpin 1s linear infinite}
+.sigwxBar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--mfBar);color:var(--mfBarTxt);padding:6px 12px;font-size:13px}
 .sigwxBtns{display:flex;gap:8px;flex:none}
 .sigwxBar button{background:transparent!important;border:1px solid var(--mfBarTxt);border-radius:2px;color:var(--mfBarTxt)!important;font:inherit;font-size:12px;font-weight:400;padding:5px 10px;text-transform:uppercase}
-#sigwxPanes{flex:1;min-height:0;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
+#sigwxPanes{flex:1;min-height:0;display:flex;flex-direction:column}
 .sigwxPane{flex:1;min-height:0;display:flex;flex-direction:column;border-top:1px solid var(--mfLine)}
 .sigwxCap{font-size:12px;color:var(--mfMuted);padding:5px 14px}
 .sigwxScroll{flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y}
@@ -601,15 +604,14 @@ body.panelScroll .windBody{overflow:visible!important;flex:none}
 .notamTypeRecord.more:not(.open)::after{content:'...... >>>';display:block;text-align:right;font-size:13px;color:var(--mfTxt);letter-spacing:1px}
 /* WEATHER MINIMA as the D-ATIS/LIST page of ATC COM (V6.73) */
 .wxEntList{padding:0 16px}
-.wxEnt{padding:10px 0;border-bottom:1px solid var(--mfLine)}
-.wxGroup .wxEnt:last-child{border-bottom:0;padding-bottom:2px}
-.wxEntHead{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.wxEnt{padding:7px 0}
+.wxGroup .wxEnt:last-child{padding-bottom:2px}
+.wxEntHead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
 .wxEntApt,.wxEntRole{color:var(--mfCyan);font-size:15px}
 .wxEntTime{color:var(--mfTxt);font-size:14px;font-family:ui-monospace,"SF Mono",SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
-.wxEntMin{margin-left:auto;max-width:55%;background:var(--mfTab);border:1px solid var(--mfLine2);color:var(--mfCyan);padding:3px 9px;font-size:12px;line-height:1.3;text-align:center}
+.wxEntMin{margin-left:auto;color:var(--mfCyan);font-size:12px;line-height:1.3;text-align:right}
 .wxEntMin.none{color:var(--mfMuted)}
-.wxEnt .wxValue{margin-top:7px}
-@media(max-width:640px){.wxEntMin{font-size:11px;max-width:100%}}
+.wxEnt .wxValue{flex:1 1 260px;min-width:0}
 </style>
 </head>
 <body>
@@ -659,7 +661,7 @@ body.panelScroll .windBody{overflow:visible!important;flex:none}
 </div>
 </section>
 <section id="resultView" class="hidden">
-<div class="resultTopbar"><button id="homeLogoButton" class="resultHomeLogo" type="button">Flight Brief</button><div class="resultMeta hidden"><h2 id="flightTitle">Flight review</h2><div id="flightSub" class="muted"></div><div id="overview" class="overview"></div></div><div class="row wrap resultActions"><button id="themeReview" type="button" class="themeToggle">Day mode</button><button id="minimaReview" type="button">Minima</button><label class="upload">+ Add Docs<input id="moreUpload" type="file" accept=".pdf,application/pdf" multiple hidden></label></div></div>
+<div class="resultTopbar"><button id="homeLogoButton" class="resultHomeLogo" type="button">Flight Brief</button><div class="resultMeta hidden"><h2 id="flightTitle">Flight review</h2><div id="flightSub" class="muted"></div><div id="overview" class="overview"></div></div><div class="row wrap resultActions"><button id="themeReview" type="button" class="themeToggle">Day mode</button><button id="reloadFlight" type="button" aria-label="Reload flight documents" title="Reload flight documents"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg></button><label class="upload">+ Add Docs<input id="moreUpload" type="file" accept=".pdf,application/pdf" multiple hidden></label></div></div>
 <div class="mfdFrame"><div class="tabs"><button class="tab active" data-tab="ofp">OFP DETAIL</button><button class="tab" data-tab="wx">WEATHER</button><button class="tab" data-tab="notam">NOTAM</button><button class="tab" data-tab="wind">WIND</button><button class="tab" data-tab="dgr">DGR</button></div>
 <section id="tab-ofp" class="card"><div class="subTitle" id="ofpTitle">F-PLN</div><div class="panelBody"><div id="ofpResults" class="section"></div><div class="ofpMelMerged"><h3 id="melHeading">MEL / CDL</h3><div id="melResults" class="section" style="margin-top:8px"></div></div></div></section>
 <section id="tab-wx" class="card hidden"><div class="subTabs"><button type="button" class="subTab active" data-sub="minima" data-title="WEATHER MINIMA">MINIMA</button><button type="button" class="subTab" data-sub="enr" data-title="ENROUTE WEATHER">ENR WX</button></div><div class="subTitle">WEATHER MINIMA</div><div id="wxResults" class="section" data-pane="minima"></div><div id="enrResults" class="section hidden" data-pane="enr"></div></section>
@@ -3724,7 +3726,7 @@ function docRevText(a){
 }
 function renderOFP(){
   // Layout after the MFD ACTIVE/INIT page (FCOM DSC-22-FMS-20-20-20): labelled entry fields in two
-  // columns. Cyan box = value as filed (FLT NBR, FROM/TO, ALTN, CRZ FL, CI); green = read/derived.
+  // columns. Cyan box = value as filed (FLT NBR, FROM/TO, ALTN, INTL FL = first entry of the FLT LVL profile, CI); green = read/derived.
   const o=analysis.o;
   const depR=analysis.depRwyCheck||{status:'review',body:'',rwy:'',windText:''};
   const destR=analysis.destRwyCheck||{status:'review',body:'',rwy:'',windText:''};
@@ -3758,7 +3760,7 @@ function renderOFP(){
   h+='<div class="initRow">'+fld('DEP RWY',rwy(depR))+fld('SID',box(esc(proc(o.sid)),'green'))+'</div>';
   h+='<div class="initRow">'+fld('LDG RWY',rwy(destR))+fld('STAR',box(esc(proc(o.star)),'green'))+'</div>';
   h+='<div class="initSep"></div>';
-  h+='<div class="initRow">'+fld('CRZ FL',box(esc(o.initialFltLvl||na))+inl('CI',box(esc(o.costIndex||na))))+fld('MAX SHR',shr)+'</div>';
+  h+='<div class="initRow">'+fld('INTL FL',box(esc(o.initialFltLvl||na))+inl('CI',box(esc(o.costIndex||na))))+fld('MAX SHR',shr)+'</div>';
   h+='<div class="initRow">'+fld('EDTO',edto)+fld('PERF',box(esc(o.perf||na),'green'))+'</div>';
   h+='<div class="initSep"></div>';
   h+='<div class="initRow one">'+fld('DISPATCH',box(dn,'green wide'))+'</div>';
@@ -4686,11 +4688,13 @@ function renderEnr(){
     const wxDoc=wxDocs.find(d=>/LIDO.?WX/i.test(d.name))||wxDocs[0];
     if(window.FLIGHT_BRIEF_SIGWX_VERSION>=1&&wxDoc){
       sigwxLoad(a,wxDoc);
-      html+='<div class="wxGroup"><div class="wxGroupTitle">SIGWX:</div>'+sigwxHtml(a)+'</div>';
+      html+='<div class="wxGroup"><div class="wxGroupTitle">SIGWX:</div>'+sigwxHtml(a)+'</div><div id="sigwxInline"></div>';
     }
   }
   html+='</div>';
   // V6.38: chart pages are no longer shown here (user: plain copies of the PDF add nothing).
+  // V6.74: the SIGWX chart panel lives inside this pane while open - park it before the pane is redrawn
+  {const v=$('#sigwxViewer');if(v&&box.contains(v)){document.body.appendChild(v);sigwxClose();}}
   box.innerHTML=html;
 }
 // ---- SIGWX (V6.72): the WAFC fixed-area charts (ICAO AREA E / D / MID) in the Lido WX PDF are rendered and read in the
@@ -4885,6 +4889,7 @@ function sigwxOpen(i){
   $('#sigwxTitle').textContent=`${r.from} → ${r.to} · ${r.affects==null?'CHECK CHART':r.text}`;
   const ovs=charts.map(c=>sigwxOverlay(c.area,r));
   $('#sigwxPanes').innerHTML=charts.map((c,k)=>`<div class="sigwxPane"><div class="sigwxCap">AREA ${esc(c.area)} · ${esc(c.valid||'')}</div><div class="sigwxScroll"><div class="sigwxCanvas"><img alt="">${ovs[k].svg}</div></div></div>`).join('');
+  const host=$('#sigwxInline')||document.body;host.appendChild($('#sigwxViewer'));
   $('#sigwxViewer').classList.remove('hidden');
   sigwxViewport.content=sigwxViewport0+',maximum-scale=1,user-scalable=no';      // pinch zooms the chart, never the whole page
   sigwxPanesState=[...document.querySelectorAll('#sigwxPanes .sigwxPane')].map((el,k)=>{
@@ -4907,6 +4912,7 @@ function sigwxOpen(i){
     return p;
   });
   sigwxShow(false);
+  $('#sigwxViewer').scrollIntoView({block:'nearest',behavior:'smooth'});
 }
 function sigwxClose(){$('#sigwxViewer').classList.add('hidden');$('#sigwxPanes').innerHTML='';sigwxPanesState=[];sigwxViewport.content=sigwxViewport0;}
 const sigwxViewport=document.querySelector('meta[name="viewport"]'),sigwxViewport0=sigwxViewport.content;
@@ -5122,12 +5128,12 @@ function renderWX(){
     const v=wxText(w,includeWind),useTime=wxUseTime(w),mu=minimaUsed(w);
     return `<div class="wxEnt"><div class="wxEntHead"><span class="wxEntApt">${esc(w.icao)}</span>`+
       `${role?`<span class="wxEntRole">${esc(ecamLabel(role))}</span>`:''}${useTime?`<span class="wxEntTime">${esc(useTime)}</span>`:''}`+
-      `${mu?`<span class="wxEntMin${/not found/i.test(mu)?' none':''}">${esc(mu)}</span>`:''}</div>`+
-      `<div class="wxValue ${v.cls}">${v.html}</div></div>`;
+      `<div class="wxValue ${v.cls}">${v.html}</div>`+
+      `${mu?`<span class="wxEntMin${/not found/i.test(mu)?' none':''}">${esc(mu)}</span>`:''}</div></div>`;
   }
-  function wxGroup(title,rows){
+  function wxGroup(title,rows,includeWind=false){
     if(!rows.length)return '';
-    return `<div class="wxGroup"><div class="wxGroupTitle">${esc(ecamLabel(title))}:</div>${rows.map(w=>wxEntry(w,'',false)).join('')}</div>`;
+    return `<div class="wxGroup"><div class="wxGroupTitle">${esc(ecamLabel(title))}:</div>${rows.map(w=>wxEntry(w,'',includeWind)).join('')}</div>`;
   }
 
   let h='<div class="wxCard">';
@@ -5136,7 +5142,7 @@ function renderWX(){
     h+='<div class="wxRow"><div class="wxAirport">Weather</div><div class="wxValue warn">No weather airport data extracted.</div></div>';
   }else{
     // DEP / DEST.
-    if(depDest.length)h+=`<div class="wxEntList">${depDest.map(w=>wxEntry(w,w.role,true)).join('')}</div>`;
+    for(const w of depDest)h+=wxGroup(w.role,[w],true);          // DEP and DEST are group titles like the alternates
 
     // Separate alternate groups.
     h+=wxGroup('ENR ALT',enrRows);
@@ -5894,6 +5900,7 @@ async function addFiles(list){
 function renderDocs(){const b=$('#uploadDocs');b.innerHTML=docs.map(d=>`<div class="doc"><div><div class="docname">${esc(d.name)}</div><div class="muted">${fmtSize(d.size)}${d.pages?' • '+d.pages+' pages':''}</div><span class="pill">${esc(d.kind)}</span></div></div>`).join('')}
 
 window.flightBriefNativeLoadFiles=async function(items){
+  $('#reloadFlight')?.classList.remove('busy');
   const list=Array.isArray(items)?items:[];
   if(!list.length)throw new Error('No PDF files received from native app');
 
@@ -6736,7 +6743,9 @@ function showMinima(){
   if(!minimaAirport&&o?.dest)minimaAirport=String(o.dest).toUpperCase();
   minimaMessage('');renderMinimaForm();
 }
-$('#minimaReview').onclick=showMinima;
+// V6.74 (user): no Minima button in the flight bar (the home menu has it); a reload button re-reads the flight's folder in
+// the app so a new document revision shows without going back to the home list. The web page has no folder: button hidden.
+{const b=$('#reloadFlight');if(!window.FLIGHT_BRIEF_NATIVE_HOME)b.classList.add('hidden');else b.onclick=()=>{b.classList.add('busy');nativeHomeAction('reloadFlight');};}
 $('#minimaMenu').onclick=()=>{$('#nativeHomeMenu').open=false;showMinima();};
 // Day / night theme (V6.44), remembered on this device.
 function themeApply(t){
