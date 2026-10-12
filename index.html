@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.75">
-<title>Flight Brief V6.75</title>
+<meta name="flight-brief-version" content="6.76">
+<title>Flight Brief V6.76</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -675,6 +675,26 @@ body>#sigwxViewer{display:none}
 @keyframes fbBlink2{0%,100%{opacity:1}20%,60%{opacity:.15}40%,80%{opacity:1}}
 .themeGlyph{display:inline-block;animation:fbFlip var(--fbT4) var(--fbEase) backwards}
 @keyframes fbFlip{from{opacity:0;transform:rotate(-120deg) scale(.6)}}
+/* DGR › aircraft drawing (V6.76): cabin seats with passenger DG and lower-deck positions with DG, in the MFD manner */
+.dgrCabinHead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.dgrCabinTitle{display:inline-block;border-bottom:1px solid var(--mfTxt);padding-bottom:3px;color:var(--mfTxt);font-size:14px}
+.dgrCabinCfg{color:var(--mfMuted);font-size:12px}
+.dgrCabin svg{display:block;width:100%;height:auto;margin-top:8px}
+.dgrCabin .hull{fill:none;stroke:var(--mfLine2);stroke-width:1.2}
+.dgrCabin .seat{fill:none;stroke:var(--mfLine2);stroke-width:.7}
+.dgrCabin .seat.dg,.dgrCabin .hold.dg{fill:var(--mfAmber);stroke:var(--mfAmber)}
+.dgrCabin .hold.bad{fill:var(--mfRed);stroke:var(--mfRed)}
+.dgrCabin .hold{fill:none;stroke:var(--mfLine2);stroke-width:.7}
+.dgrCabin .lead{stroke:var(--mfAmber);stroke-width:.7}
+.dgrCabin .tag{fill:var(--mfAmber);font:9px "SF Mono",ui-monospace,Menlo,monospace}
+.dgrCabin .tag.bad{fill:var(--mfRed)}
+.dgrCabin .door,.dgrCabin .rowNo,.dgrCabin .cpt{fill:var(--mfMuted);font:7.5px "SF Mono",ui-monospace,Menlo,monospace}
+.dgrCabin .rowNo{font-size:6.5px}
+.dgrCabin .doorTick{stroke:var(--mfMuted);stroke-width:1}
+.dgrCabinList{margin-top:8px;display:grid;grid-template-columns:70px 1fr;row-gap:4px;font-size:14px;color:var(--mfTxt)}
+.dgrCabinList b{font-weight:400;color:var(--mfAmber)}
+.dgrCabinList b.bad{color:var(--mfRed)}
+@media(max-width:640px){.dgrCabinScroll{overflow-x:auto;-webkit-overflow-scrolling:touch}.dgrCabinScroll svg{width:640px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -733,7 +753,7 @@ body>#sigwxViewer{display:none}
 <section id="tab-notam" class="card hidden"><div class="subTabs"><button type="button" class="subTab active" data-sub="aprt" data-title="AIRPORT NOTAM">APRT</button><button type="button" class="subTab" data-sub="fir" data-title="FIR NOTAM">FIR</button></div><div class="subTitle">AIRPORT NOTAM</div><div class="notamPaper notamPaperFlush"><div id="notamResults" class="notamResults"></div></div></section>
 
 <section id="tab-wind" class="card hidden"><div id="windResults" class="section"></div></section>
-<section id="tab-dgr" class="card hidden"><div id="dgrItems" class="section"></div><button id="dgrAdd" type="button" style="margin-top:10px">+ Add item</button><div id="dgrPositions" class="section" style="margin-top:10px"></div><div id="dgrLoadsheet" class="section" style="margin-top:10px"></div><div id="dgrResults" class="section" style="margin-top:12px"></div></section></div>
+<section id="tab-dgr" class="card hidden"><div id="dgrItems" class="section"></div><button id="dgrAdd" type="button" style="margin-top:10px">+ Add item</button><div id="dgrPositions" class="section" style="margin-top:10px"></div><div id="dgrLoadsheet" class="section" style="margin-top:10px"></div><div id="dgrCabin" class="section" style="margin-top:10px"></div><div id="dgrResults" class="section" style="margin-top:12px"></div></section></div>
 </section>
 </main>
 <div id="sigwxViewer" class="hidden"><div class="sigwxBar"><span id="sigwxTitle"></span><span class="sigwxBtns"><button id="sigwxFull" type="button">Full chart</button><button id="sigwxSeg" type="button">Segment</button><button id="sigwxClose" type="button">✕</button></span></div><div id="sigwxPanes"></div></div>
@@ -6486,10 +6506,107 @@ function dgrLoadsheetDgHtml(rows,avi){
   const lim=c=>c==='ICE'&&avi?'A350: BULK only, max 100 kg with live animals (AVI on board); ≥ 3 m from AVI, not in the same ULD (DGM 2.5.10.2 c · 3.5.5)':DGR_SI_LIMITS[c];
   return rows.length?`<table class="dgrTable"><tr><th>Position</th><th>Code</th><th>DG</th><th>Limit</th></tr>${rows.map(r=>`<tr><td><b>${esc(r.pos||'—')}</b></td><td><b>${esc(r.code==='AMMO'?'—':r.code)}</b>${r.qty?` <span class="muted">${esc(r.qty)}</span>`:''}</td><td>${esc((IMP_CODES[r.code]||[])[0]||DGR_SI_CODES[r.code])}${r.code==='AMMO'?`<div class="muted">${esc(r.line)}</div>`:''}</td><td>${lim(r.code)?`<span class="dgrWarn">${esc(lim(r.code))}</span>`:'<span class="muted">Nil</span>'}</td></tr>`).join('')}</table>`:'';
 }
+// ---- Aircraft drawing (V6.76, user 12/10/2026): seats with passenger DG from the passenger manifest (PM file: BATTERY
+// LITHIUM LIST / code LITH per seat) and lower-deck positions with DG from the loadsheet, on the cabin of the aircraft
+// of the flight. Seat maps as printed in the seat plans of the PM files (305 seats each), chosen by registration.
+const DGR_CABINS={
+  A:{name:'29C / 45Yd / 231Y',regs:/A88[6-9]$/,door3:27,rows:'1:ADGK 2:ADGK 3:ADGK 4:ADGK 5:ADGK 6:ADGK 7:ADGK 8:A 10:ABCDEFGHK 11:ABCDEFGHK 12:ABCDEFGHK 14:ABCDEFGHK 15:ABCDEFGHK 16:ABCDEFGHK 17:ABCDEFGHK 18:ABCDEFGHK 19:ABCDEFGHK 20:ABCDEFGHK 21:ABCDEFGHK 22:ABCDEFGHK 23:ABCDEFGHK 24:ABCDEFGHK 25:ABCDEFGHK 26:ABCDEFGHK 27:DEF 28:ABCDEFGHK 29:ABCDEFGHK 30:ABCDEFGHK 31:ABCDEFGHK 32:ABCDEFGHK 33:ABCDEFGHK 34:ABCDEFGHK 35:ABCDEFGHK 36:ABCDEFGHK 37:ABCDEFGHK 38:ABCDEFGHK 39:ABCDEFGHK 40:ABCDEFGHK 41:ABCDEFGHK 42:DEF'},
+  B:{name:'29C / 36Yd / 240Y',regs:/A89\d$/,door3:28,rows:'1:ADGK 2:ADGK 3:ADGK 4:ADGK 5:ADGK 6:ADGK 7:ADGK 8:A 10:ACDEFGHK 11:ACDEFGHK 12:ACDEFGHK 14:ACDEFGHK 15:DEFG 16:ABCDEFGHK 17:ABCDEFGHK 18:ABCDEFGHK 19:ABCDEFGHK 20:ABCDEFGHK 21:ABCDEFGHK 22:ABCDEFGHK 23:ABCDEFGHK 24:ABCDEFGHK 25:ABCDEFGHK 26:ABCDEFGHK 27:ABCDEFGHK 28:DEF 29:ABCDEFGHK 30:ABCDEFGHK 31:ABCDEFGHK 32:ABCDEFGHK 33:ABCDEFGHK 34:ABCDEFGHK 35:ABCDEFGHK 36:ABCDEFGHK 37:ABCDEFGHK 38:ABCDEFGHK 39:ABCDEFGHK 40:ABCDEFGHK 41:ABCDEFGHK 42:ABCDEFGHK 43:DEF'}
+};
+const DGR_SEAT_CODES={LITH:'Lithium battery',WCLB:'Wheelchair, lithium battery',WCBD:'Wheelchair, dry battery',WCBW:'Wheelchair, wet battery',OXYG:'Medical oxygen'};
+// Seats carrying a DG code in the latest PM (passenger manifest) of the flight: "006K NAME ... LITH" on one line, or the
+// seat-plan form "031K/HAN NAME" with the code on a following line.
+function dgrPmSeats(){
+  const pm=docs.filter(d=>/BATTERY LITHIUM LIST|SEAT PLAN ALL NAMES|PASSENGER (?:LIST|MANIFEST)/i.test(d.text||'')||/^PM[_ ]/i.test(d.name||'')).sort((a,b)=>{
+    const r=d=>Number((d.name.match(/_R(\d+)/i)||[])[1]||0);return r(b)-r(a);});
+  if(!pm.length)return null;
+  const out=new Map(),re=new RegExp('\\b('+Object.keys(DGR_SEAT_CODES).join('|')+')\\b','g');
+  let cur='';
+  for(const raw of String(pm[0].layoutText||pm[0].text||'').toUpperCase().split('\n')){
+    const l=raw.trim();
+    if(!l||/\*{5,}|^-{5,}|^SEAT\s+NAME/.test(l)){cur='';continue;}
+    const m=l.match(/^0?(\d{1,2})([A-K])(?:\/[A-Z]{3})?\s+\S/);
+    if(m)cur=Number(m[1])+m[2];
+    if(!cur)continue;
+    const rest=m?l.slice(m[0].length-1):l;
+    for(const c of rest.matchAll(re)){if(!out.has(cur))out.set(cur,new Set());out.get(cur).add(c[1]);}
+  }
+  return out;
+}
+function dgrSeatY(letters,l){
+  const J={K:8,G:34,D:52,A:78},Y9={K:4,H:13,G:22,F:35,E:44,D:53,C:66,B:75,A:84},P8={K:6,H:16,G:31,F:40,E:49,D:58,C:73,A:83};
+  if(/^[ADGK]+$/.test(letters))return J[l];
+  if(!letters.includes('B')&&/G/.test(letters))return P8[l];
+  return Y9[l];
+}
+// holds: [{pos:'42P',codes:[...],bad}] - lower-deck positions drawn as a strip under the cabin (compartments 1-2 forward of the
+// wing, 3-4 aft, 5 bulk; a schematic, not to scale). Right-hand side on top, as the doors.
+function dgrCabinSvg(key,seats,holds){
+  const C=DGR_CABINS[key],rows=C.rows.split(' ').map(x=>{const [r,l]=x.split(':');return {r:Number(r),l};});
+  let x=78;const top=40,H=92,S=7,out=[],tags=[],pos={};
+  const door=(name,dx)=>{out.push(`<line class="doorTick" x1="${dx}" y1="${top-3}" x2="${dx}" y2="${top+3}"/><line class="doorTick" x1="${dx}" y1="${top+H-3}" x2="${dx}" y2="${top+H+3}"/><text class="door" x="${dx}" y="${top-7}" text-anchor="middle">${name}R</text><text class="door" x="${dx}" y="${top+H+13}" text-anchor="middle">${name}L</text>`);};
+  door(1,x-12);
+  for(const row of rows){
+    const J=row.r<=8,pitch=J?20:11.6;
+    if(row.r===10){x+=14;door(2,x-9);x+=6;}
+    if(row.r===C.door3){x+=4;door(3,x+4);}
+    pos[row.r]=x;
+    for(const l of row.l){
+      const y=top+dgrSeatY(row.l,l),w=J?12:S,hh=J?9:S,id=row.r+l,is=seats.has(id);
+      out.push(`<rect class="seat${is?' dg':''}" x="${x}" y="${(y-hh/2+3.5).toFixed(1)}" width="${w}" height="${hh}" rx="1"/>`);
+      if(is)tags.push({id,x:x+w/2,y:y+3.5,up:dgrSeatY(row.l,l)<46});
+    }
+    if(row.r===1||row.r%10===0)out.push(`<text class="rowNo" x="${x+(J?6:3.5)}" y="${top+H/2+5.5}" text-anchor="middle">${row.r}</text>`);
+    x+=pitch;
+    if(row.r===C.door3)x+=8;
+  }
+  const end=x+6;door(4,end);
+  const hull=`<path class="hull" d="M60 ${top} H${end+8} C${end+40} ${top+2} ${end+58} ${top+30} ${end+62} ${top+H/2} C${end+58} ${top+H-30} ${end+40} ${top+H-2} ${end+8} ${top+H} H60 C30 ${top+H} 8 ${top+H*0.72} 6 ${top+H/2} C8 ${top+H*0.28} 30 ${top} 60 ${top} Z"/>`;
+  const lab=(list,side,ly)=>{let last=-99;return list.sort((a,b)=>a.x-b.x).map(t=>{const lx=Math.max(t.x,last+26);last=lx;return `<line class="lead" x1="${t.x.toFixed(1)}" y1="${t.y.toFixed(1)}" x2="${lx.toFixed(1)}" y2="${side?ly+3:ly-9}"/><text class="tag${t.bad?' bad':''}" x="${lx.toFixed(1)}" y="${ly}" text-anchor="middle">${esc(t.id)}</text>`;}).join('');};
+  let svg=hull+out.join('')+lab(tags.filter(t=>t.up),true,top-20)+lab(tags.filter(t=>!t.up),false,top+H+26);
+  let bottom=top+H+34;
+  if(holds){
+    // lower deck: compartment → [first row, last row] it lies under (schematic) and its number of positions
+    const last=rows[rows.length-1].r,d3=C.door3;
+    const cpts={1:[2,11,4],2:[12,d3-6,4],3:[d3+1,d3+6,4],4:[d3+7,d3+12,4],5:[d3+13,last-1,1]};
+    const hy=bottom+16,hh=22,htags=[];
+    svg+=`<text class="cpt" x="60" y="${hy-5}">CARGO</text>`;
+    for(const [c,[r0,r1,n0]] of Object.entries(cpts)){
+      const mine=holds.filter(h=>h.pos[0]===c),n=Math.max(n0,...mine.map(h=>Number(h.pos[1])||1));
+      const x0=pos[r0],x1=pos[r1]+S,w=(x1-x0)/n;
+      for(let i=0;i<n;i++)svg+=`<rect class="hold" x="${(x0+i*w).toFixed(1)}" y="${hy}" width="${(w-1.5).toFixed(1)}" height="${hh}" rx="1"/>`;
+      svg+=`<text class="cpt" x="${((x0+x1)/2).toFixed(1)}" y="${hy+hh+9}" text-anchor="middle">${c==='5'?'BULK':c}</text>`;
+      for(const h of mine){
+        const i=c==='5'?0:Math.max(0,(Number(h.pos[1])||1)-1),side=h.pos[2]||'';
+        const y=side==='L'?hy+hh/2:hy,ht=side==='L'||side==='R'?hh/2:hh;
+        svg+=`<rect class="hold ${h.bad?'bad':'dg'}" x="${(x0+i*w).toFixed(1)}" y="${y}" width="${(w-1.5).toFixed(1)}" height="${ht}" rx="1"/>`;
+        htags.push({id:h.pos==='5'?'BULK':h.pos,x:x0+i*w+(w-1.5)/2,y:hy+hh,bad:h.bad});
+      }
+    }
+    const seen=new Set();
+    svg+=lab(htags.filter(t=>!seen.has(t.id)&&seen.add(t.id)),false,hy+hh+30);
+    bottom=hy+hh+36;
+  }
+  return `<svg viewBox="0 0 ${end+70} ${bottom}" role="img" aria-label="Aircraft">${svg}</svg>`;
+}
+function dgrRenderCabin(holdRows,badPos){
+  const host=$('#dgrCabin');if(!host)return;
+  const reg=String(analysis?.o?.reg||'').replace(/-/g,'').toUpperCase(),key=Object.keys(DGR_CABINS).find(k=>DGR_CABINS[k].regs.test(reg));
+  const pm=dgrPmSeats(),seats=pm||new Map();
+  const byPos=new Map();for(const r of (holdRows||[])){if(!/^\d/.test(r.pos||''))continue;if(!byPos.has(r.pos))byPos.set(r.pos,[]);byPos.get(r.pos).push(r.code);}
+  const holds=[...byPos.entries()].map(([pos,codes])=>({pos,codes,bad:badPos.has(pos)}));
+  if(!pm&&!holds.length){host.innerHTML='';return;}
+  const order=[...seats.keys()].sort((a,b)=>parseInt(a)-parseInt(b)||a.localeCompare(b));
+  const list=order.map(s=>`<b>${esc(s)}</b><span>${esc([...seats.get(s)].map(c=>DGR_SEAT_CODES[c]).join(' · '))}</span>`).join('')+
+    holds.sort((a,b)=>a.pos.localeCompare(b.pos,undefined,{numeric:true})).map(h=>`<b class="${h.bad?'bad':''}">${esc(h.pos==='5'?'BULK':h.pos)}</b><span>${esc(h.codes.join(' · '))}</span>`).join('');
+  const nil=!order.length&&!holds.length;
+  host.innerHTML=`<div class="item info dgrCabin"><div class="dgrCabinHead"><span class="dgrCabinTitle">AIRCRAFT:</span>${nil?'<span class="wxValue enrNil">Nil</span>':''}${key?`<span class="dgrCabinCfg">${esc(DGR_CABINS[key].name)}</span>`:''}</div>`+
+    (key&&!nil?`<div class="dgrCabinScroll">${dgrCabinSvg(key,seats,holds)}</div>`:'')+(list?`<div class="dgrCabinList">${list}</div>`:'')+`</div>`;
+}
 function dgrRenderLoadsheet(){
   const host=$('#dgrLoadsheet');if(!host)return;
   const info=dgrLoadsheetInfo();
-  if(!info){host.innerHTML='';return;}
+  if(!info){host.innerHTML='';dgrRenderCabin([],new Set());return;}
   // One DG list: IMP codes of the load message plus DG codes found in SI (same position + code shown once).
   const siRows=dgrSiCodes(info.si);
   for(const r of siRows)if(r.pos&&IMP_CODES[r.code]){if(!info.byPos.has(r.pos))info.byPos.set(r.pos,new Set());info.byPos.get(r.pos).add(r.code);}
@@ -6510,6 +6627,7 @@ function dgrRenderLoadsheet(){
     `<div class="body">NOTOC: <b class="${info.notoc==='YES'?'dgrWarn':''}">${esc(info.notoc||'—')}</b></div>`+
     dgrLoadsheetDgHtml(rows,info.avi)+
     warns.map(w=>`<div class="body dgrBad">${esc(w)}</div>`).join('')+`</div>`;
+  dgrRenderCabin(rows,new Set(warns.map(w=>w.split(':')[0])));
 }
 document.addEventListener('change',async e=>{
   if(e.target?.id!=='dgrReimport')return;const f=e.target.files[0];if(!f)return;
