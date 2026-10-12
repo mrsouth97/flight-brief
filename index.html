@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.76">
-<title>Flight Brief V6.76</title>
+<meta name="flight-brief-version" content="6.77">
+<title>Flight Brief V6.77</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -6543,7 +6543,10 @@ function dgrSeatY(letters,l){
 // wing, 3-4 aft, 5 bulk; a schematic, not to scale). Right-hand side on top, as the doors.
 function dgrCabinSvg(key,seats,holds){
   const C=DGR_CABINS[key],rows=C.rows.split(' ').map(x=>{const [r,l]=x.split(':');return {r:Number(r),l};});
-  let x=78;const top=40,H=92,S=7,out=[],tags=[],pos={};
+  // labels that do not fit side by side go on further tiers; the tiers above the cabin push the drawing down
+  const tiers=n=>Math.max(1,Math.ceil(n*26/700));
+  const upN=rows.reduce((n,row)=>n+[...row.l].filter(l=>seats.has(row.r+l)&&dgrSeatY(row.l,l)<46).length,0);
+  let x=78;const top=40+(tiers(upN)-1)*12,H=92,S=7,out=[],tags=[],pos={};
   const door=(name,dx)=>{out.push(`<line class="doorTick" x1="${dx}" y1="${top-3}" x2="${dx}" y2="${top+3}"/><line class="doorTick" x1="${dx}" y1="${top+H-3}" x2="${dx}" y2="${top+H+3}"/><text class="door" x="${dx}" y="${top-7}" text-anchor="middle">${name}R</text><text class="door" x="${dx}" y="${top+H+13}" text-anchor="middle">${name}L</text>`);};
   door(1,x-12);
   for(const row of rows){
@@ -6562,9 +6565,17 @@ function dgrCabinSvg(key,seats,holds){
   }
   const end=x+6;door(4,end);
   const hull=`<path class="hull" d="M60 ${top} H${end+8} C${end+40} ${top+2} ${end+58} ${top+30} ${end+62} ${top+H/2} C${end+58} ${top+H-30} ${end+40} ${top+H-2} ${end+8} ${top+H} H60 C30 ${top+H} 8 ${top+H*0.72} 6 ${top+H/2} C8 ${top+H*0.28} 30 ${top} 60 ${top} Z"/>`;
-  const lab=(list,side,ly)=>{let last=-99;return list.sort((a,b)=>a.x-b.x).map(t=>{const lx=Math.max(t.x,last+26);last=lx;return `<line class="lead" x1="${t.x.toFixed(1)}" y1="${t.y.toFixed(1)}" x2="${lx.toFixed(1)}" y2="${side?ly+3:ly-9}"/><text class="tag${t.bad?' bad':''}" x="${lx.toFixed(1)}" y="${ly}" text-anchor="middle">${esc(t.id)}</text>`;}).join('');};
+  const lab=(list,side,ly)=>{
+    list.sort((a,b)=>a.x-b.x);
+    const k=tiers(list.length),maxX=end+56;
+    for(let t=0;t<k;t++){
+      const row=list.filter((_,i)=>i%k===t);let last=-99;
+      for(const g of row){g.lx=Math.max(g.x,last+26);last=g.lx;g.ly=side?ly-t*12:ly+t*12;}
+      let lim=maxX;for(let i=row.length-1;i>=0;i--){row[i].lx=Math.min(row[i].lx,lim);lim=row[i].lx-26;}
+    }
+    return list.map(t=>`<line class="lead" x1="${t.x.toFixed(1)}" y1="${t.y.toFixed(1)}" x2="${t.lx.toFixed(1)}" y2="${side?t.ly+3:t.ly-9}"/><text class="tag${t.bad?' bad':''}" x="${t.lx.toFixed(1)}" y="${t.ly}" text-anchor="middle">${esc(t.id)}</text>`).join('');};
   let svg=hull+out.join('')+lab(tags.filter(t=>t.up),true,top-20)+lab(tags.filter(t=>!t.up),false,top+H+26);
-  let bottom=top+H+34;
+  let bottom=top+H+34+(tiers(tags.filter(t=>!t.up).length)-1)*12;
   if(holds){
     // lower deck: compartment → [first row, last row] it lies under (schematic) and its number of positions
     const last=rows[rows.length-1].r,d3=C.door3;
