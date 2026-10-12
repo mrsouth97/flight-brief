@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.79">
-<title>Flight Brief V6.79</title>
+<meta name="flight-brief-version" content="6.82">
+<title>Flight Brief V6.82</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -583,6 +583,10 @@ body.panelScroll .windBody{overflow:visible!important;flex:none}
 .sigwxLoadCap{display:flex;justify-content:space-between;font-size:12px;color:var(--mfMuted);margin-top:6px}
 .enrNil{display:inline-block;margin-left:14px}
 .sigwxTap{cursor:pointer}
+.sigwxLbl{display:inline-block;line-height:1.35}
+/* a time that can be tapped (clock ⇄ elapsed): cyan as every control, dotted underline, the swap sign after it */
+.enrTimeTap{color:var(--mfCyan)!important;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px;padding:6px 0}
+.enrTimeTap::after{content:' ⇄';text-decoration:none;display:inline-block;padding-left:.4em}
 .sigwxVal{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .sigwxMore{flex:none;color:var(--mfTxt);font-weight:400;letter-spacing:1px;white-space:nowrap}
 #sigwxViewer{touch-action:pan-x pan-y;position:relative;height:min(70vh,760px);margin:4px 16px 14px;border:1px solid var(--mfLine2);background:var(--mfDisp);color:var(--mfTxt);display:flex;flex-direction:column;text-transform:uppercase;font-family:"SF Mono",ui-monospace,Menlo,monospace}
@@ -647,9 +651,12 @@ body>#sigwxViewer{display:none}
 :where(button,label.upload,summary){transition:transform var(--fbT1) var(--fbEase),filter var(--fbT1)}
 :where(button,label.upload):active{transform:scale(.97);filter:brightness(1.25)}
 /* home list: rows come in one after the other; the chosen row lifts before the flight opens */
-.briefingFlight{animation:fbRowIn var(--fbT3) var(--fbEase) both;animation-delay:216ms;transition:transform var(--fbT3) var(--fbEase),background var(--fbT2)}
-.briefingFlight:active{transform:scale(.995)}
-.briefingFlight.lift{transform:translateY(-4px) scale(1.012);background:color-mix(in srgb,var(--blue) 9%,transparent)!important}
+.briefingFlight{animation:fbRowIn var(--fbT3) var(--fbEase) both;animation-delay:216ms;transition:transform var(--fbT1) var(--fbEase),background var(--fbT1),filter var(--fbT1)}
+/* V6.80 (user 12/10/2026): a flight row is pressed like a key and lights up like a message being opened in Mail - lit the
+   moment the finger lands (.press), and it stays lit while the flight loads (.lift) */
+.briefingFlight.press,.briefingFlight.lift{background:color-mix(in srgb,var(--text) 24%,transparent)!important}   /* grey, as a selected row in Mail (user) */
+.briefingFlight.press{transform:scale(.988)}
+.briefingFlight:is(.press,.lift) *{color:var(--text)!important}
 #resultView:not(.hidden),.homeView:not(.hidden){animation:fbFade var(--fbT3) var(--fbEase) backwards}
 /* tab change: the new page slides in a little (from the left when going back); sub-pages fade */
 .mfdFrame section.card:not(.hidden){animation:fbPaneIn var(--fbT3) var(--fbEase) backwards}
@@ -697,7 +704,29 @@ body>#sigwxViewer{display:none}
 .dgrCabinList{margin-top:8px;display:grid;grid-template-columns:70px 1fr;row-gap:4px;font-size:14px;color:var(--mfTxt)}
 .dgrCabinList b{font-weight:400;color:var(--mfAmber)}
 .dgrCabinList b.bad{color:var(--mfRed)}
-@media(max-width:640px){.dgrCabinScroll{overflow-x:auto;-webkit-overflow-scrolling:touch}.dgrCabinScroll svg{width:640px}}
+/* V6.82: web page - the DGR look-up is not available */
+/* a box like the Loadsheet / Aircraft blocks, its left edge amber (user) */
+.dgrNaItem{border-left-color:var(--mfAmber)!important}
+.dgrNa{display:inline-block;color:var(--mfAmber);font-size:18px;letter-spacing:.06em;animation:fbBlink2 1.2s steps(1,end) 1 both}
+@media(max-width:640px){.dgrNa{font-size:15px}}
+/* V6.81 (user 12/10/2026): on the phone the DGR page does not move sideways - every block fits the width; only the
+   aircraft drawing, which is too wide, scrolls sideways inside its own frame */
+#tab-dgr{overflow-x:hidden}
+#tab-dgr>.section,#tab-dgr>.section>*{min-width:0;max-width:100%}
+@media(max-width:640px){
+  .dgrCabinScroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;overscroll-behavior-x:contain}.dgrCabinScroll svg{width:640px}
+  #dgrLoadsheet .dgrTable{display:table;table-layout:fixed;width:100%;white-space:normal;overflow:visible}
+  #dgrLoadsheet .dgrTable th,#dgrLoadsheet .dgrTable td{overflow-wrap:anywhere;padding-left:3px;padding-right:3px;font-size:12px}
+  #dgrLoadsheet .dgrTable th{font-size:10px;white-space:nowrap;overflow-wrap:normal}
+  #dgrLoadsheet .dgrTable th:nth-child(1){width:20%}
+  #dgrLoadsheet .dgrTable th:nth-child(2){width:14%}
+  #dgrLoadsheet .dgrTable th:nth-child(4){width:20%}
+}
+/* V6.80 loading: in the app the progress runs along the bottom edge of the tapped row; the bar under the list is kept for
+   errors and for the web page, where the list shrinks so that everything stays on one screen */
+.briefingFlight{position:relative}
+.briefingFlight .rowLoad{position:absolute;left:0;bottom:-1px;height:2px;width:0;background:var(--blue);transition:width .18s linear;pointer-events:none}
+.native-home #scan:not(.scanError){display:none}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -824,15 +853,30 @@ async function pdfText(file){
   const pdf=await pdfjsLib.getDocument({data}).promise;
   let text='',layoutText='';
   const layoutRows=[];
+  // V6.80: the pages are requested together (the worker answers them in turn; no waiting on each round trip)
+  const tcs=await Promise.all(Array.from({length:pdf.numPages},(_,k)=>pdf.getPage(k+1).then(p=>p.getTextContent())));
   for(let i=1;i<=pdf.numPages;i++){
-    const p=await pdf.getPage(i);
-    const tc=await p.getTextContent();
+    const tc=tcs[i-1];
     text+='\n'+tc.items.map(x=>x.str).join(' ');
     const rows=pdfLayoutRows(tc.items,i);
     layoutRows.push(...rows);
     layoutText+='\n'+rows.map(r=>r.text).join('\n');
   }
   return {text,layoutText,layoutRows,pages:pdf.numPages};
+}
+// V6.80: extracted text is kept per file (name + size + modification time, and the app version since the extraction may
+// change with it) so that opening a flight again does not parse its PDFs again. Anything going wrong here → plain pdfText.
+const PDF_CACHE_V=document.querySelector('meta[name="flight-brief-version"]')?.content||'0';
+function pdfCacheDB(){return new Promise((res,rej)=>{const r=indexedDB.open('flight-brief-pdftext',1);r.onupgradeneeded=()=>r.result.createObjectStore('docs');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
+async function pdfCacheGet(key){try{const db=await pdfCacheDB();return await new Promise(res=>{const q=db.transaction('docs').objectStore('docs').get(key);q.onsuccess=()=>res(q.result||null);q.onerror=()=>res(null);});}catch(e){return null;}}
+async function pdfCachePut(key,val){try{const db=await pdfCacheDB(),st=db.transaction('docs','readwrite').objectStore('docs'),c=st.count();c.onsuccess=()=>{if(c.result>300)st.clear();st.put(val,key);};}catch(e){}}
+async function pdfTextCached(f){
+  // a file whose time is "now" has no real modification time (older app builds) → not cached
+  const stable=f.lastModified&&Date.now()-f.lastModified>60000,key=[PDF_CACHE_V,f.name,f.size,f.lastModified].join('|');
+  if(stable){const hit=await pdfCacheGet(key);if(hit&&hit.text!=null)return hit;}
+  const r=await pdfText(f);
+  if(stable)pdfCachePut(key,r);
+  return r;
 }
 function classify(t,n){const x=(t+' '+n).toUpperCase();if(/FLIGHT BRIEF|OPERATIONAL FLIGHT PLAN|FPL-HVN|ATC FLIGHT PLAN/.test(x))return 'OFP / FLIGHT PACKAGE';if(/\bNOTAM\s*[NRC]?\b|Q\s*\)\s*[A-Z]{4}\s*\/|\b[A-Z]{1,2}\s*\d{3,5}\s*\/\s*\d{2}\b.{0,250}Q\s*\)/s.test(x))return 'NOTAM';if(/\bMETAR\b|\bTAF\b|SIGMET/.test(x))return 'WEATHER';return 'OTHER'}
 function rx1(t,r){const m=t.match(r);return m?m[1].trim():''}
@@ -4643,8 +4687,23 @@ function enrDocs(){
   }
   return [...best.values()].map(x=>x.d);
 }
+// V6.81 (user 12/10/2026): a tap on a time switches every time of the page between the clock time (UTC, planned take-off +
+// elapsed time) and the time elapsed since take-off (T+hh:mm) - for when the actual take-off differs from the plan.
+let enrTimeMode='z',enrTakeoffNow=null;
+function enrTimeSpan(t0,t1,takeoff){
+  const one=t1==null||Math.round(t0)===Math.round(t1);
+  return `<span class="enrTimeTap" data-t0="${t0}" data-t1="${one?'':t1}">${enrTimeText(t0,one?null:t1,takeoff)}</span>`;
+}
+function enrTimeText(t0,t1,takeoff){return t1==null?enrClock(t0,takeoff):`${enrClock(t0,takeoff)}–${enrClock(t1,takeoff)}`;}
+document.addEventListener('click',e=>{
+  const el=e.target.closest?.('.enrTimeTap');if(!el)return;
+  e.stopPropagation();e.preventDefault();
+  enrTimeMode=enrTimeMode==='z'?'el':'z';
+  const tk=enrTakeoffNow;
+  for(const x of document.querySelectorAll('.enrTimeTap'))x.textContent=enrTimeText(Number(x.dataset.t0),x.dataset.t1===''?null:Number(x.dataset.t1),tk);
+},true);
 function enrClock(t,takeoff){
-  if(takeoff)return hhmmZ(addMins(takeoff,Math.round(t)));
+  if(takeoff&&enrTimeMode==='z')return hhmmZ(addMins(takeoff,Math.round(t)));
   const m=Math.round(t);
   return 'T+'+String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
 }
@@ -4661,8 +4720,7 @@ function enrSigHtml(r,a){
   const legOnly=p=>p.from===p.to?esc(p.to):`${esc(p.from)} → ${esc(p.to)}`;
   const where=(r.spans||[]).map(p=>{
     const leg=legOnly(p);
-    const tm=Math.round(p.t0)===Math.round(p.t1)?enrClock(p.t0,a.takeoff):`${enrClock(p.t0,a.takeoff)}–${enrClock(p.t1,a.takeoff)}`;
-    return `${leg} <span class="enrTime">${tm}</span>`;
+    return `${leg} <span class="enrTime">${enrTimeSpan(p.t0,p.t1,a.takeoff)}</span>`;
   });
   let line='';
   if(hit)line=where.join('<br>');
@@ -4694,8 +4752,8 @@ function enrGroupRow(g,a,value){
   const x=g.items[0],y=g.items[g.items.length-1];
   const fls=[...new Set(g.items.map(w=>w.fl))].map(f=>typeof f==='number'?'FL'+f:f).join('/');
   const leg=g.items.length>1?`${esc(x.name)} → ${esc(y.name)}`:esc(x.name);
-  const tm=g.items.length>1?`${enrClock(x.eltm,a.takeoff)}–${enrClock(y.eltm,a.takeoff)}`:enrClock(x.eltm,a.takeoff);
-  return `<div class="wxGroupItem"><div class="wxGroupCode">${leg}<div class="wxUseTime"><i>${esc(fls)}</i> · ${tm}</div></div><div class="wxValue">${value}</div></div>`;
+  const tm=enrTimeSpan(x.eltm,g.items.length>1?y.eltm:null,a.takeoff);
+  return `<div class="wxGroupItem"><div class="wxGroupCode">${leg}<div class="wxUseTime"><i>${esc(fls)}</i></div><div class="wxUseTime">${tm}</div></div><div class="wxValue">${value}</div></div>`;
 }
 let enrChartList=[],enrChartSig='',enrChartBusy=false,enrChartRun=0;
 function enrChartPages(){
@@ -4751,6 +4809,7 @@ function renderEnr(){
   const o=analysis.o,wxDocs=enrDocs().filter(d=>d.kind==='WEATHER'||/SIGMET/.test(d.text||''));
   const ofpDoc=docs.find(d=>d.name===analysis.selectedOfp.name);
   const a=enrAnalyse(o,ofpDoc?(ofpDoc.layoutText||ofpDoc.text||''):'',wxDocs.map(d=>d.layoutText||d.text||'').join('\n'));
+  enrTakeoffNow=a.takeoff||null;
   let html='<div class="wxCard">';
   html+='<div class="wxGroup"><div class="wxGroupTitle">SIGMET:</div>';
   if(!a.wpts.length)html+='<div class="wxValue review">Nav log not found in OFP</div>';
@@ -4888,6 +4947,8 @@ function sigwxFinal(a){
         const cd=inWin.some(p=>!/^\d+$/.test(String(p.fl)))||(!!x.cd&&!fls.length);
         // climb or descent, as the OFP nav log has it for the points of this stretch (else for the nearest such point)
         const isCd=p=>/^(?:CLB|DSC)$/.test(String(p.fl)),ph=[...new Set(inWin.filter(isCd).map(p=>String(p.fl)))];
+        // the levels of the stretch in the order they are flown: CLB → FL390, FL390 → FL410, FL380 → DES
+        const seq=[];for(const p of inWin){const v=String(p.fl),l=v==='CLB'?'CLB':v==='DSC'?'DES':/^\d+0$/.test(v)?'FL'+v:'';if(l&&seq[seq.length-1]!==l)seq.push(l);}   // FL389 and the like are points inside a step: not named
         if(cd&&!ph.length){const tm=(t0+t1)/2,nr=route.filter(p=>isCd(p)&&p.eltm!=null).reduce((m,p)=>m==null||Math.abs(p.eltm-tm)<Math.abs(m.eltm-tm)?p:m,null);if(nr)ph.push(String(nr.fl));}
         let band=null;
         if(kind==='cb')band=x.label?[0,n(x.top,999)]:null;
@@ -4899,7 +4960,7 @@ function sigwxFinal(a){
           else band=x.kt>=110?[Number(x.core_fl)-40,Number(x.core_fl)+40]:[1,0];
         }
         const affects=band==null?null:(band[0]<=band[1]&&(cd||planned.some(v=>band[0]<=Number(v)&&Number(v)<=band[1])));
-        items.push({...x,t0,t1,kind,valid:c.valid,chart:c.area+' '+c.page,planned_fl:planned,cd,ph,affects});
+        items.push({...x,t0,t1,kind,valid:c.valid,chart:c.area+' '+c.page,planned_fl:planned,cd,ph,seq,affects});
       }
     }
   }
@@ -4911,19 +4972,22 @@ function sigwxFinal(a){
     if(g){
       if(x.t0<g.t0){g.t0=x.t0;g.from=x.from;}
       if(x.t1>g.t1){g.t1=x.t1;g.to=x.to;}
-      g.charts.push(x.chart);g.planned_fl=[...new Set([...g.planned_fl,...x.planned_fl])].sort();g.cd=g.cd||x.cd;g.ph=[...new Set([...g.ph,...x.ph])];
+      g.charts.push(x.chart);g.planned_fl=[...new Set([...g.planned_fl,...x.planned_fl])].sort();g.cd=g.cd||x.cd;g.ph=[...new Set([...g.ph,...x.ph])];if((x.seq||[]).length>(g.seq||[]).length)g.seq=x.seq;
       if(g.affects==null||x.affects)g.affects=(g.affects==null||g.affects===false)?x.affects:g.affects;
     }else out.push({...x,charts:[x.chart]});
   }
   out.sort((p,q)=>p.t0-q.t0);
   return out.map(x=>{
     const k=x.kind;let text;
-    if(k==='cb')text=x.label||'CB';
-    else if(k==='turb')text=(x.sev?'SEV':'MOD')+' TURB'+(x.key?` ${x.top}/${x.base}`:'');
-    else if(k==='ice')text=(x.sev?'SEV':'MOD')+' ICE'+(x.top?` ${x.top}/${x.base}`:'');
-    else text='JET'+(x.kt!=null?` ${x.kt_is_minimum?'≥ ':''}${x.kt} KT`:'')+(x.core_fl?` FL${x.core_fl}`:'')+(x.band?` ${x.band}`:'');
+    // V6.81 (user 12/10/2026): the label in two lines - what it is, then its levels as base/top (XXX/490)
+    let head,lev='';
+    if(k==='cb'){head=x.label?`${x.cov||''} CB`.trim():'CB';if(x.label)lev=`${x.base}/${x.top}`;}
+    else if(k==='turb'){head=(x.sev?'SEV':'MOD')+' TURB';if(x.key)lev=`${x.base}/${x.top}`;}
+    else if(k==='ice'){head=(x.sev?'SEV':'MOD')+' ICE';if(x.top)lev=`${x.base}/${x.top}`;}
+    else{head='JET'+(x.kt!=null?` ${x.kt_is_minimum?'≥ ':''}${x.kt} KT`:'');lev=[x.core_fl?`FL${x.core_fl}`:'',x.band||''].filter(Boolean).join(' · ');}
+    text=[head,lev].filter(Boolean).join(' ');
     const colour=x.affects?((k==='cb'&&x.cov==='FRQ')||((k==='turb'||k==='ice')&&x.sev)?'red':'amber'):null;
-    return {kind:k,text,from:x.from,to:x.to,t0:x.t0,t1:x.t1,fl:x.planned_fl,cd:x.cd,ph:['CLB','DSC'].filter(v=>(x.ph||[]).includes(v)).map(v=>v==='DSC'?'DES':v),affects:x.affects,colour,charts:x.charts};
+    return {kind:k,text,head,lev,seq:x.seq||[],from:x.from,to:x.to,t0:x.t0,t1:x.t1,fl:x.planned_fl,cd:x.cd,ph:['CLB','DSC'].filter(v=>(x.ph||[]).includes(v)).map(v=>v==='DSC'?'DES':v),affects:x.affects,colour,charts:x.charts};
   });
 }
 function sigwxHtml(a){
@@ -4942,9 +5006,17 @@ function sigwxHtml(a){
   const tap=window.FLIGHT_BRIEF_SIGWX_VERSION>=2;
   return rows.map((r,i)=>{
     const fl=r.fl.length?(r.fl.length>1?`FL${r.fl[0]}–${r.fl[r.fl.length-1]}`:`FL${r.fl[0]}`):'';
-    const sub=[fl,r.cd?(r.ph.length?r.ph.join('/'):'CLB/DES'):''].filter(Boolean).join(' · ');
-    const val=r.affects==null?`<span class="wxVisLow">${esc(r.kind==='cb'?'CB':r.kind==='turb'?'TURB':r.kind==='ice'?'ICE':'JET')} · CHECK CHART</span>`:`<span class="${r.colour==='red'?'wxVisBad':'wxVisLow'}">${esc(r.text)}</span>`;
-    return `<div class="wxGroupItem${tap?' sigwxTap':''}" data-sigwx="${i}"><div class="wxGroupCode">${esc(r.from)} → ${esc(r.to)}<div class="wxUseTime"><i>${esc(sub)}</i>${sub?' · ':''}${enrClock(r.t0,a.takeoff)}–${enrClock(r.t1,a.takeoff)}</div></div><div class="wxValue${tap?' sigwxVal':''}">${val}${tap?'<span class="sigwxMore">...... &gt;&gt;&gt;</span>':''}</div></div>`;
+    // up to three steps are written out in the order flown (CLB → FL390); a long stretch with several step climbs is
+    // given as its range (FL370–FL410), with CLB in front / DES behind when it starts or ends there
+    let sub;
+    if(r.seq.length&&r.seq.length<=3)sub=r.seq.join(' → ');
+    else if(r.seq.length){
+      const lv=r.seq.filter(x=>/^FL/.test(x)).map(x=>Number(x.slice(2))),lo=Math.min(...lv),hi=Math.max(...lv);
+      sub=[r.seq[0]==='CLB'?'CLB':'',lv.length?(lo===hi?`FL${lo}`:`FL${lo}–FL${hi}`):'',r.seq[r.seq.length-1]==='DES'?'DES':''].filter(Boolean).join(' → ');
+    }
+    else sub=[fl,r.cd?(r.ph.length?r.ph.join('/'):'CLB/DES'):''].filter(Boolean).join(' · ');
+    const val=r.affects==null?`<span class="wxVisLow">${esc(r.kind==='cb'?'CB':r.kind==='turb'?'TURB':r.kind==='ice'?'ICE':'JET')} · CHECK CHART</span>`:`<span class="${r.colour==='red'?'wxVisBad':'wxVisLow'} sigwxLbl">${esc(r.head)}${r.lev?`<br>${esc(r.lev)}`:''}</span>`;
+    return `<div class="wxGroupItem${tap?' sigwxTap':''}" data-sigwx="${i}"><div class="wxGroupCode">${esc(r.from)} → ${esc(r.to)}${sub?`<div class="wxUseTime"><i>${esc(sub)}</i></div>`:''}<div class="wxUseTime">${enrTimeSpan(r.t0,r.t1,a.takeoff)}</div></div><div class="wxValue${tap?' sigwxVal':''}">${val}${tap?'<span class="sigwxMore">...... &gt;&gt;&gt;</span>':''}</div></div>`;
   }).join('');
 }
 // ---- SIGWX chart viewer (V6.73): a tap on a row opens the chart(s) the item was read from - the page is rendered by the app
@@ -5956,13 +6028,11 @@ function appendBriefingFlights(){
       const i=Number(btn.dataset.briefingIndex);
       const b=briefingFlights[i];
       if(!b)return;
-      // the chosen row lifts, then the flight opens
-      btn.classList.add('lift');setTimeout(()=>btn.classList.remove('lift'),700);
-      if(fbMs(1))await new Promise(r=>setTimeout(r,170));
+      // V6.80: the flight opens at once (no wait for the lift); the chosen row stays lifted and carries the progress bar
+      scanRowDone();scanRow=btn;btn.classList.add('lift');
       if(b.nativeId){
         $('#scan').classList.remove('hidden','scanError');
-        $('#scanBar').style.width='10%';
-        $('#scanText').textContent='Reading flight documents…';
+        scanSet(8,'Reading flight documents…');
         nativeHomeAction('openFlight',{id:b.nativeId});
         return;
       }
@@ -6032,22 +6102,44 @@ function loadBriefingsFolder(fileList){
   renderBriefingFlights();
 }
 
+// A flight row lights up as the finger lands (after 40 ms, so that a scroll that starts on it does not flash it) and lets go
+// when the finger leaves or the list starts to scroll.
+(()=>{
+  let row=null,timer=0,x0=0,y0=0;
+  const off=()=>{clearTimeout(timer);if(row){row.classList.remove('press');row=null;}};
+  document.addEventListener('pointerdown',e=>{
+    const b=e.target.closest?.('.briefingFlight');off();if(!b)return;
+    row=b;x0=e.clientX;y0=e.clientY;timer=setTimeout(()=>row&&row.classList.add('press'),40);
+  },{passive:true});
+  document.addEventListener('pointermove',e=>{if(row&&Math.hypot(e.clientX-x0,e.clientY-y0)>8)off();},{passive:true});
+  for(const ev of ['pointerup','pointercancel','scroll'])document.addEventListener(ev,()=>setTimeout(off,ev==='pointerup'?120:0),{passive:true,capture:true});
+})();
+// Loading progress: the bar under the list (web page) and the bar inside the tapped row (app).
+let scanRow=null;
+function scanSet(p,text){
+  if(p!=null){
+    $('#scanBar').style.width=p+'%';$('#scanPct').textContent=p+'%';
+    if(scanRow){let b=scanRow.querySelector('.rowLoad');if(!b){b=document.createElement('i');b.className='rowLoad';scanRow.appendChild(b);}b.style.width=p+'%';}
+  }
+  if(text!=null)$('#scanText').textContent=text;
+}
+function scanRowDone(){if(!scanRow)return;scanRow.classList.remove('lift');scanRow.querySelector('.rowLoad')?.remove();scanRow=null;}
 async function addFiles(list){
   const fs=[...list].filter(f=>f.type==='application/pdf'||f.name.toLowerCase().endsWith('.pdf'));
   if(!fs.length)return;
   nativeHomeAction('review');
 
   $('#scan').classList.remove('hidden','scanError');
-  $('#scanBar').style.width='0%';
   $('#scanBar').style.background='';
-  $('#scanPct').textContent='0%';
+  scanSet(scanRow?15:0);
+  fitBriefingFlights();          // the bar under the list must not push the page off the screen
 
+  // V6.80: the files are read together, each from the text cache when it has been read before
   let i=0;
-  for(const f of fs){
-    $('#scanText').textContent='Reading '+f.name;
+  const recs=await Promise.all(fs.map(async f=>{
     const rec={id:crypto.randomUUID(),name:f.name,size:f.size,file:f,text:'',layoutText:'',layoutRows:[],pages:0,kind:'OTHER'};
     try{
-      const r=await pdfText(f);
+      const r=await pdfTextCached(f);
       rec.text=r.text;
       rec.layoutText=r.layoutText||r.text;
       rec.layoutRows=r.layoutRows||[];
@@ -6056,13 +6148,12 @@ async function addFiles(list){
     }catch(e){
       rec.error=String(e);
     }
-    docs.push(rec);
     i++;
-    const p=Math.round(i/fs.length*100);
-    $('#scanBar').style.width=p+'%';
-    $('#scanPct').textContent=p+'%';
-    renderDocs();
-  }
+    scanSet(Math.max(scanRow?15:0,Math.round(i/fs.length*100)),'Reading '+f.name);
+    return rec;
+  }));
+  docs.push(...recs);
+  renderDocs();
 
   $('#scanText').textContent='Extracting and cross-checking…';
 
@@ -6076,14 +6167,17 @@ async function addFiles(list){
     $('#resultView').classList.remove('hidden');
     requestAnimationFrame(fitPanels);
     $('#appFooter').classList.remove('hidden');
+    scanRowDone();
   }catch(e){
     console.error('A350 review error:',e);
+    scanRowDone();
     $('#scan').classList.add('scanError');
     $('#scanText').textContent='Cross-check error: '+(e?.message||String(e));
     $('#scanPct').textContent='ERROR';
     $('#scanBar').style.width='100%';
     $('#scanBar').style.background='var(--red)';
     $('#footer').textContent='Cross-check failed — see error above';
+    fitBriefingFlights();
   }
 }
 function renderDocs(){const b=$('#uploadDocs');b.innerHTML=docs.map(d=>`<div class="doc"><div><div class="docname">${esc(d.name)}</div><div class="muted">${fmtSize(d.size)}${d.pages?' • '+d.pages+' pages':''}</div><span class="pill">${esc(d.kind)}</span></div></div>`).join('')}
@@ -6153,6 +6247,7 @@ window.flightBriefNativeHomeState=function(state){
   }
 };
 window.flightBriefNativeLoadError=function(){
+  scanRowDone();
   $('#scan').classList.add('hidden');
 };
 document.querySelectorAll('[data-native-action]').forEach(button=>{
@@ -6283,9 +6378,10 @@ function dgrValid(d){return d&&Array.isArray(d.entries)&&d.entries.length>1000&&
 async function dgrLoad(){
   if(dgrData)return dgrData;
   if(window.FLIGHT_BRIEF_DGR_VERSION!==1||!window.webkit?.messageHandlers?.nativeHome){
-    const d=await dgrWebGet();
-    if(dgrValid(d))return dgrData=d;
-    const e=new Error('Import DGR data (dgr.json from iCloud Drive › Flight Brief, or Google Drive › Tài Liệu › DGR) to use this tab.');e.importNeeded=true;throw e;
+    // V6.82 (user 12/10/2026): the web page has no DGR look-up any more - it lives in the app only. Data imported into this
+    // browser by earlier versions is removed.
+    try{indexedDB.deleteDatabase('flight-brief-dgr');}catch(e){}
+    const e=new Error('DGR FUNCTION NOT AVAIL');e.notAvail=true;throw e;
   }
   if(!dgrLoading)dgrLoading=new Promise((resolve,reject)=>{
     const id=crypto.randomUUID();dgrPending.set(id,{resolve,reject});
@@ -6690,14 +6786,10 @@ async function dgrOpen(){
   try{await dgrLoad();}
   catch(error){
     $('#dgrItems').innerHTML='';$('#dgrAdd').classList.add('hidden');$('#dgrPositions').innerHTML='';
-    $('#dgrResults').innerHTML=`<div class="item warn"><div class="body">${esc(error.message)}</div>`+
-      (error.importNeeded?`<label class="primary" style="display:inline-block;margin-top:8px;padding:10px 16px;border-radius:10px;cursor:pointer">Import DGR data<input id="dgrImport" type="file" accept=".json,application/json" hidden></label><div class="body muted" id="dgrImportMsg"></div>`:'')+`</div>`;
-    const inp=$('#dgrImport');
-    if(inp)inp.onchange=async()=>{
-      const f=inp.files[0];if(!f)return;$('#dgrImportMsg').textContent='Importing…';
-      try{const d=JSON.parse(await f.text());if(!dgrValid(d))throw new Error('This is not a Flight Brief dgr.json file.');await dgrWebPut(d);dgrData=d;dgrOpen();}
-      catch(e){$('#dgrImportMsg').textContent=e.message;}
-    };
+    // Web page: the look-up is replaced by the amber label of a function that is not available (as a failed FMS page);
+    // the Loadsheet and Aircraft blocks below need no DGR data and stay.
+    if(error.notAvail){$('#dgrItems').innerHTML='<div class="item info dgrNaItem"><span class="dgrNa">DGR FUNCTION NOT AVAIL</span></div>';$('#dgrResults').innerHTML='';return;}
+    $('#dgrResults').innerHTML=`<div class="item warn"><div class="body">${esc(error.message)}</div></div>`;
     return;
   }
   $('#dgrAdd').classList.remove('hidden');
