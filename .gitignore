@@ -1,1 +1,5 @@
 .DS_Store
+# local mock-ups, screenshots and sample output - never published
+tmp/
+output/
+.claude/
