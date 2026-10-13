@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.85">
-<title>Flight Brief V6.85</title>
+<meta name="flight-brief-version" content="6.86">
+<title>Flight Brief V6.86</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -332,21 +332,28 @@ header,footer{background:var(--bar)!important;backdrop-filter:none!important;bor
 .initBox{border:1px solid var(--mfMuted);padding:6px 10px;color:var(--mfCyan);min-width:92px;text-align:center;border-radius:2px;font-size:15px}
 .initBox.green{color:var(--mfGreen);border-color:var(--mfLine)}
 .initBox.amber{color:var(--mfAmber);border-color:var(--mfAmber)}
+.initBox.red{color:var(--mfRed);border-color:var(--mfRed)}
 .initBox.wide{min-width:0;flex:1;text-align:left}
-/* FUEL / LOAD under DISPATCH (V6.85) */
-.initBox.fuelIn{width:104px;min-width:0;background:transparent!important;font:inherit;font-size:15px!important;font-weight:400!important;color:var(--mfCyan)!important;border:1px solid var(--mfMuted)!important;border-radius:2px!important;padding:6px 10px!important;text-align:center;outline:0;appearance:textfield;-moz-appearance:textfield;-webkit-appearance:none;text-transform:uppercase}
-.fuelIn::-webkit-outer-spin-button,.fuelIn::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+/* FUEL block under DISPATCH in the look of the FMS ACTIVE/FUEL&LOAD page (V6.86): an entry field is a grey frame with a
+   cyan value and the unit inside; what the app reads or computes is green without a frame */
+.flF{display:flex;align-items:center;gap:10px;min-height:36px;min-width:0}
+.flL{font-size:14px;min-width:64px;text-align:right;color:var(--mfTxt)}
+.flL.w2{min-width:96px}
+.flL small{display:block;font-size:10px;line-height:1.25;white-space:nowrap}
+.flV{color:var(--mfGreen);font-size:17px;min-width:74px;text-align:right}
+.flV small,.flE small{font-size:11px;color:var(--mfCyan);margin-left:3px}
+.flV.amber{color:var(--mfAmber)}
+.flV.red{color:var(--mfRed)}
+.flE{display:inline-flex;align-items:center;border:2px solid var(--mfLine2);padding:3px 8px;height:34px}
+.flIn{appearance:none;-webkit-appearance:none;background:transparent!important;border:0!important;border-radius:0!important;padding:0!important;margin:0;min-height:0!important;height:auto!important;font:inherit;font-size:17px!important;font-weight:400!important;color:var(--mfCyan)!important;text-align:right;outline:0;text-transform:uppercase}
+.flTop{align-self:start}
 .fuelKey{appearance:none;-webkit-appearance:none;border:0!important;border-radius:2px!important;min-height:0!important;font:inherit;font-weight:400!important;color:var(--mfTxt)!important;cursor:pointer;background:linear-gradient(90deg,var(--mfKeyHi),transparent 45%) top left/100% 1px no-repeat,linear-gradient(180deg,var(--mfKeyHi),transparent 60%) top left/1px 100% no-repeat,linear-gradient(180deg,var(--mfKeyA),var(--mfKeyB))!important;box-shadow:inset -1px -1px 0 var(--mfKeyLo)!important}
 .fuelKey{width:44px;height:19px;font-size:10px!important;line-height:1!important;padding:0!important}
 .fuelStk{display:inline-flex;flex-direction:column;gap:2px}
-.fuelLbl{display:inline-flex;flex-direction:column;gap:3px}
-.fuelLbl small{font-size:10px;color:var(--mfTxt);white-space:nowrap;line-height:1.25}
-.fuelKey:active{transform:translateY(1px)}
 .fuelGrp{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
-.initBox.fuelIn.fuelTime{width:84px}
 #fuelBurn{display:inline-flex;align-items:center;gap:10px}
 .fuelTag{font-size:12px;color:var(--mfTxt);white-space:nowrap}
-.fuelLoad{display:grid;grid-template-columns:64px repeat(4,minmax(0,1fr));row-gap:9px;font-size:15px;max-width:560px;margin-top:14px}
+.fuelLoad{display:grid;grid-template-columns:64px repeat(3,minmax(0,1fr));row-gap:9px;font-size:15px;max-width:440px;margin-top:14px}
 .fuelLoad i{font-style:normal;font-size:11px;color:var(--mfMuted);text-align:right}
 .fuelLoad b{font-weight:400;font-size:13px;color:var(--mfTxt)}
 .fuelLoad span{text-align:right;color:var(--mfGreen)}
@@ -354,7 +361,7 @@ header,footer{background:var(--bar)!important;backdrop-filter:none!important;bor
 .fuelLoad span.amber{color:var(--mfAmber)}
 .fuelLoad span.red{color:var(--mfRed)}
 .fuelLoad em{font-style:normal;font-size:10px;color:var(--mfTxt);margin-left:3px}
-@media(max-width:640px){.fuelFld{flex-wrap:wrap!important}.fuelGrp~.fuelGrp{margin-left:80px}.initBox.fuelIn{width:92px;padding:5px 8px!important;font-size:14px!important}.fuelLoad{font-size:13px;grid-template-columns:44px repeat(4,minmax(0,1fr))}}
+@media(max-width:640px){.flF{flex-wrap:wrap}.flL,.flL.w2{min-width:92px;text-align:left}.fuelGrp~.fuelGrp{margin-left:102px}.fuelLoad{font-size:13px;grid-template-columns:44px repeat(3,minmax(0,1fr))}}
 .initPlain,.initWind{color:var(--mfGreen);font-size:15px}
 .initWind.warn{color:var(--mfAmber)}
 .initUnit{color:var(--mfTxt);font-size:11px;margin-left:2px}
@@ -659,7 +666,7 @@ body>#sigwxViewer{display:none}
 .mfdFrame::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;background:repeating-linear-gradient(0deg,transparent 0 2px,var(--mfScan) 2px 3px)}
 .mfdFrame::after{content:"";position:absolute;left:0;right:0;top:0;height:1px;pointer-events:none;z-index:7;background:linear-gradient(90deg,transparent,var(--mfBezelHi),transparent)}
 /* night only: a very light glow on cyan / green text */
-.mfdFrame :is(.tab,.initBox,.wxEntApt,.wxEntMin:not(.none),.wxVisGood,.notamEntityName.nilName,.sigwxLoadBar i){text-shadow:0 0 6px color-mix(in srgb,currentColor var(--mfGlowA),transparent)!important}
+.mfdFrame :is(.tab,.initBox,.flV,.flIn,.wxEntApt,.wxEntMin:not(.none),.wxVisGood,.notamEntityName.nilName,.sigwxLoadBar i){text-shadow:0 0 6px color-mix(in srgb,currentColor var(--mfGlowA),transparent)!important}
 /* title bars: a slight vertical shade */
 .subTitle,.sigwxBar{background:linear-gradient(180deg,var(--mfBarA),var(--mfBar) 55%,var(--mfBarB))}
 /* tabs as slightly raised keys (MFD INIT page buttons): bright top/left edge, faint bottom/right edge; rows touch each other and
@@ -3947,7 +3954,11 @@ function fuelCalc(o){
   const rate=f.frKg&&f.frMin?f.frKg/f.frMin:null;
   let extra=Math.max(0,Math.round(fuelUi.extra)||0);
   // what is added (extra + its burn) never goes above POSS EXTRA
-  if(f.poss!=null)for(let i=0;i<4&&extra+(fuelBurn(f,extra)||0)>f.poss;i++)extra=Math.max(0,f.poss-(fuelBurn(f,extra)||0));
+  if(f.poss!=null&&extra+(fuelBurn(f,extra)||0)>f.poss){
+    extra=Math.min(extra,f.poss);
+    for(let i=0;i<4&&extra+(fuelBurn(f,extra)||0)>f.poss;i++)extra=Math.max(0,f.poss-(fuelBurn(f,extra)||0));
+    for(let i=0;i<40&&extra+100+(fuelBurn(f,extra+100)||0)<=f.poss;i++)extra+=100;      // the most that still fits
+  }
   fuelUi.extra=extra;
   const burn=fuelBurn(f,extra),wc=fuelWeightChange(f,extra),added=extra+(burn||0);
   return {f,rate,extra,burn,added,block:f.block+added,dMin:wc?Math.round(wc.min)||0:0,
@@ -3971,33 +3982,41 @@ function fuelFltTime(o,c){
   const t=Math.max(0,Number(m[1])*60+Number(m[2])+c.dMin);
   return String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');
 }
+// fuel is shown in tonnes with one decimal (user decision 13/10/2026): the block rounded up, a limit rounded down, the rest
+// to the nearest; what is typed is tonnes (64.5 or 64,5) - a figure of 400 or more is taken as kg
+function fuelT(kg,mode){
+  if(kg==null)return '';
+  const n=mode==='up'?Math.ceil(kg/100):mode==='down'?Math.floor(kg/100):Math.round(kg/100);
+  return (n/10).toFixed(1);
+}
+function fuelKgIn(v){const x=Number(String(v||'').replace(',','.').replace(/[^\d.]/g,''));return !isFinite(x)?0:x<400?Math.round(x*1000):Math.round(x);}
 function fuelHm(m){const t=Math.max(0,Math.round(m));return String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');}
-function fuelBurnHtml(c){return c.extra&&c.burn!=null?`<span class="initLbl initIn">BURN</span><span class="initPlain">+${c.burn}<span class="initUnit">KG</span></span>`:'';}
+function fuelBurnHtml(c){return c.extra&&c.burn!=null?`<span class="flL">BURN</span><span class="flV" style="min-width:0">+${fuelT(c.burn)}<small>T</small></span>`:'';}
+function fuelOver(v,max){return max!=null&&v!=null&&v>max?'red':'';}
 // ZFW of the OFP in use against the revision before it; amber beyond the A350 ZFW deviation limit of the FON "OFP UPDATE
 // GUIDANCE" (read by the app from the eFON folder)
 function fuelZfwChgHtml(o){
   const f=o?.fuel,p=analysis?.fuelPrev;
-  if(!p||!f?.zfw)return '';
+  if(!p||!f?.zfw)return '<div></div>';
   const d=f.zfw.est-p.zfw,lim=fonZfwLimit(o),amb=!!lim&&(d>lim.up||d<-lim.down);
-  return `<div class="initRow one"><div class="initFld fuelFld"><span class="initLbl fuelLbl">ZFW CHG<small>R${p.rev} → R${analysis.selectedOfp?.revision??''}</small></span><span class="initBox ${amb?'amber':'green'}">${d>0?'+':''}${d}</span></div></div>`;
+  return `<div class="flF"><span class="flL w2">ZFW CHG<small>R${p.rev} → R${analysis.selectedOfp?.revision??''}</small></span><span class="flV ${amb?'amber':''}">${d>0?'+':''}${d}</span></div>`;
 }
-// DOW · ZFW · TOF · TOW · LDW: plan (OFP + what was added) against the loadsheet (Loadsheet block of the DGR tab)
+// DOW and TOF of the plan against the loadsheet (Loadsheet block of the DGR tab)
 function fuelLoadHtml(c){
   const f=c.f,L=fuelLoadsheet()||{},sg=n=>n>0?'+'+n:String(n);
-  const rows=[['DOW',f.dow?.est,L.dow,f.dow?.max],['ZFW',f.zfw?.est,L.zfw,f.zfw?.max],['TOF',c.tof,L.tof,null],['TOW',c.tow,L.tow,f.tow?.max],['LDW',c.ldw,L.ldw,f.ldw?.max]];
-  return '<div class="fuelLoad"><b></b><i>PLAN</i><i>LOADSHEET</i><i>DIFF</i><i>MAX</i>'+rows.map(([n,pl,l,max])=>{
-    const lmax=l?.max??max,d=l&&pl!=null?l.v-pl:null;
-    return `<b>${n}</b><span class="${max!=null&&pl>max?'red':''}">${pl??''}</span><span class="${l&&lmax!=null&&l.v>lmax?'red':''}">${l?l.v+(l.lim?'<em>L</em>':''):''}</span>`+
-      `<span class="${n==='DOW'&&d?'amber':'w'}">${d==null?'':sg(d)}</span><span class="w">${max??''}</span>`;}).join('')+'</div>';
+  return '<div class="fuelLoad"><b></b><i>PLAN</i><i>LOADSHEET</i><i>DIFF</i>'+[['DOW',f.dow?.est,L.dow],['TOF',c.tof,L.tof]].map(([n,pl,l])=>{
+    const d=l&&pl!=null?l.v-pl:null;
+    return `<b>${n}</b><span>${pl??''}</span><span>${l?l.v:''}</span><span class="${n==='DOW'&&d?'amber':'w'}">${d==null?'':sg(d)}</span>`;}).join('')+'</div>';
 }
 // redraws only what moves when the fuel changes (the rows are not re-inserted, so nothing re-animates)
 function fuelUpdate(){
   const o=analysis?.o,c=fuelCalc(o);
   if(!c)return;
   const set=(id,v)=>{const e=$(id);if(e)e.value=v;};
-  set('#fuelBlock',c.block);set('#fuelExtraKg',c.extraKg);set('#fuelExtraTime',fuelHm(c.extraMin));
-  const b=$('#fuelBurn'),l=$('#fuelLoad'),ft=$('#ofpFltTime');
+  set('#fuelBlock',fuelT(c.block,'up'));set('#fuelExtraKg',fuelT(c.extraKg));set('#fuelExtraTime',fuelHm(c.extraMin));
+  const b=$('#fuelBurn'),l=$('#fuelLoad'),ft=$('#ofpFltTime'),f=c.f;
   if(b)b.innerHTML=fuelBurnHtml(c);
+  for(const [id,v,max] of [['#fuelTow',c.tow,f.tow?.max],['#fuelLdw',c.ldw,f.ldw?.max]]){const e=$(id);if(e){e.textContent=v??'N/A';e.className='flV '+fuelOver(v,max);}}
   if(l)l.innerHTML=fuelLoadHtml(c);
   if(ft)ft.textContent=fuelFltTime(o,c)||'N/A';
 }
@@ -4014,7 +4033,7 @@ document.addEventListener('change',e=>{
   const id=e.target?.id,f=analysis?.o?.fuel;
   if(!f||f.block==null||!/^fuel(Block|ExtraKg|ExtraTime)$/.test(id||''))return;
   const v=String(e.target.value||'').trim(),aKg=f.addnl.reduce((n,x)=>n+x.kg,0),aMin=f.addnl.reduce((n,x)=>n+x.min,0);
-  if(id==='fuelExtraKg')fuelUi.extra=Math.max(0,(Math.round(Number(v.replace(/[^\d.]/g,'')))||0)-aKg);
+  if(id==='fuelExtraKg')fuelUi.extra=Math.max(0,fuelKgIn(v)-aKg);
   else if(id==='fuelExtraTime'){
     // 0:45, 045 or 45 (minutes); 130 = 1 h 30
     const m=v.match(/^(\d{1,2})\s*[:.hH]\s*(\d{1,2})$/),dg=v.replace(/\D/g,'');
@@ -4022,10 +4041,11 @@ document.addEventListener('change',e=>{
     fuelUi.extra=f.frKg&&f.frMin?Math.max(0,Math.round((min-aMin)*f.frKg/f.frMin)):fuelUi.extra;
   }else{
     // a block typed in: what is above the OFP block is split into extra + the burn to carry it; above POSS EXTRA → the maximum
-    let added=Math.max(0,(Math.round(Number(v))||0)-f.block);
+    let added=Math.max(0,fuelKgIn(v)-f.block);
     if(f.poss!=null)added=Math.min(added,f.poss);
     let extra=added;
     for(let i=0;i<6;i++){const b=fuelBurn(f,extra)||0;if(extra+b===added)break;extra=Math.max(0,added-b);}
+    if(extra+(fuelBurn(f,extra)||0)>added)extra=Math.max(0,added-(fuelBurn(f,extra)||0));
     fuelUi.extra=extra;
   }
   fuelUpdate();
@@ -4075,18 +4095,24 @@ function renderOFP(){
   h+='<div class="initRow one">'+fld('DISPATCH',box(dn,'green wide'))+'</div>';
   const fc=fuelCalc(o);
   if(fc){
-    const f=fc.f,why={T:'TOW',L:'LDW',C:'TANK',E:'OTHER'}[f.possWhy]||'';
-    const cm=String(f.cont||'').match(/^(\S+)\s+([A-Z]{3})$/),tag=t=>t?`<span class="fuelTag">${esc(t)}</span>`:'';
+    // one block, four rows of two: ZFW · ZFW CHG / TOW · LDW / BLOCK · CONT / EXTRA (+ BURN) · POSS EXTRA
+    const f=fc.f,why={T:'TOW',L:'LDW',C:'TANK',E:'OTHER'}[f.possWhy]||'',T='<small>T</small>';
+    const cm=String(f.cont||'').match(/^(\S+)\s+([A-Z]{3})$/),ct=String(cm?cm[1]:f.cont||na),pc=ct.match(/^(\d+(?:\.\d+)?)%$/);
+    const tag=t=>t?`<span class="fuelTag">${esc(t)}</span>`:'';
+    const cell=(lbl,html,w2,cls='')=>`<div class="flF ${cls}"><span class="flL${w2?' w2':''}">${lbl}</span>${html}</div>`;
+    const val=(v,cls='',id='')=>`<span class="flV ${cls}"${id?` id="${id}"`:''}>${v}</span>`;
+    const ent=(id,v,lbl,w,mode,unitT)=>`<span class="flE"><input class="flIn" id="${id}" type="text" inputmode="${mode}" autocomplete="off" aria-label="${lbl}" style="width:${w}px" value="${v}">${unitT?T:''}</span>`;
     const key=(attr,v,t,lbl)=>`<button type="button" class="fuelKey" data-fuel-${attr}="${v}" aria-label="${lbl}">${t}</button>`;
     const stk=(attr,step,lbl)=>'<span class="fuelStk">'+key(attr,step,'▲',lbl+' up')+key(attr,-step,'▼',lbl+' down')+'</span>';
     h+='<div class="initSep"></div>';
-    h+=fuelZfwChgHtml(o);
-    h+='<div class="initRow">'+fld('CONT',box(esc(cm?cm[1]:f.cont||na),'green')+tag(cm?cm[2]:''))+fld('POSS EXTRA',box(f.poss==null?na:f.poss,'green')+tag(why))+'</div>';
-    h+='<div class="initRow one"><div class="initFld fuelFld"><span class="initLbl">BLOCK</span><input class="initBox fuelIn" id="fuelBlock" type="text" inputmode="numeric" autocomplete="off" aria-label="Block fuel" value="'+fc.block+'"></div></div>';
-    h+='<div class="initRow one"><div class="initFld fuelFld"><span class="initLbl fuelLbl">EXTRA'+(f.addnl.length?'<small>'+f.addnl.map(x=>esc(x.name)).join('<br>')+'</small>':'')+'</span>'+
-      '<span class="fuelGrp"><input class="initBox fuelIn" id="fuelExtraKg" type="text" inputmode="numeric" autocomplete="off" aria-label="Extra fuel" value="'+fc.extraKg+'">'+stk('kg',500,'Extra fuel')+unit('KG')+'</span>'+
-      (fc.rate?'<span class="fuelGrp"><input class="initBox fuelIn fuelTime" id="fuelExtraTime" type="text" inputmode="numeric" autocomplete="off" aria-label="Extra time" value="'+fuelHm(fc.extraMin)+'">'+stk('min',15,'Extra time')+'</span>':'')+
-      '<span id="fuelBurn">'+fuelBurnHtml(fc)+'</span></div></div>';
+    h+='<div class="initRow">'+cell('ZFW',val(f.zfw?f.zfw.est:na,f.zfw?fuelOver(f.zfw.est,f.zfw.max):''))+fuelZfwChgHtml(o)+'</div>';
+    h+='<div class="initRow">'+cell('TOW',val(fc.tow??na,fuelOver(fc.tow,f.tow?.max),'fuelTow'))+cell('LDW',val(fc.ldw??na,fuelOver(fc.ldw,f.ldw?.max),'fuelLdw'),true)+'</div>';
+    h+='<div class="initRow">'+cell('BLOCK',ent('fuelBlock',fuelT(fc.block,'up'),'Block fuel',74,'decimal',true))+cell('CONT',val(pc?esc(pc[1])+'<small>%</small>':esc(ct))+tag(cm?cm[2]:''),true)+'</div>';
+    h+='<div class="initRow"><div>'+cell('EXTRA'+(f.addnl.length?'<small>'+f.addnl.map(x=>esc(x.name)).join('<br>')+'</small>':''),
+        '<span class="fuelGrp">'+ent('fuelExtraKg',fuelT(fc.extraKg),'Extra fuel',44,'decimal',true)+stk('kg',500,'Extra fuel')+'</span>'+
+        (fc.rate?'<span class="fuelGrp">'+ent('fuelExtraTime',fuelHm(fc.extraMin),'Extra time',56,'numeric',false)+stk('min',15,'Extra time')+'</span>':''))+
+      '<div class="flF" id="fuelBurn" style="min-height:0">'+fuelBurnHtml(fc)+'</div></div>'+
+      cell('POSS EXTRA',val(f.poss==null?na:fuelT(f.poss,'down')+T)+tag(why),true,'flTop')+'</div>';
   }
   h+='</div></div>';
   $('#ofpResults').innerHTML=h;
