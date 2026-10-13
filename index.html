@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.82">
-<title>Flight Brief V6.82</title>
+<meta name="flight-brief-version" content="6.83">
+<title>Flight Brief V6.83</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -197,7 +197,12 @@
 .briefingsEmpty{padding:14px 4px;font-size:11px;color:var(--muted);text-align:center}
 .nativeHomeOnly{display:none}
 .native-home .nativeHomeOnly{display:block}
-.native-home .briefingsFolderBtn{display:none}
+.native-home .homeUploadHint{display:none}
+.homeUploadHint{margin:14px 0 0;color:var(--muted);font-size:12px;text-transform:uppercase;text-align:center}
+.folderLoaded .homeUploadBtn,.folderLoaded .homeUploadHint{display:none!important}
+/* web page: refresh = choose the Briefings folder again (a browser cannot re-read a folder by itself) */
+.webRefresh{display:none;margin-top:14px;align-items:center;justify-content:center;padding:8px 14px!important;color:var(--blue)!important;line-height:0}
+.folderLoaded:not(.native-home) .webRefresh{display:inline-flex}
 .native-home .homeView{align-items:flex-start;padding-top:calc(60px + env(safe-area-inset-top))}
 .native-home .briefingFlightNo{display:block;font-size:16px}
 .native-home .briefingFlightMeta{display:block;font-size:12px}
@@ -731,7 +736,7 @@ body>#sigwxViewer{display:none}
 </style>
 </head>
 <body>
-<header id="appHeader" class="hidden" aria-hidden="true"><input id="topUpload" type="file" accept=".pdf,application/pdf" multiple hidden></header>
+<header id="appHeader" class="hidden" aria-hidden="true"></header>
 <main>
 <section id="uploadView" class="homeView">
 <details id="nativeHomeMenu" class="nativeHomeOnly nativeHomeMenu">
@@ -747,19 +752,16 @@ body>#sigwxViewer{display:none}
 </details>
 <div class="homeCenter">
   <div class="homeLogo">Flight Brief</div>
-  <label class="homeUploadBtn" aria-label="Upload documents">
+  <label class="homeUploadBtn" aria-label="Select Briefings folder">
     <span aria-hidden="true">↑</span>
-    <input id="fileUpload" type="file" accept=".pdf,application/pdf" multiple hidden>
-  </label>
-
-  <label class="briefingsFolderBtn">
-    Briefings
     <input id="briefingsFolderUpload" type="file" webkitdirectory directory multiple hidden>
   </label>
+  <p id="homeUploadHint" class="homeUploadHint">Select the Briefings folder</p>
 
   <div id="briefingsFolderName" class="briefingsFolderName hidden"></div>
   <div id="briefingSearch" class="briefingSearch hidden"><input id="briefingQuery" type="search" placeholder="Flight or REG" autocomplete="off" autocapitalize="characters"><label class="briefingDateWrap"><input id="briefingDate" type="date" aria-label="Date"><span id="briefingDateHint">Date</span></label></div>
   <div id="briefingFlights" class="briefingFlights hidden"></div>
+  <button id="webRefresh" class="webRefresh" type="button" aria-label="Refresh flights" title="Refresh flights"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg></button>
   <div id="nativeFolderPrompt" class="nativeHomeOnly nativeHomeFolder">
     <button type="button" data-native-action="pickFolder">Select Briefings Folder</button>
     <p>Select MO Plus → Briefings once. Flight Brief will remember this folder on this iPad.</p>
@@ -777,7 +779,7 @@ body>#sigwxViewer{display:none}
 </div>
 </section>
 <section id="resultView" class="hidden">
-<div class="resultTopbar"><button id="homeLogoButton" class="resultHomeLogo" type="button">Flight Brief</button><div class="resultMeta hidden"><h2 id="flightTitle">Flight review</h2><div id="flightSub" class="muted"></div><div id="overview" class="overview"></div></div><div class="row wrap resultActions"><button id="themeReview" type="button" class="themeToggle">Day mode</button><button id="reloadFlight" type="button" aria-label="Reload flight documents" title="Reload flight documents"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg></button><label class="upload">+ Add Docs<input id="moreUpload" type="file" accept=".pdf,application/pdf" multiple hidden></label></div></div>
+<div class="resultTopbar"><button id="homeLogoButton" class="resultHomeLogo" type="button">Flight Brief</button><div class="resultMeta hidden"><h2 id="flightTitle">Flight review</h2><div id="flightSub" class="muted"></div><div id="overview" class="overview"></div></div><div class="row wrap resultActions"><button id="themeReview" type="button" class="themeToggle">Day mode</button><button id="reloadFlight" type="button" aria-label="Reload flight documents" title="Reload flight documents"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg></button></div></div>
 <div class="mfdFrame"><div class="tabs"><button class="tab active" data-tab="ofp">OFP DETAIL</button><button class="tab" data-tab="wx">WEATHER</button><button class="tab" data-tab="notam">NOTAM</button><button class="tab" data-tab="wind">WIND</button><button class="tab" data-tab="dgr">DGR</button></div>
 <section id="tab-ofp" class="card"><div class="subTitle" id="ofpTitle">F-PLN</div><div class="panelBody"><div id="ofpResults" class="section"></div><div class="ofpMelMerged"><h3 id="melHeading">MEL / CDL</h3><div id="melResults" class="section" style="margin-top:8px"></div></div></div></section>
 <section id="tab-wx" class="card hidden"><div class="subTabs"><button type="button" class="subTab active" data-sub="minima" data-title="WEATHER MINIMA">MINIMA</button><button type="button" class="subTab" data-sub="enr" data-title="ENROUTE WEATHER">ENR WX</button></div><div class="subTitle">WEATHER MINIMA</div><div id="wxResults" class="section" data-pane="minima"></div><div id="enrResults" class="section hidden" data-pane="enr"></div></section>
@@ -6037,18 +6039,23 @@ function appendBriefingFlights(){
         return;
       }
 
-      // A selected flight is a new package.
-      docs=[];
-      analysis=null;
-      lastNotams=[];
-      $('#uploadDocs').innerHTML='';
-      $('#scanBar').style.background='var(--blue)';
-
-      await addFiles(b.files);
+      await openWebFlight(b);
     };
   });
 }
 
+// Web page: open a flight of the chosen folder; its folder name is kept so that a refresh can open it again.
+let webOpenFolder='',webReopenFolder='';
+async function openWebFlight(b){
+  // A selected flight is a new package.
+  docs=[];
+  analysis=null;
+  lastNotams=[];
+  $('#uploadDocs').innerHTML='';
+  $('#scanBar').style.background='var(--blue)';
+  webOpenFolder=b.folder||'';
+  await addFiles(b.files);
+}
 let briefingScrollPending=false;
 $('#briefingFlights')?.addEventListener('scroll',()=>{
   if(briefingScrollPending)return;
@@ -6085,7 +6092,7 @@ function loadBriefingsFolder(fileList){
 
     if(!(file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf')))continue;
 
-    if(!grouped.has(folder))grouped.set(folder,{...info,files:[]});
+    if(!grouped.has(folder))grouped.set(folder,{...info,folder,files:[]});
     grouped.get(folder).files.push(file);
   }
 
@@ -6093,13 +6100,17 @@ function loadBriefingsFolder(fileList){
     .filter(x=>x.files.length)
     .sort((a,b)=>(b.date?.getTime?.()||0)-(a.date?.getTime?.()||0));
 
-  const nameEl=$('#briefingsFolderName');
-  if(nameEl){
-    nameEl.textContent=rootName;
-    nameEl.classList.remove('hidden');
-  }
+  // With flights found the home looks like the app: the button and its hint go, the list takes the page.
+  document.documentElement.classList.toggle('folderLoaded',briefingFlights.length>0);
+  const hint=$('#homeUploadHint');
+  if(hint)hint.textContent=briefingFlights.length?'Select the Briefings folder':'No flight folders found — select the Briefings folder';
 
   renderBriefingFlights();
+  if(!briefingFlights.length)$('#briefingFlights').classList.add('hidden');
+  // refresh pressed inside a flight: the same flight opens again from the files just chosen
+  const again=webReopenFolder&&briefingFlights.find(x=>x.folder===webReopenFolder);webReopenFolder='';
+  $('#reloadFlight')?.classList.remove('busy');
+  if(again)openWebFlight(again);
 }
 
 // A flight row lights up as the finger lands (after 40 ms, so that a scroll that starts on it does not flash it) and lets go
@@ -6257,10 +6268,8 @@ document.querySelectorAll('[data-native-action]').forEach(button=>{
   };
 });
 
-for(const id of ['fileUpload','topUpload','moreUpload']){
-  const el=$('#'+id);
-  if(el)el.addEventListener('change',async e=>{await addFiles(e.target.files);e.target.value=''});
-}
+// V6.83 (user 13/10/2026): no picking of single documents and no "Add docs" any more - the home button chooses the
+// Briefings folder (web page), the app reads its folder and reloads a flight with the reload button.
 const briefingsFolderUpload=$('#briefingsFolderUpload');
 if(briefingsFolderUpload){
   briefingsFolderUpload.addEventListener('change',e=>{
@@ -7275,7 +7284,16 @@ function showMinima(){
 }
 // V6.74 (user): no Minima button in the flight bar (the home menu has it); a reload button re-reads the flight's folder in
 // the app so a new document revision shows without going back to the home list. The web page has no folder: button hidden.
-{const b=$('#reloadFlight');if(!window.FLIGHT_BRIEF_NATIVE_HOME)b.classList.add('hidden');else b.onclick=()=>{b.classList.add('busy');nativeHomeAction('reloadFlight');};}
+// Reload button of a flight: the app re-reads the flight's folder; the web page (V6.83) opens the folder chooser again
+// - choosing the Briefings folder again is the only way a browser gets the new revisions - and then reopens this flight.
+{const b=$('#reloadFlight'),pick=$('#briefingsFolderUpload');
+  if(window.FLIGHT_BRIEF_NATIVE_HOME)b.onclick=()=>{b.classList.add('busy');nativeHomeAction('reloadFlight');};
+  else{
+    b.onclick=()=>{webReopenFolder=webOpenFolder;pick.click();};
+    $('#webRefresh').onclick=()=>{webReopenFolder='';pick.click();};
+    pick.addEventListener('cancel',()=>{webReopenFolder='';});
+  }
+}
 $('#minimaMenu').onclick=()=>{$('#nativeHomeMenu').open=false;showMinima();};
 // Day / night theme (V6.44), remembered on this device.
 function themeApply(t){
