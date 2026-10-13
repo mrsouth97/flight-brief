@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.83">
-<title>Flight Brief V6.83</title>
+<meta name="flight-brief-version" content="6.84">
+<title>Flight Brief V6.84</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -331,6 +331,7 @@ header,footer{background:var(--bar)!important;backdrop-filter:none!important;bor
 .initLbl.initIn{min-width:0;margin-left:12px}
 .initBox{border:1px solid var(--mfMuted);padding:6px 10px;color:var(--mfCyan);min-width:92px;text-align:center;border-radius:2px;font-size:15px}
 .initBox.green{color:var(--mfGreen);border-color:var(--mfLine)}
+.initBox.amber{color:var(--mfAmber);border-color:var(--mfAmber)}
 .initBox.wide{min-width:0;flex:1;text-align:left}
 .initPlain,.initWind{color:var(--mfGreen);font-size:15px}
 .initWind.warn{color:var(--mfAmber)}
@@ -744,6 +745,7 @@ body>#sigwxViewer{display:none}
   <button type="button" data-native-action="refresh" data-folder-required>Refresh Flights</button>
   <button type="button" data-native-action="pickFolder" data-folder-required>Change Briefings Folder</button>
   <button type="button" data-native-action="forgetFolder" data-folder-required>Forget Briefings Folder</button>
+  <button id="fonFolderMenu" type="button" data-native-action="pickFonFolder">Select eFON Folder</button>
   <button id="minimaMenu" type="button">Approach Minima</button>
   <button id="themeMenu" type="button" class="themeToggle">Day mode</button>
   <button type="button" data-native-action="update">Update Flight Brief</button>
@@ -3904,7 +3906,10 @@ function renderOFP(){
   h+='<div class="initRow">'+fld('LDG RWY',rwy(destR))+fld('STAR',box(esc(proc(o.star)),'green'))+'</div>';
   h+='<div class="initSep"></div>';
   h+='<div class="initRow">'+fld('INTL FL',box(esc(o.initialFltLvl||na))+inl('CI',box(esc(o.costIndex||na))))+fld('MAX SHR',shr)+'</div>';
-  h+='<div class="initRow">'+fld('EDTO',edto)+fld('PERF',box(esc(o.perf||na),'green'))+'</div>';
+  // PERF (user decision 13/10/2026): the OFP value always; green when it is the factor of the valid FON "A350 PERFORMANCE
+  // FACTORS" for this aircraft, amber with the FON value beside it when it differs (usually an MEL/CDL fuel penalty added).
+  const fp=fonPerfCheck(o);
+  h+='<div class="initRow">'+fld('EDTO',edto)+fld('PERF',box(esc(o.perf||na),fp&&!fp.match?'amber':'green')+(fp&&!fp.match?inl('FON',box(esc(fp.fon),'green')):''))+'</div>';
   h+='<div class="initSep"></div>';
   h+='<div class="initRow one">'+fld('DISPATCH',box(dn,'green wide'))+'</div>';
   h+='</div></div>';
@@ -6195,6 +6200,7 @@ function renderDocs(){const b=$('#uploadDocs');b.innerHTML=docs.map(d=>`<div cla
 
 window.flightBriefNativeLoadFiles=async function(items){
   $('#reloadFlight')?.classList.remove('busy');
+  fonLoad();          // a new FON may have arrived since the last flight (the app caches what it has read)
   const list=Array.isArray(items)?items:[];
   if(!list.length)throw new Error('No PDF files received from native app');
 
@@ -6240,6 +6246,8 @@ window.flightBriefNativeHomeState=function(state){
   window.flightBriefNativeReady();
   $('#nativeHomeVersion').textContent=state.version||'';
   $('#nativeFolderPrompt').classList.toggle('hidden',state.hasFolder);
+  {const b=$('#fonFolderMenu');if(b){b.classList.toggle('hidden',window.FLIGHT_BRIEF_FON_VERSION!==1);b.textContent=state.hasFonFolder?'Change eFON Folder':'Select eFON Folder';}
+   if(!!state.hasFonFolder!==fonHasFolder){fonHasFolder=!!state.hasFonFolder;fonList=null;fonLoad();}}
   document.querySelectorAll('[data-folder-required]').forEach(el=>el.classList.toggle('hidden',!state.hasFolder));
   $('#nativeRestore').classList.toggle('hidden',!state.isDownloaded);
   document.querySelectorAll('[data-native-action="update"]').forEach(el=>{
@@ -6932,6 +6940,39 @@ function minimaNoAltnWarn(events){
 let edtoSupp=null;
 const edtoPending=new Map();
 window.flightBriefEdtoReply=(id,result,error)=>{const p=edtoPending.get(id);if(!p)return;edtoPending.delete(id);error?p.reject(new Error(error)):p.resolve(result);};
+// FON "A350 PERFORMANCE FACTORS" (company notice in MO Plus › Other › eFON, read by the app only): the factor of each
+// aircraft. The app returns every such notice of the folder; the one used is the notice valid on the day of the flight,
+// else the one with the latest effective date.
+let fonList=null,fonHasFolder=false;
+const fonPending=new Map();
+window.flightBriefFonReply=(id,result,hasFolder)=>{const p=fonPending.get(id);if(!p)return;fonPending.delete(id);p(Array.isArray(result)?result:[]);};
+function fonLoad(){
+  if(window.FLIGHT_BRIEF_FON_VERSION!==1||!window.webkit?.messageHandlers?.nativeHome)return;
+  new Promise(resolve=>{const id=crypto.randomUUID();fonPending.set(id,resolve);window.webkit.messageHandlers.nativeHome.postMessage({action:'fonPerf',id});})
+    .then(list=>{fonList=list;if(analysis)renderOFP();});
+}
+function fonDate(t){
+  const m=String(t||'').toUpperCase().match(/^(\d{2})(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(\d{2})$/);
+  return m?new Date(Date.UTC(2000+Number(m[3]),'JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC'.split(' ').indexOf(m[2]),Number(m[1]))):null;
+}
+function fonPerfNotice(o){
+  const day=o?.date0||null,list=(fonList||[]).map(n=>({...n,from:fonDate(n.effective),to:fonDate(n.expiry)})).filter(n=>n.factors);
+  if(!list.length)return null;
+  const rank=n=>(n.from?n.from.getTime():0)*100+Number(n.revision||0);
+  const valid=day?list.filter(n=>n.from&&n.from<=day&&(!n.to||day<=n.to)):[];
+  // none valid on that day: the latest notice already in force then (an expired one whose successor has not been
+  // downloaded yet); a flight older than every notice is not compared
+  const past=day?list.filter(n=>n.from&&n.from<=day):list;
+  return (valid.length?valid:past).sort((a,b)=>rank(b)-rank(a))[0]||null;
+}
+// → {match, fon:'P2.4', notice} or null when there is nothing to compare with
+function fonPerfCheck(o){
+  const n=fonPerfNotice(o),reg=String(o?.reg||'').toUpperCase().replace(/[^A-Z0-9]/g,'').replace(/^VN/,'');
+  const f=n&&n.factors[reg],ofp=String(o?.perf||'').toUpperCase().match(/^([PM+-]?)(\d+(?:\.\d+)?)$/);
+  if(f==null||!ofp)return null;
+  const val=(ofp[1]==='M'||ofp[1]==='-'?-1:1)*Number(ofp[2]),fv=Number(f);
+  return {match:Math.abs(val-fv)<0.05,fon:(fv<0?'M':'P')+Math.abs(fv).toFixed(1),notice:n};
+}
 function edtoLoad(){
   if(window.FLIGHT_BRIEF_EDTO_VERSION!==1||!window.webkit?.messageHandlers?.nativeHome)return;
   new Promise((resolve,reject)=>{
