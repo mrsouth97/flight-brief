@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.86">
-<title>Flight Brief V6.86</title>
+<meta name="flight-brief-version" content="6.87">
+<title>Flight Brief V6.87</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -360,6 +360,7 @@ header,footer{background:var(--bar)!important;backdrop-filter:none!important;bor
 .fuelLoad span.w{color:var(--mfTxt)}
 .fuelLoad span.amber{color:var(--mfAmber)}
 .fuelLoad span.red{color:var(--mfRed)}
+.fuelLoad span.fuelAct{grid-column:1/-1;color:var(--mfAmber);font-size:13px;margin-top:-4px}
 .fuelLoad em{font-style:normal;font-size:10px;color:var(--mfTxt);margin-left:3px}
 @media(max-width:640px){.flF{flex-wrap:wrap}.flL,.flL.w2{min-width:92px;text-align:left}.fuelGrp~.fuelGrp{margin-left:102px}.fuelLoad{font-size:13px;grid-template-columns:44px repeat(3,minmax(0,1fr))}}
 .initPlain,.initWind{color:var(--mfGreen);font-size:15px}
@@ -712,7 +713,7 @@ body>#sigwxViewer{display:none}
 @keyframes fbLdOut{to{opacity:0;transform:scaleY(.2)}}
 /* attention as on ECAM: red keeps flashing, amber flashes twice and then stays steady */
 .wxMinFail,.enrTag.on,.dgrBad,#enrResults .wxVisBad,#wxResults :is(.wxVisBad,.wxTs){animation:fbBlinkOn 1s steps(1,end) infinite}
-.wxMinima .wxVisLow,#enrResults .wxVisLow,.enrTag.near,.dgrWarn,#wxResults :is(.wxVisLow,.wxSh){animation:fbBlink2 1.2s steps(1,end) 1 both}
+.wxMinima .wxVisLow,#enrResults .wxVisLow,.enrTag.near,.dgrWarn,.fuelAct,#wxResults :is(.wxVisLow,.wxSh){animation:fbBlink2 1.2s steps(1,end) 1 both}
 @keyframes fbBlinkOn{0%,55%{opacity:1}56%,100%{opacity:.25}}
 @keyframes fbBlink2{0%,100%{opacity:1}20%,60%{opacity:.15}40%,80%{opacity:1}}
 .themeGlyph{display:inline-block;animation:fbFlip var(--fbT4) var(--fbEase) backwards}
@@ -3886,14 +3887,9 @@ function analyse(){
     relevant.map(x=>[x.id+'|'+x.group+'|'+x.scope+'|'+x.b,x])
   ).values()];
 
-  // ZFW of the OFP revision before the one in use (ZFW CHG of the LOAD block)
-  const prevOfp=ofpDoc?(docs||[]).filter(d=>d&&d!==ofpDoc&&String(d.kind||'').includes('OFP')&&ofpRevisionNumber(d)<ofpRevisionNumber(ofpDoc)).sort((a,b)=>ofpRevisionNumber(b)-ofpRevisionNumber(a))[0]:null;
-  const prevFuel=prevOfp?parseOfpFuel(prevOfp.layoutText||prevOfp.text):null;
-  const fuelPrev=prevFuel?.zfw?{zfw:prevFuel.zfw.est,rev:ofpRevisionNumber(prevOfp)}:null;
   fuelUi.extra=0;      // the block entered is not kept (user decision)
 
   analysis={
-    fuelPrev,
     selectedOfp:{name:ofpDoc?.name||'',revision:ofpRevisionNumber(ofpDoc)},all,o,windProfile,firs,uses,wx,wxText,depTaf,destTaf,depRwyCheck,destRwyCheck,mel,notams,notamSourceText,relevant:dedup};
   render();
 }
@@ -3911,8 +3907,8 @@ function docRevText(a){
 // L landing weight, C tank capacity, E other) · EXTRA = every ADDNL line of the OFP (their names are a tag) + what the
 // pilot adds: fuel and time can both be typed, ▲▼ = 500 kg / 15 min at the final-reserve rate, never below what the OFP
 // gives, never above POSS EXTRA · BURN = fuel burnt to carry the added fuel (WEIGHT CHANGE UP of the OFP, rounded up to
-// 100 kg), added to the block as well; its TIME goes to FLT TIME · ZFW CHG = ZFW against the previous OFP revision ·
-// the weights against the latest loadsheet are in the Loadsheet block of the DGR tab.
+// 100 kg), added to the block as well; its TIME goes to FLT TIME · DOW, ZFW and TOF against the latest loadsheet are
+// in the Loadsheet block of the DGR tab.
 let fuelUi={extra:0};
 function parseOfpFuel(lt){
   const s=String(lt||''),a=s.indexOf('WEIGHT AND FUEL');
@@ -3953,11 +3949,13 @@ function fuelCalc(o){
   if(!f||f.block==null)return null;
   const rate=f.frKg&&f.frMin?f.frKg/f.frMin:null;
   let extra=Math.max(0,Math.round(fuelUi.extra)||0);
-  // what is added (extra + its burn) never goes above POSS EXTRA
-  if(f.poss!=null&&extra+(fuelBurn(f,extra)||0)>f.poss){
+  // what counts against POSS EXTRA (user decision 13/10/2026): the extra alone when landing weight is the limit - its burn
+  // is gone before landing - and the extra with its burn when take-off weight, tank capacity or something else limits
+  const used=x=>f.possWhy==='L'?x:x+(fuelBurn(f,x)||0);
+  if(f.poss!=null&&used(extra)>f.poss){
     extra=Math.min(extra,f.poss);
-    for(let i=0;i<4&&extra+(fuelBurn(f,extra)||0)>f.poss;i++)extra=Math.max(0,f.poss-(fuelBurn(f,extra)||0));
-    for(let i=0;i<40&&extra+100+(fuelBurn(f,extra+100)||0)<=f.poss;i++)extra+=100;      // the most that still fits
+    for(let i=0;i<4&&used(extra)>f.poss;i++)extra=Math.max(0,f.poss-(fuelBurn(f,extra)||0));
+    for(let i=0;i<40&&used(extra+100)<=f.poss;i++)extra+=100;      // the most that still fits
   }
   fuelUi.extra=extra;
   const burn=fuelBurn(f,extra),wc=fuelWeightChange(f,extra),added=extra+(burn||0);
@@ -3982,8 +3980,7 @@ function fuelFltTime(o,c){
   const t=Math.max(0,Number(m[1])*60+Number(m[2])+c.dMin);
   return String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');
 }
-// fuel is shown in tonnes with one decimal (user decision 13/10/2026): the block rounded up, a limit rounded down, the rest
-// to the nearest; what is typed is tonnes (64.5 or 64,5) - a figure of 400 or more is taken as kg
+// fuel is shown in tonnes with one decimal (user decision 13/10/2026): the block rounded up, the rest to the nearest; what is typed is tonnes (64.5 or 64,5) - a figure of 400 or more is taken as kg
 function fuelT(kg,mode){
   if(kg==null)return '';
   const n=mode==='up'?Math.ceil(kg/100):mode==='down'?Math.floor(kg/100):Math.round(kg/100);
@@ -3993,20 +3990,16 @@ function fuelKgIn(v){const x=Number(String(v||'').replace(',','.').replace(/[^\d
 function fuelHm(m){const t=Math.max(0,Math.round(m));return String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');}
 function fuelBurnHtml(c){return c.extra&&c.burn!=null?`<span class="flL">BURN</span><span class="flV" style="min-width:0">+${fuelT(c.burn)}<small>T</small></span>`:'';}
 function fuelOver(v,max){return max!=null&&v!=null&&v>max?'red':'';}
-// ZFW of the OFP in use against the revision before it; amber beyond the A350 ZFW deviation limit of the FON "OFP UPDATE
-// GUIDANCE" (read by the app from the eFON folder)
-function fuelZfwChgHtml(o){
-  const f=o?.fuel,p=analysis?.fuelPrev;
-  if(!p||!f?.zfw)return '<div></div>';
-  const d=f.zfw.est-p.zfw,lim=fonZfwLimit(o),amb=!!lim&&(d>lim.up||d<-lim.down);
-  return `<div class="flF"><span class="flL w2">ZFW CHG<small>R${p.rev} → R${analysis.selectedOfp?.revision??''}</small></span><span class="flV ${amb?'amber':''}">${d>0?'+':''}${d}</span></div>`;
-}
-// DOW and TOF of the plan against the loadsheet (Loadsheet block of the DGR tab)
+// DOW, ZFW and TOF of the plan against the loadsheet (Loadsheet block of the DGR tab). ZFW loadsheet − OFP is the
+// deviation of the FON "OFP UPDATE GUIDANCE": amber beyond the A350 limit for the flight time (read by the app from eFON),
+// with the action label when ZFW went up (user decision 13/10/2026; a decrease depends on the fuelling, no label)
 function fuelLoadHtml(c){
-  const f=c.f,L=fuelLoadsheet()||{},sg=n=>n>0?'+'+n:String(n);
-  return '<div class="fuelLoad"><b></b><i>PLAN</i><i>LOADSHEET</i><i>DIFF</i>'+[['DOW',f.dow?.est,L.dow],['TOF',c.tof,L.tof]].map(([n,pl,l])=>{
-    const d=l&&pl!=null?l.v-pl:null;
-    return `<b>${n}</b><span>${pl??''}</span><span>${l?l.v:''}</span><span class="${n==='DOW'&&d?'amber':'w'}">${d==null?'':sg(d)}</span>`;}).join('')+'</div>';
+  const f=c.f,L=fuelLoadsheet()||{},sg=n=>n>0?'+'+n:String(n),lim=fonZfwLimit(analysis?.o);
+  return '<div class="fuelLoad"><b></b><i>PLAN</i><i>LOADSHEET</i><i>DIFF</i>'+[['DOW',f.dow?.est,L.dow],['ZFW',f.zfw?.est,L.zfw],['TOF',c.tof,L.tof]].map(([n,pl,l])=>{
+    const d=l&&pl!=null?l.v-pl:null,amb=d!=null&&(n==='DOW'?d!==0:n==='ZFW'?!!lim&&(d>lim.up||d<-lim.down):false);
+    // ZFW up beyond the limit: what the FON asks for - fuel uplift on a flight shorter than its boundary (2 h), else a revised OFP
+    const act=n==='ZFW'&&lim&&d!=null&&d>lim.up&&lim.upliftBelow!=null?(lim.ft<lim.upliftBelow?'UPLIFT FUEL':'REQ REVISED OFP'):'';
+    return `<b>${n}</b><span>${pl??''}</span><span>${l?l.v:''}</span><span class="${amb?'amber':'w'}">${d==null?'':sg(d)}</span>`+(act?`<span class="fuelAct">${act}</span>`:'');}).join('')+'</div>';
 }
 // redraws only what moves when the fuel changes (the rows are not re-inserted, so nothing re-animates)
 function fuelUpdate(){
@@ -4040,12 +4033,14 @@ document.addEventListener('change',e=>{
     const min=m?Number(m[1])*60+Number(m[2]):dg.length>2?Number(dg.slice(0,-2))*60+Number(dg.slice(-2)):Number(dg)||0;
     fuelUi.extra=f.frKg&&f.frMin?Math.max(0,Math.round((min-aMin)*f.frKg/f.frMin)):fuelUi.extra;
   }else{
-    // a block typed in: what is above the OFP block is split into extra + the burn to carry it; above POSS EXTRA → the maximum
-    let added=Math.max(0,fuelKgIn(v)-f.block);
-    if(f.poss!=null)added=Math.min(added,f.poss);
-    let extra=added;
-    for(let i=0;i<6;i++){const b=fuelBurn(f,extra)||0;if(extra+b===added)break;extra=Math.max(0,added-b);}
-    if(extra+(fuelBurn(f,extra)||0)>added)extra=Math.max(0,added-(fuelBurn(f,extra)||0));
+    // a block typed in: the smallest extra whose block (extra + the burn to carry it, shown rounded up) reaches the figure
+    // typed; the figure already shown changes nothing; fuelCalc then holds it under POSS EXTRA
+    const kg=fuelKgIn(v),D=Math.ceil(kg/100),shown=e=>Math.ceil((f.block+e+(fuelBurn(f,e)||0))/100);
+    let extra=0;
+    if(shown(0)<D){
+      extra=Math.max(0,kg-f.block-(fuelBurn(f,Math.max(0,kg-f.block))||0));
+      for(let i=0;i<400&&shown(extra)<D;i++)extra+=10;
+    }
     fuelUi.extra=extra;
   }
   fuelUpdate();
@@ -4095,7 +4090,7 @@ function renderOFP(){
   h+='<div class="initRow one">'+fld('DISPATCH',box(dn,'green wide'))+'</div>';
   const fc=fuelCalc(o);
   if(fc){
-    // one block, four rows of two: ZFW · ZFW CHG / TOW · LDW / BLOCK · CONT / EXTRA (+ BURN) · POSS EXTRA
+    // one block, four rows of two: ZFW / TOW · LDW / BLOCK · CONT / EXTRA (+ BURN) · POSS EXTRA
     const f=fc.f,why={T:'TOW',L:'LDW',C:'TANK',E:'OTHER'}[f.possWhy]||'',T='<small>T</small>';
     const cm=String(f.cont||'').match(/^(\S+)\s+([A-Z]{3})$/),ct=String(cm?cm[1]:f.cont||na),pc=ct.match(/^(\d+(?:\.\d+)?)%$/);
     const tag=t=>t?`<span class="fuelTag">${esc(t)}</span>`:'';
@@ -4105,14 +4100,14 @@ function renderOFP(){
     const key=(attr,v,t,lbl)=>`<button type="button" class="fuelKey" data-fuel-${attr}="${v}" aria-label="${lbl}">${t}</button>`;
     const stk=(attr,step,lbl)=>'<span class="fuelStk">'+key(attr,step,'▲',lbl+' up')+key(attr,-step,'▼',lbl+' down')+'</span>';
     h+='<div class="initSep"></div>';
-    h+='<div class="initRow">'+cell('ZFW',val(f.zfw?f.zfw.est:na,f.zfw?fuelOver(f.zfw.est,f.zfw.max):''))+fuelZfwChgHtml(o)+'</div>';
+    h+='<div class="initRow">'+cell('ZFW',val(f.zfw?f.zfw.est:na,f.zfw?fuelOver(f.zfw.est,f.zfw.max):''))+'<div></div></div>';
     h+='<div class="initRow">'+cell('TOW',val(fc.tow??na,fuelOver(fc.tow,f.tow?.max),'fuelTow'))+cell('LDW',val(fc.ldw??na,fuelOver(fc.ldw,f.ldw?.max),'fuelLdw'),true)+'</div>';
     h+='<div class="initRow">'+cell('BLOCK',ent('fuelBlock',fuelT(fc.block,'up'),'Block fuel',74,'decimal',true))+cell('CONT',val(pc?esc(pc[1])+'<small>%</small>':esc(ct))+tag(cm?cm[2]:''),true)+'</div>';
     h+='<div class="initRow"><div>'+cell('EXTRA'+(f.addnl.length?'<small>'+f.addnl.map(x=>esc(x.name)).join('<br>')+'</small>':''),
         '<span class="fuelGrp">'+ent('fuelExtraKg',fuelT(fc.extraKg),'Extra fuel',44,'decimal',true)+stk('kg',500,'Extra fuel')+'</span>'+
         (fc.rate?'<span class="fuelGrp">'+ent('fuelExtraTime',fuelHm(fc.extraMin),'Extra time',56,'numeric',false)+stk('min',15,'Extra time')+'</span>':''))+
       '<div class="flF" id="fuelBurn" style="min-height:0">'+fuelBurnHtml(fc)+'</div></div>'+
-      cell('POSS EXTRA',val(f.poss==null?na:fuelT(f.poss,'down')+T)+tag(why),true,'flTop')+'</div>';
+      cell('POSS EXTRA',val(f.poss==null?na:fuelT(f.poss)+T)+tag(why),true,'flTop')+'</div>';
   }
   h+='</div></div>';
   $('#ofpResults').innerHTML=h;
@@ -7152,7 +7147,7 @@ window.flightBriefFonReply=(id,result,hasFolder)=>{const p=fonPending.get(id);if
 function fonLoad(){
   if(window.FLIGHT_BRIEF_FON_VERSION!==1||!window.webkit?.messageHandlers?.nativeHome)return;
   new Promise(resolve=>{const id=crypto.randomUUID();fonPending.set(id,resolve);window.webkit.messageHandlers.nativeHome.postMessage({action:'fonPerf',id});})
-    .then(list=>{fonList=list;if(analysis)renderOFP();});
+    .then(list=>{fonList=list;if(analysis){renderOFP();fuelUpdate();}});
 }
 function fonDate(t){
   const m=String(t||'').toUpperCase().match(/^(\d{2})(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(\d{2})$/);
@@ -7182,7 +7177,7 @@ function fonZfwLimit(o){
   const n=fonPerfNotice(o,'zfwLimits'),m=String(o?.flightTime||'').match(/^(\d{1,2}):(\d{2})$/);
   if(!n||!m||!Array.isArray(n.zfwLimits))return null;
   const ft=Number(m[1])+Number(m[2])/60,b=n.zfwLimits.find(x=>ft>=x[0]&&ft<x[1]);
-  return b?{up:Number(b[2]),down:Number(b[3])}:null;
+  return b?{up:Number(b[2]),down:Number(b[3]),ft,upliftBelow:Number.isFinite(Number(n.zfwUpliftBelow))&&n.zfwUpliftBelow!=null?Number(n.zfwUpliftBelow):null}:null;
 }
 function edtoLoad(){
   if(window.FLIGHT_BRIEF_EDTO_VERSION!==1||!window.webkit?.messageHandlers?.nativeHome)return;
