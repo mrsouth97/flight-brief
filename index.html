@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.93">
-<title>Flight Brief V6.93</title>
+<meta name="flight-brief-version" content="6.94">
+<title>Flight Brief V6.94</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -3185,6 +3185,8 @@ function notamContent(t,role,ad){
     if(h(/RESCUE AND FIRE|\bRFFS\b|FIRE ?FIGHTING/))return ['RFFS','A'];
     if(h(/\bSID\b|DEPARTURE \(RNAV\)|\bDEP(?:ARTURE)?\s+PROC/)&&!h(/\b(?:STAR|IAP)\b|APPROACH(?:ES)? RWY/))return role==='DEP'?['SID','W']:null;
     if(h(/\bSTAR\b|APPROACHES? RWY|APCH PROC|RNP AR|USER INSTRUCTIONS|\bIAP\b/))return role==='DEP'?null:['APPR','W'];
+    // V6.94: approach chart amendments (DAP: fix, minimum altitude, MSA) at the destination/alternates (user, 16/10/2026)
+    if(h(/\bDAP\b/)&&h(/\b(?:(?:LOC|ILS|RNP|VOR|NDB|GLS)(?:-[A-Z])?\s+RWY|MSA)\b/)&&h(/\b(?:FIX|MINIMUM ALT(?:ITUDE)?|MSA)\b/))return role==='DEP'?null:['APPR','W'];
     // V6.92: part of a runway not available (shorter runway): RUNWAY amber (user, 15/10/2026)
     if(h(/\bPORTION OF RWY\b.{0,120}\bNOT AVBL|\bRWY\s*\d{2}[LRC]?(?:\/\d{2}[LRC]?)?\b.{0,40}\bSHORTENED/)&&!h(/\bTDZ\b/))return ['RUNWAY','A'];
     if(h(/\b(?:TWY|TAXIWAYS?|TXL)\b.{0,80}\b(?:CLSD|CLOSED|WINGSPAN|NOT AVBL)|GP HOLD|TWY [A-Z0-9]+ OPR PROC|OPR PROCEDURES/))return ['TWY','A'];
@@ -3259,7 +3261,8 @@ function notamAirspace(t,rc){
   return null;
 }
 function notamFilter(n,role,ad,rc){
-  const t=String(n.e||'').toUpperCase().replace(/\s+/g,' ').trim();
+  // V6.94: the name of the amended document ("AMD DEP AND APCH PROCEDURES (DAP)", "AIP DEP AND APCH (DAP)") is not content
+  const t=String(n.e||'').toUpperCase().replace(/\s+/g,' ').trim().replace(/\b(?:AMD\s+)?(?:AIP\s+)?DEP(?:ARTURE)?\s+AND\s+APCH(?:\s+PROCEDURES)?\s*\(DAP\)/g,' DAP ');
   const c=notamContent(t,role,ad);
   if(!c)return null;
   return c[1]==='?'?notamAirspace(t,rc):c;
@@ -3283,7 +3286,7 @@ function notamReflow(text){
   for(const l of L){
     if(out.length){
       const end=prev.trimEnd();
-      const brk=/[.;]$/.test(end)||(/\b(?:FLW|FOLLOWS?|BELOW|DETAILS?)\s*:$/.test(end)&&!/\b(?:ADD|CHANGE|AMEND|AMD|DELETE)\s+THE\s+FLW(?:\s+TO\s+READ)?\s*:$/.test(end))||(end.endsWith(':')&&NR_COORD.test(l))||
+      const brk=/[.;]$/.test(end)||/\b(?:FLW|FOLLOWS?|BELOW|DETAILS?|READ)\s*:$/.test(end)||(end.endsWith(':')&&NR_COORD.test(l))||
         NR_LIST.test(l)||(prev.includes('  ')&&l.includes('  '))||/^(?:REF|REFER|RMK|NOTE)\b/.test(l)||(/^AMD\s+\S/.test(l)&&!/\bAMD$/.test(end))||(sched&&!NR_SCHEDCONT.test(l))||
         (prev.length<45&&!cont&&!NR_CONN.test(end)&&!NR_CONT.test(l));
       if(!brk){out[out.length-1]+=(/\S-$/.test(end)?'':' ')+l;prev=l;cont=true;continue;}
