@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.92">
-<title>Flight Brief V6.92</title>
+<meta name="flight-brief-version" content="6.93">
+<title>Flight Brief V6.93</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -3272,7 +3272,7 @@ const NR_MON='JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC',NR_WD='MON|TUE|WE
 const NR_LIST=/^(?:\d{1,2}(?:\.\d{1,2})*[.)](?=\s|[A-Z])|\d{1,2}(?:\.\d{1,2})+\s|\(\d{1,2}\)|[A-Za-z][.)]\s|[-+•*]\s|[A-Z]{1,2}\)\s)/;
 // a line that starts with one of these words continues the sentence above ("…FOR AIRCRAFT" / "OPERATING IN …")
 const NR_CONT=/^(?:[A-Z]+ING|AND|OR|TO|OF|FOR|WITH|BY|IN|ON|AT|FM|FROM|BTN|DUE|VIA|IS|ARE|WILL|BE|SHALL|THAN)\b/;
-const NR_CONN=/(?:,|-|\/|:|\b(?:AND|OR|TO|OF|THE|FOR|WITH|BY|IN|ON|AT|FM|FROM|BTN|DUE|VIA|A|AN|IS|ARE|WILL|BE|SHALL|NOT|AS))$/;
+const NR_CONN=/(?:,|-|\/|:|\b(?:AND|OR|TO|OF|THE|FOR|WITH|BY|IN|ON|AT|FM|FROM|BTN|DUE|VIA|A|AN|IS|ARE|WILL|BE|SHALL|NOT|AS|AMD))$/;
 const NR_SCHED=new RegExp('^(?:\\d{4}-\\d{4}\\b|DAILY\\s+\\d{4}-|(?:'+NR_MON+'|'+NR_WD+')\\b|\\d{1,2}(?:-\\d{1,2})?(?:\\s+\\d{1,2}(?:-\\d{1,2})?)*\\s+\\d{4}-)');
 const NR_SCHEDCONT=new RegExp('^(?:\\d|,|-|(?:'+NR_MON+'|'+NR_WD+'|EXC|AND|SR|SS|H24)\\b)');
 const NR_COORD=/^[NS]?\d{4,6}(?:\.\d+)?[NS]?\s?[EW]?\d{5,7}/;
@@ -3283,8 +3283,8 @@ function notamReflow(text){
   for(const l of L){
     if(out.length){
       const end=prev.trimEnd();
-      const brk=/[.;]$/.test(end)||/\b(?:FLW|FOLLOWS?|BELOW|DETAILS?)\s*:$/.test(end)||(end.endsWith(':')&&NR_COORD.test(l))||
-        NR_LIST.test(l)||(prev.includes('  ')&&l.includes('  '))||/^(?:REF|REFER|RMK|NOTE)\b/.test(l)||(sched&&!NR_SCHEDCONT.test(l))||
+      const brk=/[.;]$/.test(end)||(/\b(?:FLW|FOLLOWS?|BELOW|DETAILS?)\s*:$/.test(end)&&!/\b(?:ADD|CHANGE|AMEND|AMD|DELETE)\s+THE\s+FLW(?:\s+TO\s+READ)?\s*:$/.test(end))||(end.endsWith(':')&&NR_COORD.test(l))||
+        NR_LIST.test(l)||(prev.includes('  ')&&l.includes('  '))||/^(?:REF|REFER|RMK|NOTE)\b/.test(l)||(/^AMD\s+\S/.test(l)&&!/\bAMD$/.test(end))||(sched&&!NR_SCHEDCONT.test(l))||
         (prev.length<45&&!cont&&!NR_CONN.test(end)&&!NR_CONT.test(l));
       if(!brk){out[out.length-1]+=(/\S-$/.test(end)?'':' ')+l;prev=l;cont=true;continue;}
     }
