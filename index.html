@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.88">
-<title>Flight Brief V6.88</title>
+<meta name="flight-brief-version" content="6.90">
+<title>Flight Brief V6.90</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -764,6 +764,17 @@ body>#sigwxViewer{display:none}
 .briefingFlight .rowLoad{position:absolute;left:0;bottom:-1px;height:2px;width:0;background:var(--blue);transition:width .18s linear;pointer-events:none}
 .native-home #scan:not(.scanError){display:none}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+/* V6.90 NOTAM levels: red = airport/RWY/approach lost or airspace crossing the route, amber = reduced or to check,
+   white = procedure info, O = only OTHER (green name, grey OTHER label) */
+#notamResults .notamEntityName.lvlR,#notamResults .lvlR{color:var(--mfRed)!important}
+#notamResults .notamEntityName.lvlA,#notamResults .lvlA{color:var(--mfAmber)!important}
+#notamResults .notamEntityName.lvlW,#notamResults .lvlW{color:var(--mfTxt)!important}
+#notamResults .notamEntityName.lvlO{color:var(--mfGreen)!important}
+#notamResults .notamType summary .lvlO{color:var(--mfMuted)!important}
+#notamResults .notamTypeRecord.lvR{border-left:3px solid var(--mfRed);padding-left:8px}
+#notamResults .notamTypeRecord.lvA{border-left:3px solid var(--mfAmber);padding-left:8px}
+#notamResults .notamTypeRecord.lvW{border-left:3px solid var(--mfLine2);padding-left:8px}
+#notamResults .notamTypeRecord.lvO{border-left:3px solid transparent;padding-left:8px}
 </style>
 </head>
 <body>
@@ -1871,7 +1882,7 @@ function airportUses(o){
   const uses=weatherAirportUses(o,true)
     .map(w=>({
       role:w.role==='DEST ALT'?'DEST ALTN':w.role==='ENR ALT'?'ENR ALTN':w.role==='EDTO ALT'?'EDTO ALTN':w.role,
-      icao:w.icao,time:w.periodTime,window:w.period
+      icao:w.icao,time:w.periodTime,window:w.period,at:w.time
     }))
     .filter(u=>{
       const icao=String(u.icao||'').toUpperCase();
@@ -2737,7 +2748,9 @@ function lidoFirHeadingInfo(input,fir){
 function looksLikeLidoNotamId(line){
   // Lido examples include A4697/26, 1H2845/26, SX149/25.
   // Require a slash-year and at least one digit before it.
-  const m=String(line||'').toUpperCase().match(/^\s*([A-Z0-9]{1,3}\d{2,5}\s*\/\s*\d{2})\b/);
+  const u=String(line||'').toUpperCase();
+  // V6.90: a one-digit number (SX1/26, AX3/23) counts only with VALID: on the same line
+  const m=u.match(/^\s*([A-Z0-9]{1,3}\d{2,5}\s*\/\s*\d{2})\b/)||u.match(/^\s*([A-Z]{1,3}\d\s*\/\s*\d{2})\b(?=.*\bVALID\s*:)/);
   return m?m[1].replace(/\s+/g,''):null;
 }
 
@@ -2790,7 +2803,8 @@ function parseLidoNotams(input){
     let j=i+1;
     for(;j<lines.length;j++){
       const nx=lines[j];
-      if(looksLikeLidoNotamId(nx))break;
+      // V6.90: "SX0034/26 AIP SUPPLEMENT" under "SX34/26 VALID: …" is the body of that NOTAM, not a new one.
+      if(looksLikeLidoNotamId(nx)&&!(!/\bVALID\s*:/i.test(nx)&&/\b(?:AIP|AIC)\s+(?:SUPPLEMENT|RESTRICTION)\b/i.test(nx)))break;
 
       const newLoc=lidoLineLocation(nx);
       if(newLoc)break;
@@ -2799,6 +2813,8 @@ function parseLidoNotams(input){
 
       // Stop on a major airport/FIR section title, but not on category dividers such as RUNWAY.
       if(/^(?:DEPARTURE AIRPORT|DESTINATION AIRPORT|ALTERNATE AIRPORT|EDTO SUITABLE ENROUTE AIRPORT)/i.test(nx))break;
+      // V6.90: other bulletin headings that were glued to the end of the record before them
+      if(/^(?:DESTINATION ALTERNATE\(S\)|(?:EDTO (?:ADEQUATE|SUITABLE) )?ENROUTE (?:AIRPORT|ALTERNATE)\(S\)|EDTO (?:ADEQUATE|SUITABLE)\s*$|EXTENDED AREA AROUND\b|AREA ENROUTE\b|FUEL ENROUTE AIRPORT)/i.test(nx))break;
       // V6.40: a "+++ APPROACH PROCEDURE +++" style divider belongs to the next record.
       if(/^[+=]{4,}[\s\S]*[+=]{4,}$/.test(nx))continue;
 
@@ -3135,6 +3151,106 @@ function notamAttentionTags(n){
   if(/EXPECTED\s+DELAY|\bDELAY(?:ED|S)?\b|\bDLA\b|\bATFM\b|\bCTOT\b|FLOW\s+CONTROL/i.test(x))tags.push('EXPECTED DELAY');
   if(/(?:GNSS|GPS|SATELLITE).{0,90}(?:JAMM|INTERFERENCE|UNRELIABLE|OUTAGE|DEGRADED|NOT\s+AVBL|UNAVAILABLE|LOSS)|(?:JAMM|INTERFERENCE).{0,90}(?:GNSS|GPS|SATELLITE)/i.test(x))tags.push('GNSS/GPS');
   return [...new Set(tags)];
+}
+// V6.90: NOTAM filter. The rules come from the user's grading of six flights (14–15/10/2026, 605 NOTAMs; tool and
+// answer key in tmp/notam/). A NOTAM inside the time of use gets a type group and a level (R red, A amber, W white);
+// everything else goes to OTHER. '?' = airspace or route, decided against the flight's route by notamAirspace.
+function notamContent(t,role,ad){
+  const h=re=>re.test(t);
+  if(h(/FOUR-ENGINE|\bA380\b|CODE F\b/))return null;                         // not the A350
+  if(h(/^(?:REF|REFER)\b.{0,30}(?:E-?AIP\b.{0,25}PAGE|AIP PAGE|AIP SUP(?:PLEMENT)?\s+\d)/)&&!h(/\bPROC\b.{0,80}\bWITHDRAWN|WITHDRAWN TEMPO/))return null; // eAIP page edits: dispatch
+  if(h(/^.{0,40}\bNDB\b.{0,60}\b(?:U\/S|UNSERVICEABLE|NOT AVBL)/))return null;  // the A350 does not use NDBs
+  if(h(/^(?:\S+ ){0,12}?(?:ELECT )?WIP (?:ADJACENT|ON AREA|ON MIL)/))return null;
+  const rwyClsd=/(?<!WHEN )\bRWY\s*\d{2}[LRC]?(?:\/\d{2}[LRC]?)?\s+(?:TEMPO\s+)?CLSD/;
+  if(ad){
+    if(h(rwyClsd))return ['RUNWAY','R'];
+    if(h(/\b(?:ILS|LOC|GP|GS|GLS)\b.{0,60}\b(?:U\/S|UNSERVICEABLE|NOT AVBL)|\bPROC\b.{0,80}\bWITHDRAWN|WITHDRAWN TEMPO|DO NOT USE THE FLT PROCEDURES|\bIAP\b.{0,40}NOT AVBL/))return ['APPR','R'];
+  }
+  if(h(/\bBIRDS? (?:ACT|CONCENTRATION|FLOCK|STRIKE)|BIRD FLOCKS|\bOBST|CRANE|DECLARED DIST|FRICTION|GROOVED|CLEANING|GRASS CUTTING|FOLLOW-ME|\bVDGS\b|SURVEY|PRIMARY RADAR|\bPSR\b|\bOCA\b|MINIMA|AIRSPACE USE PLAN|IN ADDN TO RTE AVBL/))return null;
+  if(h(/^[SA]X\d+\/\d+ AIP SUPPLEMENT/)&&!h(/\b(?:ILS|LOC|GP|GLS)\b.{0,80}(?:U\/S|UNSERVICEABLE)|RWY\s*\d{2}[LRC]?\s+(?:WILL BE\s+)?CLSD|CORRIDOR|ATS RTE/))return null;
+  if(ad){
+    if(h(/\b(?:AD|AERODROME|AIRPORT)\b.{0,40}\bCLSD\b/))return ['AIRPORT','R'];
+    if(h(/\b(?:ALS|PAPI|LGT SYSTEM|APCH LGT|RWY EDGE LGT|RCLL|TDZ LGT)\b[^.]{0,60}\b(?:U\/S|UNSERVICEABLE)/))return ['LIGHTS','A'];
+    if(h(/\b(?:DME|VOR|VOR\/DME|VORTAC|TACAN)\b.{0,50}\bU\/S\b/)&&!h(/RADIAL/))return role==='DEP'||role==='DEST'?['NAVAID','A']:null;
+    if(h(/RESCUE AND FIRE|\bRFFS\b|FIRE ?FIGHTING/))return ['RFFS','A'];
+    if(h(/\bSID\b|DEPARTURE \(RNAV\)/)&&!h(/\b(?:STAR|IAP)\b|APPROACH(?:ES)? RWY/))return role==='DEP'?['SID','W']:null;
+    if(h(/\bSTAR\b|APPROACHES? RWY|APCH PROC|RNP AR|USER INSTRUCTIONS|\bIAP\b/))return role==='DEP'?null:['APPR','W'];
+    if(h(/\b(?:TWY|TAXIWAYS?|TXL)\b.{0,80}\b(?:CLSD|CLOSED|WINGSPAN|NOT AVBL)|GP HOLD|TWY [A-Z0-9]+ OPR PROC|OPR PROCEDURES/))return ['TWY','A'];
+    if(h(/\b(?:TWR|APP|GND)\b FREQ.{0,30}U\/S/))return ['ATC','A'];
+  }
+  if(h(/DATA-?LINK|\bLID\b|\bCPDLC\b/))return ['DATALINK','W'];
+  if(h(/(?:GNSS|GPS)[^.]{0,90}(?:RAIM|UNRELIABLE|INTERFERENCE|JAMM|LOST|OUTAGE)/))return ['GNSS','A'];
+  if(!ad&&h(/\b(?:TWY|TAXIWAY|STANDS?|APN)\b/)&&!h(/\bAIRSPACE|\bFL\d{3}/))return null;
+  if(h(/FLT PLAN RQMNTS|FLIGHT PLAN REQUIREMENTS|FLIGHTS? ROUTES?|ATS RTE|CORRIDOR|PROHIBITED|RESTRICTED AREA|\bR\d{2,3}[A-Z]?\b ACT|AIRSPACE [A-Z0-9]+ ACT|MIL (?:ACT|EXER)|DANGER AREA|\bFRNG\b|\bZRT\b|\bUAS\b/)){
+    if(h(/DANGER AREA|\bFRNG\b|\bPJE\b|ACTIVATION IS POSS/))return null;
+    if(h(/\bATS RTE\b.{0,80}\bAVBL\b/)&&!h(/CLSD|NOT AVBL|MANDATORY/))return null;
+    return ['AIRSPACE','?'];
+  }
+  return null;
+}
+// Route context for airspace NOTAMs: nav log points every ~10 NM and the names on the filed route.
+function notamRouteCtx(ofpText){
+  const nav=enrNavLog(ofpText),pts=[];
+  for(let i=0;i+1<nav.length;i++){
+    const a=nav[i],b=nav[i+1],n=Math.max(1,Math.floor(enrDist(a,b)/10));
+    for(let k=0;k<n;k++){const f=k/n;pts.push({lat:a.lat+(b.lat-a.lat)*f,lon:a.lon+(b.lon-a.lon)*f,w:a});}
+  }
+  if(nav.length)pts.push({lat:nav[nav.length-1].lat,lon:nav[nav.length-1].lon,w:nav[nav.length-1]});
+  const fpl=(String(ofpText||'').match(/\(FPL-[\s\S]*?\)/)||[''])[0].toUpperCase();
+  const names=new Set([...(fpl.match(/\b[A-Z]{1,2}\d{1,4}[A-Z]?\b|\b[A-Z]{2,5}\b/g)||[]),...nav.map(w=>w.name)]);
+  return {pts,names};
+}
+function notamCoords(t){
+  const out=[],re=/\b([NS])?(\d{2})(\d{2})(\d{2}(?:\.\d+)?)?([NS])?\s?([EW])?(\d{3})(\d{2})(\d{2}(?:\.\d+)?)?([EW])?\b/g;let m;
+  while((m=re.exec(t))){
+    const ns=m[1]||m[5],ew=m[6]||m[10];
+    if(!ns||!ew||(m[1]&&m[5])||(m[6]&&m[10]))continue;
+    const la=+m[2]+m[3]/60+(m[4]?m[4]/3600:0),lo=+m[7]+m[8]/60+(m[9]?m[9]/3600:0);
+    if(la>90||lo>180)continue;
+    out.push({lat:(ns==='S'?-1:1)*la,lon:(ew==='W'?-1:1)*lo});
+  }
+  return out;
+}
+function notamBand(t){
+  const v=s=>{s=s.replace(/\s/g,'');if(s==='SFC'||s==='GND')return 0;if(s==='UNL')return 999;if(s.startsWith('FL'))return +s.slice(2,5);return Math.floor(parseInt(s,10)/100);};
+  const m=t.match(/F\)\s*(SFC|GND|\d+\s*FT\s*(?:AMSL|AGL)?|FL\s?\d{3})\s*G\)\s*(UNL|\d+\s*FT\s*(?:AMSL|AGL)?|FL\s?\d{3})/)||
+          t.match(/\b(SFC|GND|FL\s?\d{3}|\d{3,5}\s?FT(?: AMSL| AGL)?)\s*(?:-|TO|THRU)\s*(UNL|FL\s?\d{3}|\d{3,5}\s?FT(?: AMSL| AGL)?)\b/);
+  return m?[v(m[1]),v(m[2])]:null;
+}
+function notamAirspace(t,rc){
+  const band=notamBand(t);
+  if(band&&band[0]>=430)return null;                                             // above the A350 ceiling
+  const cs=notamCoords(t);
+  if(cs.length&&rc.pts.length){
+    const r=t.match(/(\d+(?:\.\d+)?)\s?(NM|KM)\s+(?:RADIUS|EITHER SIDE)|RADIUS\s+(?:OF\s+)?(\d+(?:\.\d+)?)\s?(NM|KM)/);
+    const rad=r?Number(r[1]||r[3])*((r[2]||r[4])==='KM'?0.54:1):null;
+    const dmin=p=>Math.min(...cs.map(c=>enrDist(p,c)));
+    let inside=false,near=null,d=Infinity;
+    if(cs.length>=3&&rad==null){
+      const inPoly=p=>{let c=false;for(let i=0,j=cs.length-1;i<cs.length;j=i++){const a=cs[i],b=cs[j];if((a.lat>p.lat)!==(b.lat>p.lat)&&p.lon<(b.lon-a.lon)*(p.lat-a.lat)/(b.lat-a.lat)+a.lon)c=!c;}return c;};
+      near=rc.pts.find(inPoly)||null;inside=!!near;
+      if(!inside)for(const p of rc.pts){const x=dmin(p);if(x<d){d=x;near=p;}}
+    }else{
+      for(const p of rc.pts){const x=dmin(p)-(rad||0);if(x<d){d=x;near=p;}}
+      inside=d<=0;
+    }
+    if(!inside&&d>50)return null;
+    const fl=typeof near.w.fl==='number'?near.w.fl:null;
+    if(band&&fl&&(band[1]<fl-10||band[0]>fl+10))return null;
+    return ['AIRSPACE',inside?'R':'A'];
+  }
+  const names=new Set([...(t.match(/\b[A-Z]{5}\b/g)||[]),...[...t.matchAll(/'([A-Z]{2,3})'/g)].map(x=>x[1])]);
+  const awys=(t.match(/\b(?:[A-Z]|U[A-Z])\d{1,4}\b/g)||[]).filter(x=>x!=='A380'&&x!=='A350');
+  if([...names].some(x=>rc.names.has(x)&&!['VALID','DAILY','APPRX'].includes(x))||awys.some(x=>rc.names.has(x)))return ['ROUTE','A'];
+  if(/FLT PLAN RQMNTS|FLIGHT PLAN REQUIREMENTS|FLIGHTS? ROUTES?|ATS RTE|CORRIDOR/.test(t))return null;
+  if(!cs.length&&/\b(?:R|D|P|M|W[A-Z]?[DPR])\s?\d{2,4}[A-Z]{0,2}\b|AREA|AIRSPACE/.test(t))return ['AIRSPACE','A']; // named only: the crew checks
+  return null;
+}
+function notamFilter(n,role,ad,rc){
+  const t=String(n.e||'').toUpperCase().replace(/\s+/g,' ').trim();
+  const c=notamContent(t,role,ad);
+  if(!c)return null;
+  return c[1]==='?'?notamAirspace(t,rc):c;
 }
 function airportNotamGroup(role){
   if(role==='DEP')return 'DEP ARPT';
@@ -3838,50 +3954,34 @@ function analyse(){
     o.date0?o.date0.getUTCFullYear():new Date().getUTCFullYear()
   );
 
+  // V6.90: every NOTAM inside the time of use is kept; notamFilter puts it in a type group or in OTHER. DEP/DEST are
+  // checked at the take-off / landing time (user, 15/10/2026), alternates over the OFP WX PERIOD, FIRs over entry–exit.
   const relevant=[];
+  const rc=notamRouteCtx(ofpLayoutText);
+  const inTime=(n,s,e)=>{
+    if(!overlaps(n,s,e))return null;
+    const sch=simpleLidoScheduleOverlap(n.d,s,e,n.start,n.end);
+    return sch===false?null:(sch===null&&n.d?'SCHEDULE REVIEW':'MATCHED');
+  };
 
   for(const n of notams){
-    const tags=notamAttentionTags(n);
-    if(!tags.length)continue; // Only categories requested by the user are surfaced.
-
     for(const u of uses){
       if(n.a!==u.icao)continue;
-      const base={...n,group:airportNotamGroup(u.role),airportRole:u.role,tags,cat:tags[0]};
-
-      if(u.window[0]&&u.window[1]&&n.start){
-        if(overlaps(n,u.window[0],u.window[1])){
-          const sch=simpleLidoScheduleOverlap(n.d,u.window[0],u.window[1],n.start,n.end);
-          if(sch!==false)relevant.push({...base,scope:u.role+' '+u.icao,scheduleReview:!!n.d&&sch===null,timing:sch===null&&n.d?'SCHEDULE REVIEW':'MATCHED',useStart:u.window[0],useEnd:u.window[1]});
-        }
-      }else{
-        relevant.push({
-          ...base,
-          scope:u.role+' '+u.icao,
-          scheduleReview:true,
-          timing:!n.start?'NOTAM TIME REVIEW':'AIRPORT USE TIME REVIEW',
-          useStart:u.window[0],useEnd:u.window[1]
-        });
-      }
+      const [s,e]=(u.role==='DEP'||u.role==='DEST')&&u.at?[u.at,u.at]:u.window;
+      let timing;
+      if(s&&e&&n.start){timing=inTime(n,s,e);if(!timing)continue;}
+      else timing=!n.start?'NOTAM TIME REVIEW':'AIRPORT USE TIME REVIEW';
+      const f=notamFilter(n,u.role,true,rc);
+      relevant.push({...n,group:airportNotamGroup(u.role),airportRole:u.role,scope:u.role+' '+u.icao,timing,scheduleReview:timing!=='MATCHED',useStart:s,useEnd:e,mcat:f?f[0]:'OTHER',mlvl:f?f[1]:'O'});
     }
 
-    for(const f of firs){
-      if(!(n.a===f.fir||n.qfir===f.fir))continue;
-      const base={...n,group:firNotamGroup(f.role),firRole:f.role,tags,cat:tags[0]};
-
-      if(f.start&&f.end&&n.start){
-        if(overlaps(n,f.start,f.end)){
-          const sch=simpleLidoScheduleOverlap(n.d,f.start,f.end,n.start,n.end);
-          if(sch!==false)relevant.push({...base,scope:f.role+' '+f.fir,scheduleReview:!!n.d&&sch===null,timing:sch===null&&n.d?'SCHEDULE REVIEW':'MATCHED',useStart:f.start,useEnd:f.end});
-        }
-      }else{
-        relevant.push({
-          ...base,
-          scope:f.role+' '+f.fir,
-          scheduleReview:true,
-          timing:!n.start?'NOTAM TIME REVIEW':'FIR TIME REVIEW',
-          useStart:f.start,useEnd:f.end
-        });
-      }
+    for(const fr of firs){
+      if(!(n.a===fr.fir||n.qfir===fr.fir))continue;
+      let timing;
+      if(fr.start&&fr.end&&n.start){timing=inTime(n,fr.start,fr.end);if(!timing)continue;}
+      else timing=!n.start?'NOTAM TIME REVIEW':'FIR TIME REVIEW';
+      const f=notamFilter(n,fr.role,false,rc);
+      relevant.push({...n,group:firNotamGroup(fr.role),firRole:fr.role,scope:fr.role+' '+fr.fir,timing,scheduleReview:timing!=='MATCHED',useStart:fr.start,useEnd:fr.end,mcat:f?f[0]:'OTHER',mlvl:f?f[1]:'O'});
     }
   }
 
@@ -4675,6 +4775,12 @@ function enrCoords(s){
 function enrArea(s){
   let m=s.match(/\bWI\s+(\d+)\s*(NM|KM)\s+OF\s+(?:TC\s+)?(?:CENTRE|CENTER)\b/);
   if(m){const c=enrCoords(s)[0];if(c)return {type:'circle',c,r:Number(m[1])*(m[2]==='KM'?0.54:1)};}
+  // Annex 3 Table A6-1A (V6.89): WI nnKM OF <position> - a circle round a point
+  m=s.match(new RegExp('\\bWI\\s+(\\d+)\\s*(NM|KM)\\s+OF\\s+('+ENR_CO+')'));
+  if(m){const c=enrCoords(m[3])[0];if(c)return {type:'circle',c,r:Number(m[1])*(m[2]==='KM'?0.54:1)};}
+  // APRX nnKM WID LINE BTN p1 - p2 [- p3 …]: a band nn wide centred on the line
+  m=s.match(/\bAPRX\s+(\d+)\s*(NM|KM)\s+WID\s+LINE\s+BTN\b(.*)/);
+  if(m){const pts=enrCoords(m[3]);if(pts.length>=2)return {type:'corridor',pts,r:Number(m[1])*(m[2]==='KM'?0.54:1)/2};}
   m=s.match(/\bWI\s+(\d+)\s*(NM|KM)\s+OF\s+LINE\b(.*)/);
   if(m){const pts=enrCoords(m[3]);if(pts.length>=2)return {type:'corridor',pts,r:Number(m[1])*(m[2]==='KM'?0.54:1)};}
   const wi=s.search(new RegExp('\\bWI\\s+'+ENR_CO));
@@ -4699,6 +4805,30 @@ function enrArea(s){
   if(pts.length>=3)return {type:'poly',pts};
   return null;
 }
+// Level of a SIGMET (part), every form of Annex 3 Table A6-1A (V6.89) → {lo,hi,band} in hundreds of feet, or null
+function enrSigLevel(t){
+  const fl=ft=>Math.round(Number(ft)/100),m2=m=>Math.round(Number(m)*3.28084/100);
+  const R=[
+    [/\bFL(\d{3})\/(\d{3})\b/,v=>[+v[1],+v[2]]],
+    [/\bSFC\/FL(\d{3})\b/,v=>[0,+v[1]]],
+    [/\bSFC\/(\d{3,5})M\b/,v=>[0,m2(v[1])]],
+    [/\bSFC\/(\d{3,5})\s*FT\b/,v=>[0,fl(v[1])]],
+    [/\b(\d{3,5})M\/FL(\d{3})\b/,v=>[m2(v[1]),+v[2]]],
+    [/\b(\d{3,5})\s*FT\/FL(\d{3})\b/,v=>[fl(v[1]),+v[2]]],
+    [/\b(\d{3,5})\/(\d{3,5})M\b/,v=>[m2(v[1]),m2(v[2])]],
+    [/\b(\d{3,5})\/(\d{3,5})\s*FT\b/,v=>[fl(v[1]),fl(v[2])]],
+    [/\bTOP\s+ABV\s+FL(\d{3})\b/,v=>[0,999]],
+    [/\bTOP\s+ABV\s+(\d{4,5})\s*FT\b/,v=>[0,999]],
+    [/\bABV\s+FL(\d{3})\b/,v=>[+v[1],999]],
+    [/\bABV\s+(\d{4,5})\s*FT\b/,v=>[fl(v[1]),999]],
+    [/\b(?:TOP\s+BLW|TOP|BLW)\s+FL(\d{3})\b/,v=>[0,+v[1]]],
+    [/(?<![\/\w])FL(\d{3})(?![\/\d])/,v=>[+v[1],+v[1]]],
+    [/(?<!VIS\s)(?<![\/\w])(\d{3,5})M(?![\/\w])/,v=>[m2(v[1]),m2(v[1])]],
+    [/(?<![\/\w])(\d{4,5})\s*FT(?![\/\w])/,v=>[fl(v[1]),fl(v[1])]],
+  ];
+  for(const [re,f] of R){const v=t.match(re);if(v){const [lo,hi]=f(v);return {lo,hi,band:v[0].replace(/\s+/g,' ')};}}
+  return null;
+}
 function enrSigTime(ddhhmm,ref){
   const d=Number(ddhhmm.slice(0,2)),h=Number(ddhhmm.slice(2,4)),mi=Number(ddhhmm.slice(4,6));
   if(!ref)return null;
@@ -4711,7 +4841,8 @@ function enrSigTime(ddhhmm,ref){
   return best;
 }
 function enrSigmets(text,ref){
-  const t=String(text||'').replace(/\r/g,'');
+  // V6.89: an en or em dash is read as the hyphen of the template (after the MWO, between the points of a line or area)
+  const t=String(text||'').replace(/\r/g,'').replace(/[\u2013\u2014]/g,'-');
   const heads=[...t.matchAll(/\b([A-Z]{4})\s+SIGMET\s+([A-Z0-9]{1,4})\s+VALID\s+(\d{6})\/(\d{6})\s+([A-Z]{4})\s*-/g)];
   const out=[],seen=new Set(),cancelled=new Set();
   heads.forEach((h,i)=>{
@@ -4725,21 +4856,23 @@ function enrSigmets(text,ref){
     seen.add(raw);
     const f=body.match(/^([A-Z]{4})\s+[A-Z][A-Z .\/-]*?\b(?:FIR\/UIR|UIR\/FIR|FIR\/CTA|FIR|UIR|CTA)\b/);
     const fir=f?f[1]:h[1];
+    // a test or exercise SIGMET (status indicator after the FIR name) is not shown
+    if(f&&/^\s*(?:TEST|EXER)\b/.test(body.slice(f[0].length)))return;
     const cnl=body.match(/\bCNL\s+SIGMET\s+([A-Z0-9]{1,4})\s+(\d{6})\/(\d{6})/);
     if(cnl){cancelled.add(fir+'|'+cnl[1]+'|'+cnl[2]+'|'+cnl[3]);return;}
     const ph=body.match(/\b(?:OBSC|EMBD|FRQ|SQL)\s+TS(?:GR)?\b|\bSEV\s+TURB\b|\bSEV\s+ICE(?:\s*\(FZRA\))?|\bSEV\s+MTW\b|\bHVY\s+[DS]S\b|\bTC\s+[A-Z-]+|\bVA\s+(?:ERUPTION|CLD)\b|\bRDOACT\s+CLD\b|\bTS(?:GR)?\b/);
-    let lo=null,hi=null,band='',v;
-    if((v=body.match(/\bFL(\d{3})\/(\d{3})\b/))){lo=Number(v[1]);hi=Number(v[2]);}
-    else if((v=body.match(/\bSFC\/FL(\d{3})\b/))){lo=0;hi=Number(v[1]);}
-    else if((v=body.match(/\bSFC\/(\d{4,5})\s*FT\b/))){lo=0;hi=Math.round(Number(v[1])/100);}
-    else if((v=body.match(/\b(\d{4,5})\s*FT\/FL(\d{3})\b/))){lo=Math.round(Number(v[1])/100);hi=Number(v[2]);}
-    else if((v=body.match(/\bTOP\s+ABV\s+FL(\d{3})\b/))){lo=0;hi=999;}
-    else if((v=body.match(/\bABV\s+FL(\d{3})\b/))){lo=Number(v[1]);hi=999;}
-    else if((v=body.match(/\b(?:TOP|BLW|TOP\s+BLW)\s+FL(\d{3})\b/))){lo=0;hi=Number(v[1]);}
-    if(v)band=v[0].replace(/\s+/g,' ');
-    const mov=body.match(/\bMOV\s+[NSEW]{1,3}\s+\d+\s*(?:KT|KMH)\b|\bSTNR\b/);
+    // the elements may be repeated with AND for a second volcanic ash cloud or area: each part has its own area and level
+    const parts=body.split(/\s+AND\s+(?=WI\s|APRX\s|ENTIRE\s)/);
+    const areas=[],levels=[];
+    for(const part of parts){
+      const lv=enrSigLevel(part.split(/\bFCST\s+AT\s+\d{4}Z\b/)[0])||enrSigLevel(part);
+      if(lv)levels.push(lv);
+      for(const a of part.split(/\bFCST\s+AT\s+\d{4}Z\b/).map(enrArea).filter(Boolean)){if(lv)Object.assign(a,{lo:lv.lo,hi:lv.hi,band:lv.band});areas.push(a);}
+    }
+    const lo=levels.length?Math.min(...levels.map(x=>x.lo)):null,hi=levels.length?Math.max(...levels.map(x=>x.hi)):null;
+    const band=[...new Set(levels.map(x=>x.band))].join(' · ');
+    const mov=body.match(/\bMOV\s+(?:NNE|ENE|ESE|SSE|SSW|WSW|WNW|NNW|NE|SE|SW|NW|N|E|S|W)(?:\s+\d+\s*(?:KT|KMH))?\b|\bSTNR\b/);
     const chg=body.match(/\b(NC|WKN|INTSF)\b(?!.*\b(?:NC|WKN|INTSF)\b)/);
-    const areas=body.split(/\bFCST\s+AT\s+\d{4}Z\b/).map(enrArea).filter(Boolean);
     out.push({
       fir,id:h[2],from:enrSigTime(h[3],ref),to:enrSigTime(h[4],ref),validText:h[3]+'/'+h[4],
       phen:ph?ph[0].replace(/\s+/g,' '):'',lo,hi,band,mov:[mov?mov[0]:'',chg?chg[1]:''].filter(Boolean).join(' '),
@@ -4797,11 +4930,12 @@ function enrSigCheck(sig,pts,wpts,firs){
   let run=null,best=null;
   pts.forEach((p,i)=>{
     let d=null;
-    for(const a of sig.areas){
+    sig.areas.forEach((a,k)=>{
       const fir=firSet&&firSet.has(p.fir)?p.fir:sig.fir;
       const x=enrAreaDist(a,p,fir);
+      if(x===0)(res.hitAreas||(res.hitAreas=new Set())).add(k);
       if(x!=null&&(d==null||x<d))d=x;
-    }
+    });
     if(d===0){if(run)run.i1=i;else{run={i0:i,i1:i};res.portions.push(run);}}
     else run=null;
     if(d!=null&&(!best||d<best.d))best={d,i};
@@ -4937,10 +5071,12 @@ function enrSigHtml(r,a){
   const subs=[];
   if(hit){
     const sp=r.spans||[];
-    if(s.lo!=null&&sp.length){
+    const ha=r.hitAreas?[...r.hitAreas].map(k=>s.areas[k]).filter(a=>a&&a.lo!=null):[];
+    const L=ha.length?{lo:Math.min(...ha.map(a=>a.lo)),hi:Math.max(...ha.map(a=>a.hi)),band:[...new Set(ha.map(a=>a.band))].join(' · ')}:s;
+    if(L.lo!=null&&sp.length){
       const lo=Math.min(...sp.map(p=>p.lo)),hi=Math.max(...sp.map(p=>p.hi));
-      const inside=!(hi<s.lo||lo>s.hi);
-      subs.push(inside?`<b class="enrBad">${enrFlText(lo,hi)} inside ${esc(s.band)}</b>`:`${enrFlText(lo,hi)} outside ${esc(s.band)}`);
+      const inside=!(hi<L.lo||lo>L.hi);
+      subs.push(inside?`<b class="enrBad">${enrFlText(lo,hi)} inside ${esc(L.band)}</b>`:`${enrFlText(lo,hi)} outside ${esc(L.band)}`);
     }else subs.push(s.band?esc(s.band):'No level in SIGMET');
     if(r.note)subs.push(esc(r.note));
   }
@@ -5886,17 +6022,10 @@ function drawNotams(list){
     return;
   }
 
-  // V6.40: each NOTAM is listed once, under its most specific type.
-  function typeLabels(n){
-    const tags=n.tags||[];
-    if(tags.includes('AIRPORT CLOSED'))return ['AIRPORT'];
-    if(tags.includes('RWY CLOSED'))return ['RUNWAY'];
-    if(tags.includes('APPROACH UNAVAILABLE'))return ['APPR'];
-    if(tags.includes('GNSS/GPS'))return ['GNSS/GPS'];
-    if(tags.includes('EXPECTED DELAY'))return ['DELAY'];
-    if(tags.includes('RUNWAY'))return ['RUNWAY'];
-    return [];
-  }
+  // V6.90: each NOTAM is listed once, under the group given by notamFilter (OTHER = the rest in the time of use).
+  function typeLabels(n){return [n.mcat||'OTHER'];}
+  // worst level of a list: R red, A amber, W white, O only OTHER (green name, grey OTHER label)
+  const worst=rows=>rows.some(x=>x.mlvl==='R')?'R':rows.some(x=>x.mlvl==='A')?'A':rows.some(x=>x.mlvl==='W')?'W':'O';
 
   // V6.41: validity in the app's own format (DD/MM HH:MM - DD/MM HH:MM), no NOTAM number, then the
   // text as printed in the bulletin with its own line breaks. Collapsed to a few lines; tap to expand.
@@ -5904,7 +6033,7 @@ function drawNotams(list){
     const lines=String(n.raw||'').trim().split('\n').map(l=>l.trim().replace(/\s{2,}/g,'  '));
     const body=n.sourceFormat==='LIDO'&&lines.length>1?lines.slice(1).join('\n'):[n.d?'D) '+n.d:'',n.e||''].filter(Boolean).join('\n');
     return (
-      `<div class="notamTypeRecord">`+
+      `<div class="notamTypeRecord lv${n.mlvl||'O'}">`+
         `${n.timing&&n.timing!=='MATCHED'?'<div class="notamTimeReview inline">TIME REVIEW</div>':''}`+
         `<div class="notamRecordTime">${esc(fmtNotamTimeRange(n))}</div>`+
         `<div class="notamRaw">${esc(body)}</div>`+
@@ -5926,7 +6055,7 @@ function drawNotams(list){
       }
     }
 
-    const order=['AIRPORT','RUNWAY','APPR','DELAY','GNSS/GPS'];
+    const order=['AIRPORT','RUNWAY','APPR','LIGHTS','TWY','RFFS','NAVAID','ATC','SID','GNSS','DATALINK','AIRSPACE','ROUTE','OTHER'];
     let out='';
 
     for(const label of order){
@@ -5936,7 +6065,7 @@ function drawNotams(list){
       out+=
         `<details class="notamType">`+
           `<summary>`+
-            `<span>${esc(label)}</span>`+
+            `<span class="lvl${label==='OTHER'?'O':worst(rowsForType)}">${esc(label)}</span>`+
             `<span class="notamTypeCount">${rowsForType.length}</span>`+
           `</summary>`+
           `<div class="notamTypeBody">`;
@@ -6053,7 +6182,7 @@ function drawNotams(list){
           `<details class="notamEntity">`+
             `<summary>`+
               `<span class="notamEntityMain">`+
-                `<span class="notamEntityName affectedName">${esc(airportDisplay(icao))}</span>`+
+                `<span class="notamEntityName affectedName lvl${worst(airportRows)}">${esc(airportDisplay(icao))}</span>`+
                 `<span class="notamEntityTime">(${esc(useTimeText(u))})</span>`+
               `</span>`+
             `</summary>`+
@@ -6110,7 +6239,7 @@ function drawNotams(list){
           `<details class="notamEntity">`+
             `<summary>`+
               `<span class="notamEntityMain">`+
-                `<span class="notamEntityName affectedName">${esc(firDisplay(fir))}</span>`+
+                `<span class="notamEntityName affectedName lvl${worst(firRows)}">${esc(firDisplay(fir))}</span>`+
                 `<span class="notamEntityTime">(${esc(timeText)})</span>`+
               `</span>`+
             `</summary>`+
