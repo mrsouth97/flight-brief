@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.90">
-<title>Flight Brief V6.90</title>
+<meta name="flight-brief-version" content="6.92">
+<title>Flight Brief V6.92</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -775,6 +775,10 @@ body>#sigwxViewer{display:none}
 #notamResults .notamTypeRecord.lvA{border-left:3px solid var(--mfAmber);padding-left:8px}
 #notamResults .notamTypeRecord.lvW{border-left:3px solid var(--mfLine2);padding-left:8px}
 #notamResults .notamTypeRecord.lvO{border-left:3px solid transparent;padding-left:8px}
+/* V6.92: headline first (two lines), the rest on tap */
+.notamRaw.notamHl{-webkit-line-clamp:2}
+.notamRaw.notamRest{display:none}
+.notamTypeRecord.open .notamRaw.notamRest{display:block;-webkit-line-clamp:unset;overflow:visible}
 </style>
 </head>
 <body>
@@ -2806,8 +2810,10 @@ function parseLidoNotams(input){
       // V6.90: "SX0034/26 AIP SUPPLEMENT" under "SX34/26 VALID: …" is the body of that NOTAM, not a new one.
       if(looksLikeLidoNotamId(nx)&&!(!/\bVALID\s*:/i.test(nx)&&/\b(?:AIP|AIC)\s+(?:SUPPLEMENT|RESTRICTION)\b/i.test(nx)))break;
 
+      // V6.92: "VVCI/HAI PHONG/CAT BI INTL" (AIP SUP) or "DVOR/DME (LNT) …" inside a record are text: a real airport
+      // heading has a space before the slash ("VVCI /HPH …") or is followed by a NOTAM, NIL or another heading
       const newLoc=lidoLineLocation(nx);
-      if(newLoc)break;
+      if(newLoc&&(newLoc.kind!=='AIRPORT'||/^\s*[A-Z]{4}\s+\//.test(nx)||(j+1<lines.length&&(looksLikeLidoNotamId(lines[j+1])||/^NIL\b/i.test(lines[j+1])||lidoLineLocation(lines[j+1])))))break;
 
       if(/\bLIDO[\s-]*NOTAM[\s-]*BULLETIN\b/i.test(nx))break;
 
@@ -2815,6 +2821,8 @@ function parseLidoNotams(input){
       if(/^(?:DEPARTURE AIRPORT|DESTINATION AIRPORT|ALTERNATE AIRPORT|EDTO SUITABLE ENROUTE AIRPORT)/i.test(nx))break;
       // V6.90: other bulletin headings that were glued to the end of the record before them
       if(/^(?:DESTINATION ALTERNATE\(S\)|(?:EDTO (?:ADEQUATE|SUITABLE) )?ENROUTE (?:AIRPORT|ALTERNATE)\(S\)|EDTO (?:ADEQUATE|SUITABLE)\s*$|EXTENDED AREA AROUND\b|AREA ENROUTE\b|FUEL ENROUTE AIRPORT)/i.test(nx))break;
+      // V6.91: "ZRT CHALONS" / "LT A3694/26" over a dash line is the heading of the next record, not part of this one
+      if(/^-{5,}\s*$/.test(nx)||(j+1<lines.length&&/^-{5,}\s*$/.test(lines[j+1])))break;
       // V6.40: a "+++ APPROACH PROCEDURE +++" style divider belongs to the next record.
       if(/^[+=]{4,}[\s\S]*[+=]{4,}$/.test(nx))continue;
 
@@ -3162,9 +3170,11 @@ function notamContent(t,role,ad){
   if(h(/^.{0,40}\bNDB\b.{0,60}\b(?:U\/S|UNSERVICEABLE|NOT AVBL)/))return null;  // the A350 does not use NDBs
   if(h(/^(?:\S+ ){0,12}?(?:ELECT )?WIP (?:ADJACENT|ON AREA|ON MIL)/))return null;
   const rwyClsd=/(?<!WHEN )\bRWY\s*\d{2}[LRC]?(?:\/\d{2}[LRC]?)?\s+(?:TEMPO\s+)?CLSD/;
+  const depProc=h(/\bDEP(?:ARTURE)?\s+PROC/)&&!h(/\b(?:APCH|APPROACH|IAC|IAP|ILS|LOC)\b/);   // a departure procedure is SID, not APPR
   if(ad){
     if(h(rwyClsd))return ['RUNWAY','R'];
-    if(h(/\b(?:ILS|LOC|GP|GS|GLS)\b.{0,60}\b(?:U\/S|UNSERVICEABLE|NOT AVBL)|\bPROC\b.{0,80}\bWITHDRAWN|WITHDRAWN TEMPO|DO NOT USE THE FLT PROCEDURES|\bIAP\b.{0,40}NOT AVBL/))return ['APPR','R'];
+    // V6.92: SUSPENDED counts as lost too (user, 15/10/2026)
+    if(!depProc&&h(/\b(?:ILS|LOC|GP|GS|GLS)\b.{0,60}\b(?:U\/S|UNSERVICEABLE|NOT AVBL|SUSPENDED)|\bPROC(?:EDURES?)?\b.{0,80}\b(?:WITHDRAWN|SUSPENDED)|WITHDRAWN TEMPO|DO NOT USE THE FLT PROCEDURES|\bIAP\b.{0,40}NOT AVBL/))return ['APPR','R'];
   }
   if(h(/\bBIRDS? (?:ACT|CONCENTRATION|FLOCK|STRIKE)|BIRD FLOCKS|\bOBST|CRANE|DECLARED DIST|FRICTION|GROOVED|CLEANING|GRASS CUTTING|FOLLOW-ME|\bVDGS\b|SURVEY|PRIMARY RADAR|\bPSR\b|\bOCA\b|MINIMA|AIRSPACE USE PLAN|IN ADDN TO RTE AVBL/))return null;
   if(h(/^[SA]X\d+\/\d+ AIP SUPPLEMENT/)&&!h(/\b(?:ILS|LOC|GP|GLS)\b.{0,80}(?:U\/S|UNSERVICEABLE)|RWY\s*\d{2}[LRC]?\s+(?:WILL BE\s+)?CLSD|CORRIDOR|ATS RTE/))return null;
@@ -3173,15 +3183,17 @@ function notamContent(t,role,ad){
     if(h(/\b(?:ALS|PAPI|LGT SYSTEM|APCH LGT|RWY EDGE LGT|RCLL|TDZ LGT)\b[^.]{0,60}\b(?:U\/S|UNSERVICEABLE)/))return ['LIGHTS','A'];
     if(h(/\b(?:DME|VOR|VOR\/DME|VORTAC|TACAN)\b.{0,50}\bU\/S\b/)&&!h(/RADIAL/))return role==='DEP'||role==='DEST'?['NAVAID','A']:null;
     if(h(/RESCUE AND FIRE|\bRFFS\b|FIRE ?FIGHTING/))return ['RFFS','A'];
-    if(h(/\bSID\b|DEPARTURE \(RNAV\)/)&&!h(/\b(?:STAR|IAP)\b|APPROACH(?:ES)? RWY/))return role==='DEP'?['SID','W']:null;
+    if(h(/\bSID\b|DEPARTURE \(RNAV\)|\bDEP(?:ARTURE)?\s+PROC/)&&!h(/\b(?:STAR|IAP)\b|APPROACH(?:ES)? RWY/))return role==='DEP'?['SID','W']:null;
     if(h(/\bSTAR\b|APPROACHES? RWY|APCH PROC|RNP AR|USER INSTRUCTIONS|\bIAP\b/))return role==='DEP'?null:['APPR','W'];
+    // V6.92: part of a runway not available (shorter runway): RUNWAY amber (user, 15/10/2026)
+    if(h(/\bPORTION OF RWY\b.{0,120}\bNOT AVBL|\bRWY\s*\d{2}[LRC]?(?:\/\d{2}[LRC]?)?\b.{0,40}\bSHORTENED/)&&!h(/\bTDZ\b/))return ['RUNWAY','A'];
     if(h(/\b(?:TWY|TAXIWAYS?|TXL)\b.{0,80}\b(?:CLSD|CLOSED|WINGSPAN|NOT AVBL)|GP HOLD|TWY [A-Z0-9]+ OPR PROC|OPR PROCEDURES/))return ['TWY','A'];
     if(h(/\b(?:TWR|APP|GND)\b FREQ.{0,30}U\/S/))return ['ATC','A'];
   }
   if(h(/DATA-?LINK|\bLID\b|\bCPDLC\b/))return ['DATALINK','W'];
   if(h(/(?:GNSS|GPS)[^.]{0,90}(?:RAIM|UNRELIABLE|INTERFERENCE|JAMM|LOST|OUTAGE)/))return ['GNSS','A'];
   if(!ad&&h(/\b(?:TWY|TAXIWAY|STANDS?|APN)\b/)&&!h(/\bAIRSPACE|\bFL\d{3}/))return null;
-  if(h(/FLT PLAN RQMNTS|FLIGHT PLAN REQUIREMENTS|FLIGHTS? ROUTES?|ATS RTE|CORRIDOR|PROHIBITED|RESTRICTED AREA|\bR\d{2,3}[A-Z]?\b ACT|AIRSPACE [A-Z0-9]+ ACT|MIL (?:ACT|EXER)|DANGER AREA|\bFRNG\b|\bZRT\b|\bUAS\b/)){
+  if(h(/FLT PLAN RQMNTS|FLIGHT PLAN REQUIREMENTS|FLIGHTS? ROUTES?|ATS RTE|CORRIDOR|PROHIBITED|RESTRICTED AREA|\bR\d{2,3}[A-Z]?\b ACT|AIRSPACE [A-Z0-9]+ ACT|\bAREAS?\s+[A-Z]{1,3}-?[RP]\d{1,4}[^.]{0,80}\bACT\b|MIL (?:ACT|EXER)|DANGER AREA|\bFRNG\b|\bZRT\b|\bUAS\b/)){
     if(h(/DANGER AREA|\bFRNG\b|\bPJE\b|ACTIVATION IS POSS/))return null;
     if(h(/\bATS RTE\b.{0,80}\bAVBL\b/)&&!h(/CLSD|NOT AVBL|MANDATORY/))return null;
     return ['AIRSPACE','?'];
@@ -3251,6 +3263,125 @@ function notamFilter(n,role,ad,rc){
   const c=notamContent(t,role,ad);
   if(!c)return null;
   return c[1]==='?'?notamAirspace(t,rc):c;
+}
+// V6.92: NOTAM text as the crew reads it (user, 15/10/2026; prototype tmp/notam/reflow.py, sched.py). Lido wraps the
+// text at 66 columns, often on top of the source NOTAM's own wrapping, so lines are joined back into sentences and a
+// break is kept only where a new item starts. The leading schedule and F)/G) go to the time block.
+const NR_MON='JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC',NR_WD='MON|TUE|WED|THU|FRI|SAT|SUN';
+// item numbers are short (1. 2.1 (3) a)): "184725.38N…" or "15 DEC 2026" at a line start are not items
+const NR_LIST=/^(?:\d{1,2}(?:\.\d{1,2})*[.)](?=\s|[A-Z])|\d{1,2}(?:\.\d{1,2})+\s|\(\d{1,2}\)|[A-Za-z][.)]\s|[-+•*]\s|[A-Z]{1,2}\)\s)/;
+// a line that starts with one of these words continues the sentence above ("…FOR AIRCRAFT" / "OPERATING IN …")
+const NR_CONT=/^(?:[A-Z]+ING|AND|OR|TO|OF|FOR|WITH|BY|IN|ON|AT|FM|FROM|BTN|DUE|VIA|IS|ARE|WILL|BE|SHALL|THAN)\b/;
+const NR_CONN=/(?:,|-|\/|:|\b(?:AND|OR|TO|OF|THE|FOR|WITH|BY|IN|ON|AT|FM|FROM|BTN|DUE|VIA|A|AN|IS|ARE|WILL|BE|SHALL|NOT|AS))$/;
+const NR_SCHED=new RegExp('^(?:\\d{4}-\\d{4}\\b|DAILY\\s+\\d{4}-|(?:'+NR_MON+'|'+NR_WD+')\\b|\\d{1,2}(?:-\\d{1,2})?(?:\\s+\\d{1,2}(?:-\\d{1,2})?)*\\s+\\d{4}-)');
+const NR_SCHEDCONT=new RegExp('^(?:\\d|,|-|(?:'+NR_MON+'|'+NR_WD+'|EXC|AND|SR|SS|H24)\\b)');
+const NR_COORD=/^[NS]?\d{4,6}(?:\.\d+)?[NS]?\s?[EW]?\d{5,7}/;
+function notamReflow(text){
+  text=String(text||'').replace(/:[ \t]+(?=[NS]?\d{4,6}(?:\.\d+)?[NS]?\s?[EW]?\d{5,7})/g,':\n'); // "…TMA: 403742N…"
+  const L=text.split('\n').map(l=>l.trim().replace(/\s{2,}/g,'  ')).filter(Boolean),out=[];
+  let prev='',cont=false,sched=false;
+  for(const l of L){
+    if(out.length){
+      const end=prev.trimEnd();
+      const brk=/[.;]$/.test(end)||/\b(?:FLW|FOLLOWS?|BELOW|DETAILS?)\s*:$/.test(end)||(end.endsWith(':')&&NR_COORD.test(l))||
+        NR_LIST.test(l)||(prev.includes('  ')&&l.includes('  '))||/^(?:REF|REFER|RMK|NOTE)\b/.test(l)||(sched&&!NR_SCHEDCONT.test(l))||
+        (prev.length<45&&!cont&&!NR_CONN.test(end)&&!NR_CONT.test(l));
+      if(!brk){out[out.length-1]+=(/\S-$/.test(end)?'':' ')+l;prev=l;cont=true;continue;}
+    }
+    out.push(l);prev=l;cont=false;sched=NR_SCHED.test(l);
+  }
+  return out.join('\n');
+}
+// leading schedule of the first line ("21 0730-1600, 22 0700-2200", "DAILY 0130-1030", "0500-1400 EXC SAT SUN")
+function notamSchedSplit(text){
+  const nl=text.indexOf('\n'),first=nl<0?text:text.slice(0,nl),rest=nl<0?'':text.slice(nl+1);
+  const m=first.match(new RegExp('^((?:(?:'+NR_MON+'|'+NR_WD+'|EXC|DAILY|AND|H24|SR|SS|HOL|\\d{4}-\\d{4}|\\d{1,2}(?:-\\d{1,2})?|,|-)\\s*)+)'));
+  if(!m)return ['',text];
+  let end=-1;for(const x of m[1].matchAll(/\d{4}-\d{4}|H24|SR-SS/g))end=x.index+x[0].length;
+  if(end<0)return ['',text];
+  const tail=first.slice(end).match(new RegExp('^(?:\\s*(?:EXC|AND|'+NR_WD+'|HOL|,|(?:'+NR_MON+')(?:\\s+\\d{1,2}(?:-\\d{1,2})?)+))+'));
+  if(tail&&/[A-Z]/.test(tail[0]))end+=tail[0].length;
+  const remain=first.slice(end).replace(/^[ ,]+/,'');
+  return [first.slice(0,end).trim().replace(/,$/,''),(remain+(remain&&rest?'\n':'')+rest).trim()];
+}
+// slots of a schedule inside the validity b..e (UTC Dates); null = not understood
+function notamSchedSlots(s,b,e){
+  if(!b)return null;
+  const end=e&&e.getUTCFullYear()<9999?e:new Date(b.getTime()+400*864e5);
+  const toks=String(s).toUpperCase().replace(/,/g,' , ').split(/\s+/).filter(Boolean),out=[],exc=new Set(),wd=['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  const MON=NR_MON.split('|');
+  let month=b.getUTCMonth(),days=null,times=[];const excD=new Set();
+  const flush=()=>{
+    if(!times.length)return;
+    for(let d=Date.UTC(b.getUTCFullYear(),b.getUTCMonth(),b.getUTCDate());d<=end.getTime();d+=864e5){
+      const D=new Date(d);
+      if(days&&!days.has(D.getUTCMonth()*100+D.getUTCDate()))continue;
+      if(exc.has(wd[D.getUTCDay()])||excD.has(D.getUTCMonth()*100+D.getUTCDate()))continue;
+      for(const [t0,t1] of times){
+        const st=d+(+t0.slice(0,2)*60+ +t0.slice(2))*6e4;let en=d+((+t1.slice(0,2)%24)*60+ +t1.slice(2))*6e4;
+        if(en<=st)en+=864e5;
+        out.push([new Date(st),new Date(en)]);
+      }
+    }
+    times=[];
+  };
+  for(let i=0;i<toks.length;i++){
+    const t=toks[i];
+    if(MON.includes(t))month=MON.indexOf(t);
+    else if(t==='DAILY')days=null;
+    else if(t==='EXC'){
+      let m2=month;
+      while(i+1<toks.length&&(wd.includes(toks[i+1])||toks[i+1]==='HOL'||MON.includes(toks[i+1])||/^\d{1,2}(?:-\d{1,2})?$/.test(toks[i+1])&&!/^\d{4}/.test(toks[i+1]))){
+        const x=toks[++i];
+        if(MON.includes(x))m2=MON.indexOf(x);
+        else if(/^\d/.test(x)){const [a,z]=x.split('-').map(Number);for(let y=a;y<=(z||a);y++)excD.add(m2*100+y);}
+        else exc.add(x);
+      }
+    }
+    else if(/^\d{4}-\d{4}$/.test(t))times.push([t.slice(0,4),t.slice(5)]);
+    else if(/^\d{1,2}(?:-\d{1,2})?$/.test(t)){
+      if(times.length){flush();days=null;}
+      const [a,z]=t.split('-').map(Number);days=days||new Set();
+      for(let x=a;x<=(z||a);x++)days.add(month*100+x);
+    }
+    else if(t===','||wd.includes(t)||['AND','HOL','H24','SR','SS'].includes(t)){}
+    else return null;
+  }
+  flush();
+  const v=out.filter(x=>x[1]>b&&x[0]<end);
+  return v.length?v:null;
+}
+// the text parts of a NOTAM, cached on it: body (joined), sched (raw text), fg ([lower, upper])
+function notamParts(n){
+  if(n._parts)return n._parts;
+  const lines=String(n.raw||'').trim().split('\n');
+  let body=n.sourceFormat==='LIDO'&&lines.length>1?lines.slice(1).join('\n'):String(n.e||'');
+  const lv='(SFC|GND|UNL|FL\\s?\\d{3}|\\d+\\s*FT(?:\\s*(?:AMSL|AGL))?)';
+  const fg=body.match(new RegExp('(?:^|[ \\t]+)F\\)\\s*'+lv+'\\s+G\\)\\s*'+lv+'[ \\t]*$','m'));
+  if(fg)body=body.slice(0,fg.index)+body.slice(fg.index+fg[0].length);
+  // AIP SUP / AIC: the number line, the airport/FIR line and VALIDITY are not shown, so the headline is the subject (user)
+  if(/^\s*[A-Z]{2}\d+\/\d{2}\s+(?:AIP\s+(?:SUPPLEMENT|RESTRICTION)|AIC)\b/.test(body)){
+    const bl=body.split('\n');
+    for(let k=0;k<Math.min(5,bl.length);k++){
+      const t=bl[k].trim();
+      if(/^[A-Z]{2}\d+\/\d{2}\s+(?:AIP\s+(?:SUPPLEMENT|RESTRICTION)|AIC)\b(?:\s+RESTRICTION)?$/.test(t)||/^[A-Z]{4}\/[A-Z][A-Z .\/,'()-]*$/.test(t)||/^VALIDITY\s*:/.test(t)||/^\d{1,2}\s?[A-Z]{3}\s?\d{2}(?:\s*\d{4}(?:UTC)?)?\s*-\s*(?:UFN|PERM|\d{1,2}\s?[A-Z]{3}\s?\d{2}(?:\s*\d{4}(?:UTC)?)?)(?:\s*EST)?$/.test(t))bl[k]='';
+    }
+    body=bl.join('\n');
+  }
+  let [sched,rest]=n.sourceFormat==='LIDO'?notamSchedSplit(notamReflow(body)):[String(n.d||''),notamReflow(body)];
+  // a first line that is only the aerodrome name ("ANKARA ESENBOGA AERODROME") is not the headline
+  if(/^[A-Z][A-Z .\/'-]{2,40}\s(?:AERODROME|AIRPORT|INTL|AD)\.?\n/.test(rest))rest=rest.slice(rest.indexOf('\n')+1);
+  return n._parts={body:rest,sched,fg:fg?[fg[1].replace(/\s+/g,' '),fg[2].replace(/\s+/g,' ')]:null};
+}
+// schedule line for the time block: undated schedules as written, dated ones only the slots that touch the flight
+function notamSchedShown(n,w0,w1){
+  const s=notamParts(n).sched;
+  if(!s||!w0)return s;
+  if(!/(?<![\d-])\d{1,2}(?:-\d{1,2})?(?![\d-])/.test(s.replace(/\d{4}-\d{4}/g,'')))return s;
+  const v=notamSchedSlots(s,n.start,n.end),hit=v&&v.filter(x=>x[0]<=w1&&x[1]>=w0);
+  if(!hit||!hit.length)return s;
+  const dd=d=>String(d.getUTCDate()).padStart(2,'0')+'/'+String(d.getUTCMonth()+1).padStart(2,'0'),hm=d=>String(d.getUTCHours()).padStart(2,'0')+String(d.getUTCMinutes()).padStart(2,'0');
+  return hit.map(([a,b])=>dd(a)===dd(b)?`${dd(a)} ${hm(a)}-${hm(b)}`:`${dd(a)} ${hm(a)} - ${dd(b)} ${hm(b)}`).join(', ');
 }
 function airportNotamGroup(role){
   if(role==='DEP')return 'DEP ARPT';
@@ -3960,6 +4091,8 @@ function analyse(){
   const rc=notamRouteCtx(ofpLayoutText);
   const inTime=(n,s,e)=>{
     if(!overlaps(n,s,e))return null;
+    const sc=notamParts(n).sched,v=sc&&notamSchedSlots(sc,n.start,n.end);
+    if(v)return v.some(x=>x[0]<=e&&x[1]>=s)?'MATCHED':null;           // V6.92
     const sch=simpleLidoScheduleOverlap(n.d,s,e,n.start,n.end);
     return sch===false?null:(sch===null&&n.d?'SCHEDULE REVIEW':'MATCHED');
   };
@@ -5888,7 +6021,7 @@ function fmtNotamTimeRange(n){
   }
 
   const A=fmtNotamClock(a);
-  if(n?.c==='PERM')return `${A.date} ${A.time} - PERM`;
+  if(n?.c==='PERM'||n?.c==='UFN')return `${A.date} ${A.time} - ${n.c}`;   // V6.92: UFN was shown as 13/09 00:00
 
   if(!b){
     return `${A.date} ${A.time} - ${n?.c||'Not parsed'}`;
@@ -6012,7 +6145,7 @@ function drawNotams(list){
     // measured only once its type group is open (toggle does not bubble, hence the capture).
     $('#notamResults').addEventListener('toggle',e=>{
       if(!e.target.matches?.('details')||!e.target.open)return;
-      for(const r of e.target.querySelectorAll('.notamTypeRecord')){const t=r.querySelector('.notamRaw');if(t&&t.clientHeight)r.classList.toggle('more',t.scrollHeight>t.clientHeight+1);}
+      for(const r of e.target.querySelectorAll('.notamTypeRecord')){const t=r.querySelector('.notamHl');if(t&&t.clientHeight)r.classList.toggle('more',!!r.querySelector('.notamRest')||t.scrollHeight>t.clientHeight+1);}
     },true);
   }
 
@@ -6030,13 +6163,18 @@ function drawNotams(list){
   // V6.41: validity in the app's own format (DD/MM HH:MM - DD/MM HH:MM), no NOTAM number, then the
   // text as printed in the bulletin with its own line breaks. Collapsed to a few lines; tap to expand.
   function renderNotamRecord(n){
-    const lines=String(n.raw||'').trim().split('\n').map(l=>l.trim().replace(/\s{2,}/g,'  '));
-    const body=n.sourceFormat==='LIDO'&&lines.length>1?lines.slice(1).join('\n'):[n.d?'D) '+n.d:'',n.e||''].filter(Boolean).join('\n');
+    // V6.92: time block = validity, schedule (only the slots touching the flight when it lists dates), lower – upper;
+    // then the first paragraph (two lines at most); the rest of the NOTAM opens on tap (user, 15/10/2026).
+    const P=notamParts(n),sched=notamSchedShown(n,n.useStart,n.useEnd);
+    const nl=P.body.indexOf('\n'),head=nl<0?P.body:P.body.slice(0,nl),rest=nl<0?'':P.body.slice(nl+1);
     return (
-      `<div class="notamTypeRecord lv${n.mlvl||'O'}">`+
+      `<div class="notamTypeRecord lv${n.mlvl||'O'}${rest?' more':''}">`+
         `${n.timing&&n.timing!=='MATCHED'?'<div class="notamTimeReview inline">TIME REVIEW</div>':''}`+
         `<div class="notamRecordTime">${esc(fmtNotamTimeRange(n))}</div>`+
-        `<div class="notamRaw">${esc(body)}</div>`+
+        `${sched?`<div class="notamRecordTime">${esc(sched)}</div>`:''}`+
+        `${P.fg?`<div class="notamRecordTime">${esc(P.fg[0]+' – '+P.fg[1])}</div>`:''}`+
+        `<div class="notamRaw notamHl">${esc(head)}</div>`+
+        `${rest?`<div class="notamRaw notamRest">${esc(rest)}</div>`:''}`+
       `</div>`
     );
   }
