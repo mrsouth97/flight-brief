@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.95">
-<title>Flight Brief V6.95</title>
+<meta name="flight-brief-version" content="6.96">
+<title>Flight Brief V6.96</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -3510,6 +3510,9 @@ function parseCfpWindProfile(input,o){
     seen.add(p.name);
     unique.push(p);
   }
+  // V6.96: true track of each point from the nav log (TTK), for the along-track wind component
+  {const ttk=new Map();for(const w of enrNavLog(src))if(w.ttk!=null&&!ttk.has(w.name))ttk.set(w.name,w.ttk);
+   for(const p of unique)if(ttk.has(p.name))p.ttk=ttk.get(p.name);}
 
   // FCTM requires four FLs but does not prescribe one fixed set.
   // Select the four available CFP levels nearest the planned cruise profile.
@@ -3588,6 +3591,8 @@ function parseCfpWindProfile(input,o){
   };
 }
 
+const CFP_WC_STEP=5;
+function cfpWindComp(w,ttk){return Math.round(-Number(w.spd)*Math.cos((Number(w.dir)-Number(ttk))*Math.PI/180));}
 function filterCfpWindPoints(points,levels,stepEvents=[],initialFltLvl=''){
   const selectedLevels=[...(levels||[])].map(Number).filter(Number.isFinite);
   if(selectedLevels.length<2 || selectedLevels.length>4)return [];
@@ -3658,13 +3663,18 @@ function filterCfpWindPoints(points,levels,stepEvents=[],initialFltLvl=''){
         continue;
       }
 
-      const dDir=angleDiff(a.dir,b.dir);
-      const dSpd=Math.abs(a.spd-b.spd);
-      const changed=dDir>=30 || dSpd>=30;
+      // V6.96 (user 18/10/2026): a point is taken when the along-track wind component changes by 5 kt or more
+      // from the last taken point: WC = -V*cos(wind - TTK) (tailwind positive), each point on its own TTK from the
+      // nav log. Replaces the 30 deg / 30 kt rule, which is kept only when the nav log gives no TTK.
+      let changed,dWc=null;
+      if(Number.isFinite(windBase.ttk)&&Number.isFinite(p.ttk)){
+        dWc=Math.abs(cfpWindComp(b,p.ttk)-cfpWindComp(a,windBase.ttk));
+        changed=dWc>=CFP_WC_STEP;
+      }else changed=angleDiff(a.dir,b.dir)>=30||Math.abs(a.spd-b.spd)>=30;
       windChanges[fl]=changed;
 
       if(!windTrigger && changed){
-        windTrigger={type:'WIND',fl,dDir,dSpd};
+        windTrigger={type:'WIND',fl,dWc};
       }
     }
 
@@ -4828,11 +4838,14 @@ function enrNavLog(layoutText){
     for(const l of b){const x=l.match(/\|\s*(?:\d{1,4}\s+)?(\d{4})\s*\|/);if(x){eltm=hhmmMins(x[1]);if(eltm==null)eltm=Number(x[1].slice(0,2))*60+Number(x[1].slice(2));break;}}
     const tpLine=b.length>=2?b[b.length-2]:'';
     const tp=tpLine.match(/(?:^|\s)(\d{3})\s*\|/);
+    const tdev=tpLine.split('|')[0].trim().split(/\s+/),td=tdev.findIndex(x=>/^[PM]\d{2}$/.test(x));
+    const tk3=td<0?[]:tdev.slice(td+1).filter(x=>/^\d{3}$/.test(x));
+    const ttk=tk3.length>=2?Number(tk3[tk3.length-2]):null;
     out.push({
       name,fl:/^\d{3}$/.test(m[2])?Number(m[2]):m[2],
       lat:(c[1]==='S'?-1:1)*(Number(c[2])+Number(c[3])/60),
       lon:(c[4]==='W'?-1:1)*(Number(c[5])+Number(c[6])/60),
-      eltm,ws,tp:tp?Number(tp[1]):null,fir
+      eltm,ws,tp:tp?Number(tp[1]):null,fir,ttk:ttk!=null&&ttk<=360?ttk:null
     });
   }
   // ELTM gaps: carry the previous value so times stay monotonic.
