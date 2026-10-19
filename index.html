@@ -3591,7 +3591,7 @@ function parseCfpWindProfile(input,o){
   };
 }
 
-const CFP_WC_STEP=5;
+const CFP_WC_STEP=8;
 function cfpWindComp(w,ttk){return Math.round(-Number(w.spd)*Math.cos((Number(w.dir)-Number(ttk))*Math.PI/180));}
 function filterCfpWindPoints(points,levels,stepEvents=[],initialFltLvl=''){
   const selectedLevels=[...(levels||[])].map(Number).filter(Number.isFinite);
@@ -3663,7 +3663,7 @@ function filterCfpWindPoints(points,levels,stepEvents=[],initialFltLvl=''){
         continue;
       }
 
-      // V6.96 (user 18/10/2026): a point is taken when the along-track wind component changes by 5 kt or more
+      // V6.96 (user 18/10/2026): a point is taken when the along-track wind component changes by 8 kt or more
       // from the last taken point: WC = -V*cos(wind - TTK) (tailwind positive), each point on its own TTK from the
       // nav log. Replaces the 30 deg / 30 kt rule, which is kept only when the nav log gives no TTK.
       let changed,dWc=null;
