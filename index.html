@@ -6,8 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0b5cff">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("fb-theme")||"night"}catch(e){document.documentElement.dataset.theme="night"}</script>
-<meta name="flight-brief-version" content="6.98">
-<title>Flight Brief V6.98</title>
+<meta name="flight-brief-version" content="6.99">
+<title>Flight Brief V6.99</title>
 <style>
 :root{--bg:#ECEEF0;--card:#ECEEF0;--panel2:#DFE2E6;--text:#101214;--sub:#3A3F46;--muted:#5C6269;--line:#B9BEC5;--blue:#0B6E8C;--blue2:rgba(11,110,140,.10);--onBlue:#FFFFFF;--green:#0A7F2E;--green2:rgba(10,127,46,.10);--amber:#9A6400;--amber2:rgba(154,100,0,.12);--red:#C01A1A;--red2:rgba(192,26,26,.10);--purple:#A0128F;--purple2:rgba(160,18,143,.10);--accent:#101214;--bar:rgba(236,238,240,.97);color-scheme:light}
 :root[data-theme="night"]{--bg:#000000;--card:#000000;--panel2:#0E1012;--text:#F2F3F4;--sub:#C9CCD0;--muted:#8E949B;--line:#3A3F46;--blue:#19D6F0;--blue2:rgba(25,214,240,.12);--onBlue:#000000;--green:#1FE51F;--green2:rgba(31,229,31,.10);--amber:#FFB000;--amber2:rgba(255,176,0,.12);--red:#FF2E2E;--red2:rgba(255,46,46,.12);--purple:#FF4FD8;--purple2:rgba(255,79,216,.12);--accent:#F2F3F4;--bar:rgba(0,0,0,.97);color-scheme:dark}
@@ -3560,27 +3560,28 @@ function parseCfpWindProfile(input,o){
     .map(m=>({waypoint:m[1].toUpperCase(),fl:Number(m[2])}))
     .filter(x=>Number.isFinite(x.fl));
 
-  const stepEvents=[];
+  const stepEvents=[],levelEvents=[];
   for(let i=1;i<levelChanges.length;i++){
     const prev=levelChanges[i-1];
     const cur=levelChanges[i];
-
-    // Only step climbs are mandatory under this rule.
-    if(cur.fl<=prev.fl)continue;
+    if(cur.fl===prev.fl)continue;
 
     const stepIndex=unique.findIndex(p=>p.name===cur.waypoint);
     if(stepIndex<0 || stepIndex+1>=unique.length)continue;
 
-    const firstBeyond=unique[stepIndex+1];
-    stepEvents.push({
+    const ev={
       stepAt:cur.waypoint,
-      firstBeyond:firstBeyond.name,
+      firstBeyond:unique[stepIndex+1].name,
       initialFl:prev.fl,
       stepFl:cur.fl
-    });
+    };
+    // V6.99 (user 03/11/2026): the planned FL used for the temperature follows every level change of FLT LVL,
+    // step descents too; only step climbs are mandatory wind points.
+    levelEvents.push(ev);
+    if(cur.fl>prev.fl)stepEvents.push(ev);
   }
 
-  const selectedPoints=filterCfpWindPoints(unique,selectedLevels,stepEvents,o?.initialFltLvl||'');
+  const selectedPoints=filterCfpWindPoints(unique,selectedLevels,stepEvents,o?.initialFltLvl||'',levelEvents);
 
   return {
     levels,
@@ -3590,6 +3591,7 @@ function parseCfpWindProfile(input,o){
     plannedLevels,
     levelChanges,
     stepEvents,
+    levelEvents,
     descent
   };
 }
@@ -3597,7 +3599,7 @@ function parseCfpWindProfile(input,o){
 // V6.98 (user 03/11/2026): the threshold is chosen on the WIND page, 10 / 20 / 30 kt, remembered on the device, 10 at first
 let CFP_WC_STEP=(()=>{try{const v=Number(localStorage.getItem('fb-wind-wc'));return [10,20,30].includes(v)?v:10;}catch{return 10;}})();
 function cfpWindComp(w,ttk){return Math.round(-Number(w.spd)*Math.cos((Number(w.dir)-Number(ttk))*Math.PI/180));}
-function filterCfpWindPoints(points,levels,stepEvents=[],initialFltLvl=''){
+function filterCfpWindPoints(points,levels,stepEvents=[],initialFltLvl='',levelEvents=stepEvents){
   const selectedLevels=[...(levels||[])].map(Number).filter(Number.isFinite);
   if(selectedLevels.length<2 || selectedLevels.length>4)return [];
 
@@ -3617,11 +3619,11 @@ function filterCfpWindPoints(points,levels,stepEvents=[],initialFltLvl=''){
   const initMatch=String(initialFltLvl||'').match(/(\d{3})/);
   let initialFl=initMatch?Number(initMatch[1]):null;
   if(!Number.isFinite(initialFl)){
-    const firstStep=(stepEvents||[])[0];
+    const firstStep=(levelEvents||stepEvents||[])[0];
     initialFl=Number(firstStep?.initialFl);
   }
 
-  const orderedSteps=[...(stepEvents||[])]
+  const orderedSteps=[...(levelEvents||stepEvents||[])]
     .map(ev=>({...ev,index:routeOrder.get(ev.firstBeyond)}))
     .filter(ev=>ev.index!==undefined)
     .sort((a,b)=>a.index-b.index);
@@ -3808,7 +3810,7 @@ function cfpActiveFlightLevelAtPoint(w,point){
   const initialMatch=String(analysis?.o?.initialFltLvl||'').match(/(\d{3})/);
   let activeFl=initialMatch?Number(initialMatch[1]):(w.levelChanges?.[0]?.fl||null);
 
-  const steps=[...(w.stepEvents||[])]
+  const steps=[...(w.levelEvents||w.stepEvents||[])]
     .map(ev=>({...ev,index:order.get(ev.firstBeyond)}))
     .filter(ev=>ev.index!==undefined)
     .sort((a,b)=>a.index-b.index);
@@ -3882,7 +3884,7 @@ function renderWind(){
 
   const chosen=[...w.userSelectedLevels].sort((a,b)=>a-b);
   const points=(chosen.length>=2&&chosen.length<=4)
-    ?filterCfpWindPoints(w.points,chosen,w.stepEvents||[],analysis?.o?.initialFltLvl||'')
+    ?filterCfpWindPoints(w.points,chosen,w.stepEvents||[],analysis?.o?.initialFltLvl||'',w.levelEvents||w.stepEvents||[])
     :[];
   const tempChangeFlags=cfpDisplayedTempChangeFlags(w,points);
 
