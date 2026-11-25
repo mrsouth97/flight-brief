@@ -42,6 +42,7 @@ Bối cảnh project cho Claude Code (chuyển từ ChatGPT/Codex ngày 23/09/20
 - **Không thêm dòng chữ nhỏ giải thích (note) dưới kết quả** (ví dụ ghi lại VIS/CIG, mức cần, tên approach, lý do, nguồn trang). Chỉ hiện nhãn (BELOW MINIMA, SHALL TAKE EXTRA FUEL…) và dữ liệu đã có chỗ riêng (approach dưới tên sân). Người dùng chốt 06/10/2026.
 
 ## Lịch sử gần đây
+- **V7.00 (25/11/2026, người dùng yêu cầu):** (1) dòng loại NOTAM (APPR, TWY, SID, OTHER) và số đếm hết in đậm (`.notamType>summary`, `.notamTypeCount` → 500; sót từ style thẻ cũ, trái luật ECAM không in đậm); (2) WEATHER › MINIMA trên iPhone (≤ 640 px): dòng 1 = ICAO · giờ · approach/minima bên phải, dòng 2 = TAF (`.wxEntHead` gap 2px 10px, `.wxValue` `order:2;flex-basis:100%`, `.wxEntMin` `order:1`) — trước là 3–4 dòng thưa. Hai chỗ này phát hiện khi rút giao diện thành skill `mfd-ui` (repo kín, `skills/mfd-ui/`: token, component, `check.js` kiểm tra bằng Playwright; dùng cho app khác).
 - `ee3170f` Ignore macOS .DS_Store.
 - Trang chủ: 10 chuyến mới nhất, cuộn tải thêm từng 10; giữ pull-to-refresh; refresh/quay lại app thì về 10 chuyến đầu.
 - V6.31: dưới mũi tên có ô tìm **Flight or REG** + ô **Date** (ngày UTC, để trống = mọi ngày), lọc bằng `briefingShown`. V6.32: mỗi chuyến một dòng — số hiệu + REG bên trái, ngày tháng năm (UTC) bên phải (`briefingTimeText`); bỏ tiêu đề ngày và số PDF.
